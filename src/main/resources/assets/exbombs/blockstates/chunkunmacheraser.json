@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "explode=false":{ "model":"exbombs:chunkunmacheraser" },
+        "explode=true":{ "model":"exbombs:chunkunmacheraser" }
+    }
+}

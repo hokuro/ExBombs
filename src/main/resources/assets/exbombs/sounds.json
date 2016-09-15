@@ -1,0 +1,26 @@
+{
+  "items.eraseexplosive":{
+    "category":"neutral",
+    "sounds":[
+      {
+        "name": "exbombs:items/eraseexplosive",
+        "weight": 1,
+        "volume": 1,
+        "pitch":1,
+        "stream":false
+      }
+    ]
+  },
+    "items.paintbombinpackt":{
+    "category":"neutral",
+    "sounds":[
+      {
+        "name": "exbombs:items/paintbombimpact",
+        "weight": 1,
+        "volume": 1,
+        "pitch":1,
+        "stream":false
+      }
+    ]
+  }
+}
