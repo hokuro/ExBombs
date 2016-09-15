@@ -2,7 +2,6 @@
 package mod.exbombs.item;
 
 import mod.exbombs.core.ExBombs;
-import mod.exbombs.core.ModCommon;
 import mod.exbombs.core.RadarData;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.network.MessageShowGui;
@@ -39,7 +38,7 @@ public class ItemRadar extends Item {
 
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand){
     	if (!worldIn.isRemote) {
-    		ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_RADAR));
+    		ExBombs.INSTANCE.sendToServer(new MessageShowGui(data.index()));
 		}
 		return  new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
 	}
@@ -54,11 +53,11 @@ public class ItemRadar extends Item {
 		return data;
 	}
 
-	public static void setRadarData(ItemStack item, World world, RadarData data){
+	public static void setRadarData(ItemStack item, World world, int index){
 		ItemRadar radar;
 		if (item != null && item.getItem() instanceof ItemRadar){
 			radar = (ItemRadar)item.getItem();
-			radar.data.setData(data);
+			radar.data.setIndex(index);
 			radar.data.onUpdate(world, ExBombsMinecraftHelper.getPlayer());
 			radar.data.markDirty();
 		}

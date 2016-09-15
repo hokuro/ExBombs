@@ -18,6 +18,7 @@ import mod.exbombs.network.MessageExplosion.EnumExplosionType;
 import mod.exbombs.network.MessageFuseSetBurn;
 import mod.exbombs.network.MessageMissileLaunchClient;
 import mod.exbombs.network.MessageMissileLaunchServer;
+import mod.exbombs.network.MessageRadarUpdate;
 import mod.exbombs.network.MessageShowGui;
 import mod.exbombs.sounds.ModSoundManager;
 import net.minecraft.block.ModRegisterBlock;
@@ -225,6 +226,7 @@ public class ExBombs {
 		this.INSTANCE.registerMessage(MessageMissileLaunchClient.class, MessageMissileLaunchClient.class, 2, net.minecraftforge.fml.relauncher.Side.SERVER);
 		this.INSTANCE.registerMessage(MessageMissileLaunchServer.class, MessageMissileLaunchServer.class, 3, net.minecraftforge.fml.relauncher.Side.CLIENT);
 		this.INSTANCE.registerMessage(MessageShowGui.class, MessageShowGui.class, 101, net.minecraftforge.fml.relauncher.Side.SERVER);
+		this.INSTANCE.registerMessage(MessageRadarUpdate.class, MessageRadarUpdate.class, 102, net.minecraftforge.fml.relauncher.Side.SERVER);
 	}
 
 

@@ -38,8 +38,7 @@ public class MessageShowGui implements IMessageHandler<MessageShowGui, IMessage>
         //EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
         //Do something.
 		try {
-			int guiID = message.id;
-			new ExBombsGuiHelper().displayGuiByID((EntityPlayer) ExBombs.proxy.getEntityPlayerInstance(), guiID);
+			new ExBombsGuiHelper().displayGuiByID((EntityPlayer) ExBombs.proxy.getEntityPlayerInstance(), message.id);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
