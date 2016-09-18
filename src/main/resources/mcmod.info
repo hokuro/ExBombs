@@ -2,13 +2,13 @@
 {
     "modid": "ExBombs",
     "name": "ExBombs",
-    "description": "Add some bombs ",
-    "mcversion": "$mcversion",
-    "version": "$version",
+    "description": "爆弾、手榴弾、ミサイルを追加する",
+    "mcversion": "1.9.2",
+    "version": "1.0.0",
     "url": "",
     "updateUrl": "",
     "authors": [
-        "OhoNou"
+        "hoquro"
     ],
     "credits": "",
     "logoFile": "",
