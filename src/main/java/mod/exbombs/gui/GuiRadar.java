@@ -57,17 +57,33 @@ public class GuiRadar extends GuiScreen {
 		entityMap = new HashMap<Class,Entity>();
 		entityClass = new ArrayList();
 		entityClass.add(null);			// ALL用
-		Iterator<Integer> keyIt = EntityList.idToClassMapping.keySet().iterator();
+		Iterator<Integer> keyIt = EntityList.ID_TO_CLASS.keySet().iterator();
 		while(keyIt.hasNext()){
 			Integer key = keyIt.next();
-			Class cl = EntityList.idToClassMapping.get(key);
+			Class cl = EntityList.ID_TO_CLASS.get(key);
 			if (EntityLiving.class.isAssignableFrom(cl) && cl != EntityLiving.class && cl != EntityMob.class){
 				entityClass.add(cl);
-				try {
-					entityMap.put(cl, (Entity)cl.getConstructor(new Class[]{World.class}).newInstance(new Object[]{mc.getMinecraft().theWorld}));
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				}
+					try {
+						entityMap.put(cl, (Entity)cl.getConstructor(new Class[]{World.class}).newInstance(new Object[]{mc.getMinecraft().theWorld}));
+					} catch (InstantiationException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					} catch (NoSuchMethodException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					}
 			}
 		}
 		if (index >= entityClass.size() || index < 0){
@@ -214,7 +230,7 @@ public class GuiRadar extends GuiScreen {
         {
 			nbttag.setString("id", "Pig");
         }
-		return EntityList.stringToClassMapping.get(nbttag.getString("id"));
+		return EntityList.NAME_TO_CLASS.get(nbttag.getString("id"));
 	}
 
 	private void drawCenteredStringWithoutShadow(FontRenderer fontrenderer, String s, int i, int j, int k) {

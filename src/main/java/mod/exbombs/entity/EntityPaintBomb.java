@@ -26,7 +26,7 @@ public class EntityPaintBomb extends EntityBomb {
 
 	public IBlockState getBlockState() {
 		if (block == null){
-			return Blocks.air.getDefaultState();
+			return Blocks.AIR.getDefaultState();
 		}
 		return block;
 	}

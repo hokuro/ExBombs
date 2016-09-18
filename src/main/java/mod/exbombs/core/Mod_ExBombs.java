@@ -121,110 +121,110 @@ public class Mod_ExBombs {
 
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_Oil, 5),
 				new Object[] { " C ", "CCC", " C ",
-				Character.valueOf('C'), Items.coal });
+				Character.valueOf('C'), Items.COAL });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_Plastic, 8),
 				new Object[] { "OSO", "SOS", "OSO",
 				Character.valueOf('O'), ModRegisterItem.item_Oil,
-				Character.valueOf('S'), Items.slime_ball });
+				Character.valueOf('S'), Items.SLIME_BALL });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_Plastic, 4),
 				new Object[] { "OOO", "OSO", "OOO",
 				Character.valueOf('O'), ModRegisterItem.item_Oil,
-				Character.valueOf('S'), Items.sugar });
+				Character.valueOf('S'), Items.SUGAR });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_HeavyMatter, 6),
 				new Object[] { "OOO", "OOO", "OOO",
-				Character.valueOf('O'), Blocks.obsidian });
+				Character.valueOf('O'), Blocks.OBSIDIAN });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_RocketFuel, 6),
 				new Object[] { "PGP", "GPG", "PGP",
-				Character.valueOf('G'), Items.gunpowder,
+				Character.valueOf('G'), Items.GUNPOWDER,
 				Character.valueOf('P'), ModRegisterItem.item_Plastic });
 
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_defuser, 1),
 				new Object[] { "R", "I", "I",
-						Character.valueOf('R'), Items.redstone,
-						Character.valueOf('I'), Items.iron_ingot });
+						Character.valueOf('R'), Items.REDSTONE,
+						Character.valueOf('I'), Items.IRON_INGOT });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_Radar, 1),
 				new Object[] { "IRI", "RDR", "IRI",
-				Character.valueOf('I'), Items.iron_ingot,
-				Character.valueOf('R'), Items.redstone,
-				Character.valueOf('D'), Items.compass });
+				Character.valueOf('I'), Items.IRON_INGOT,
+				Character.valueOf('R'), Items.REDSTONE,
+				Character.valueOf('D'), Items.COMPASS });
 
 		GameRegistry.addRecipe(new ItemStack(ModRegisterBlock.block_Fuse, 32),
 				new Object[] { "SSS", "GGG", "SSS",
-				Character.valueOf('S'), Items.string,
-				Character.valueOf('G'), Items.gunpowder });
+				Character.valueOf('S'), Items.STRING,
+				Character.valueOf('G'), Items.GUNPOWDER });
 
 		GameRegistry.addRecipe(new ItemStack(ModRegisterBlock.block_NCBomb, 1),
 				new Object[] { "UTU", "TUT", "UTU",
-				Character.valueOf('T'), Blocks.tnt,
+				Character.valueOf('T'), Blocks.TNT,
 				Character.valueOf('U'), ModRegisterItem.item_Uranium });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterBlock.bolock_TunnelBomb, 1),
 				new Object[] { "CCC", "SCS", "SSS",
-				Character.valueOf('S'), Blocks.stone,
-				Character.valueOf('C'), Blocks.tnt });
+				Character.valueOf('S'), Blocks.STONE,
+				Character.valueOf('C'), Blocks.TNT });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterBlock.block_eraser, 1),
 				new Object[] { "I I", "ITI", "IPI",
 				Character.valueOf('T'), ModRegisterBlock.block_NCBomb,
-				Character.valueOf('I'), Blocks.iron_block,
-				Character.valueOf('P'), Items.compass});
+				Character.valueOf('I'), Blocks.IRON_BLOCK,
+				Character.valueOf('P'), Items.COMPASS});
 		GameRegistry.addRecipe(new ItemStack(ModRegisterBlock.block_unmach, 1),
 				new Object[] { "IRI", "ITI", "IPI",
-				Character.valueOf('R'), Blocks.redstone_torch,
+				Character.valueOf('R'), Blocks.REDSTONE_TORCH,
 				Character.valueOf('T'), ModRegisterBlock.block_NCBomb,
-				Character.valueOf('I'), Blocks.iron_block,
-				Character.valueOf('P'), Items.compass});
+				Character.valueOf('I'), Blocks.IRON_BLOCK,
+				Character.valueOf('P'), Items.COMPASS});
 
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_TntMissile, 1),
 				new Object[] { "ITI", "IRI", "IRI",
-				Character.valueOf('I'), Items.iron_ingot,
-				Character.valueOf('T'), Blocks.tnt,
+				Character.valueOf('I'), Items.IRON_INGOT,
+				Character.valueOf('T'), Blocks.TNT,
 				Character.valueOf('R'), ModRegisterItem.item_RocketFuel });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_NCMissile, 1),
 				new Object[] { "INI", "IRI", "IRI",
-				Character.valueOf('I'), Items.iron_ingot,
+				Character.valueOf('I'), Items.IRON_INGOT,
 				Character.valueOf('N'), ModRegisterBlock.block_NCBomb,
 				Character.valueOf('R'), ModRegisterItem.item_RocketFuel });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_CEMissile, 1),
 				new Object[] { "ITI", "IRI", "IRI",
-				Character.valueOf('I'), Items.iron_ingot,
+				Character.valueOf('I'), Items.IRON_INGOT,
 				Character.valueOf('T'), ModRegisterBlock.block_eraser,
 				Character.valueOf('R'), ModRegisterItem.item_RocketFuel });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_MCEMissile, 1),
 				new Object[] { "ITI", "IRI", "IRI",
-				Character.valueOf('I'), Items.iron_ingot,
+				Character.valueOf('I'), Items.IRON_INGOT,
 				Character.valueOf('T'), ModRegisterBlock.block_unmach,
 				Character.valueOf('R'), ModRegisterItem.item_RocketFuel });
 
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_MC, 4),
 				new Object[] { "OPO", "OGO", "OOO",
-				Character.valueOf('G'), Items.glass_bottle,
+				Character.valueOf('G'), Items.GLASS_BOTTLE,
 				Character.valueOf('O'), ModRegisterItem.item_Oil,
-				Character.valueOf('P'), Items.paper });
+				Character.valueOf('P'), Items.PAPER });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_Bomb, 6),
 				new Object[] { "III", "ITI", "III",
-				Character.valueOf('I'), Items.iron_ingot,
-				Character.valueOf('T'), Blocks.tnt});
+				Character.valueOf('I'), Items.IRON_INGOT,
+				Character.valueOf('T'), Blocks.TNT});
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_WaterBomb, 6),
 				new Object[] { "PPP", "PWP", "PPP",
-				Character.valueOf('P'), Items.paper,
-				Character.valueOf('W'), Items.water_bucket });
+				Character.valueOf('P'), Items.PAPER,
+				Character.valueOf('W'), Items.WATER_BUCKET });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_frozenBomb, 6),
 				new Object[] { "PIP", "PIP", "PPP",
-				Character.valueOf('P'), Items.paper,
-				Character.valueOf('I'), Blocks.ice });
+				Character.valueOf('P'), Items.PAPER,
+				Character.valueOf('I'), Blocks.ICE });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_icicleBomb, 6),
 				new Object[] { "III", "ITI", "III",
-				Character.valueOf('I'), Blocks.ice,
-				Character.valueOf('T'), Items.water_bucket });
+				Character.valueOf('I'), Blocks.ICE,
+				Character.valueOf('T'), Items.WATER_BUCKET });
 		GameRegistry.addRecipe(new ItemStack(ModRegisterItem.item_paintBomb, 6),
 				new Object[] { "APB", "WTK", "YPG",
-						Character.valueOf('A'), new ItemStack(Items.dye,1,1),
-						Character.valueOf('B'), new ItemStack(Items.dye,1,4),
-						Character.valueOf('P'), Items.paper,
-						Character.valueOf('W'), new ItemStack(Items.dye,1,15),
-						Character.valueOf('T'), Blocks.tnt,
-						Character.valueOf('K'), new ItemStack(Items.dye,1,0),
-						Character.valueOf('Y'), new ItemStack(Items.dye,1,11),
-						Character.valueOf('G'), new ItemStack(Items.dye,1,2)});
+						Character.valueOf('A'), new ItemStack(Items.DYE,1,1),
+						Character.valueOf('B'), new ItemStack(Items.DYE,1,4),
+						Character.valueOf('P'), Items.PAPER,
+						Character.valueOf('W'), new ItemStack(Items.DYE,1,15),
+						Character.valueOf('T'), Blocks.TNT,
+						Character.valueOf('K'), new ItemStack(Items.DYE,1,0),
+						Character.valueOf('Y'), new ItemStack(Items.DYE,1,11),
+						Character.valueOf('G'), new ItemStack(Items.DYE,1,2)});
 		GameRegistry.addSmelting(ModRegisterItem.item_HeavyMatter, new ItemStack(ModRegisterItem.item_Uranium, 1), 0.7F);
 	}
 

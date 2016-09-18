@@ -18,7 +18,7 @@ public class ExBombsGuiHelper {
 	public void displayGuiByID(EntityPlayer player, int GuiID, Object[] param) {
 		GuiScreen gui = null;
 		if ( GuiID == ModCommon.MOD_GUI_ID_RADAR){
-			gui = new GuiRadar(Minecraft.getMinecraft(), (int)param[0]);
+			gui = new GuiRadar(Minecraft.getMinecraft(), (new Integer(param[0].toString()).intValue()));
 		}
 		if (gui != null) {
 			displayGui(player, gui);

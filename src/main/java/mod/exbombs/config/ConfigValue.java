@@ -71,7 +71,7 @@ public class ConfigValue {
 				b = Block.getBlockFromName(str);
 				if(null != b)
 				{
-					if(Blocks.air != b){
+					if(Blocks.AIR != b){
 						Block block = (Block)b;
 						BlockAndMetadata bam = new BlockAndMetadata(block, convertMetaString(block,metastr));
 						list.add(bam);

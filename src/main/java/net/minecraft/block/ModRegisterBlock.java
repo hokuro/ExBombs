@@ -25,23 +25,23 @@ public class ModRegisterBlock {
 	// ブロック
 	public static final Block block_Fuse = new BlockFuse()
 			.setHardness(0.0F)
-			.setStepSound(SoundType.PLANT)
+			.setSoundType(SoundType.PLANT)
 			.setUnlocalizedName(NAME_BLOCKFUSE);
 	public static final Block block_NCBomb = new BlockNuclearExplosive()
 			.setHardness(0.0F)
-			.setStepSound(SoundType.PLANT)
+			.setSoundType(SoundType.PLANT)
 			.setUnlocalizedName(NAME_BLOCKNCBOMB);
 	public static final Block bolock_TunnelBomb = new BlockTunnelExplosive()
 			.setHardness(0.0F)
-			.setStepSound(SoundType.PLANT)
+			.setSoundType(SoundType.PLANT)
 			.setUnlocalizedName(NAME_BLOCKTUNNELBOMB);
 	public static final Block block_eraser = new BlockChunkEraserExplosive(EnumEraseType.ERASEALL)
 			.setHardness(0.0F)
-			.setStepSound(SoundType.PLANT)
+			.setSoundType(SoundType.PLANT)
 			.setUnlocalizedName(NAME_BLOCKCHUNKERASER);
 	public static final Block block_unmach = new BlockChunkEraserExplosive(EnumEraseType.ERASEUNMATCH)
 			.setHardness(0.0F)
-			.setStepSound(SoundType.PLANT)
+			.setSoundType(SoundType.PLANT)
 			.setUnlocalizedName(NAME_BLOCKUNMACHCUNKERASER);
 
 	public static void registerBlock(FMLPreInitializationEvent event){

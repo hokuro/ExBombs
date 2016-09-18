@@ -92,7 +92,7 @@ public class UtilExproder {
 		while (players.hasNext()) {
 			EntityPlayer player = (EntityPlayer) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
-				((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+				((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
 						 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
 			}
 		}
@@ -103,7 +103,7 @@ public class UtilExproder {
 		while (players.hasNext()) {
 			EntityPlayer player = (EntityPlayer) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
-				 ((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+				 ((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
 						 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
 			}
 		}
@@ -115,13 +115,11 @@ public class UtilExproder {
 			EntityPlayer player = (EntityPlayer) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
 				if (type == EnumEraseType.ERASEALL){
-					((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+					((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
 							 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
-					//INSTANCE.sendTo(new MessageExplosion(EnumExplosionType.ERASE.getType(),(int) x, (int) y, (int) z, 0L, 0F), (EntityPlayerMP)player);
 				}else{
-					((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+					((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
 							 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
-					//INSTANCE.sendTo(new MessageExplosion(EnumExplosionType.MACHING.getType(),(int) x, (int) y, (int) z, 0L, 0F), (EntityPlayerMP)player);
 				}
 			}
 		}

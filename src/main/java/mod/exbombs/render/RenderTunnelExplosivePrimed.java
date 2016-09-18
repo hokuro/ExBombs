@@ -85,7 +85,7 @@ public class RenderTunnelExplosivePrimed extends Render {
     }
 
 	protected ResourceLocation func_110808_a(Entity entity) {
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 
 	@Override

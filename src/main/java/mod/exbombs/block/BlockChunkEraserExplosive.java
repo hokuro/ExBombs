@@ -31,7 +31,7 @@ public class BlockChunkEraserExplosive extends Block {
 	private EnumEraseType eraseType;
 
 	public BlockChunkEraserExplosive(EnumEraseType type) {
-		super(Material.tnt);
+		super(Material.TNT);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(EXPLODE, Boolean.valueOf(false)));
 		setCreativeTab(Mod_ExBombs.tabExBombs);
 		eraseType = type;
@@ -47,7 +47,7 @@ public class BlockChunkEraserExplosive extends Block {
 	}
 
 	@Override
-	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock) {
 		if (worldIn.isBlockPowered(pos)) {
 			onBlockDestroyedByPlayer(worldIn, pos, state.withProperty(EXPLODE, Boolean.valueOf(true)));
 			worldIn.setBlockToAir(pos);
@@ -81,7 +81,7 @@ public class BlockChunkEraserExplosive extends Block {
             	EntityChunkEraserPrimed entitytntprimed =
     					new EntityChunkEraserPrimed(worldIn, pos, eraseType);
             	worldIn.spawnEntityInWorld(entitytntprimed);
-                worldIn.playSound((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.entity_tnt_primed, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                worldIn.playSound((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }
 	}
@@ -90,11 +90,11 @@ public class BlockChunkEraserExplosive extends Block {
 		if (worldIn.isRemote) {
 			return true;
 		}
-		 if (heldItem != null && (heldItem.getItem() == Items.flint_and_steel || heldItem.getItem() == Items.fire_charge)){
+		 if (heldItem != null && (heldItem.getItem() == Items.FLINT_AND_STEEL || heldItem.getItem() == Items.FIRE_CHARGE)){
 			onBlockDestroyedByPlayer(worldIn, pos, state.withProperty(EXPLODE, Boolean.valueOf(true)));
-			worldIn.setBlockState(pos, Blocks.air.getDefaultState(), 11);
+			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
 
-            if (heldItem.getItem() == Items.flint_and_steel)
+            if (heldItem.getItem() == Items.FLINT_AND_STEEL)
             {
                 heldItem.damageItem(1, playerIn);
             }

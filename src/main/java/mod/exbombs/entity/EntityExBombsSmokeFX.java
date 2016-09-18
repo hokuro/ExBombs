@@ -1,9 +1,9 @@
 package mod.exbombs.entity;
 
-import net.minecraft.client.particle.EntitySmokeFX;
+import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.world.World;
 
-public class EntityExBombsSmokeFX extends EntitySmokeFX {
+public class EntityExBombsSmokeFX extends ParticleSmokeNormal {
 	private int light;
 	private boolean useLight;
 

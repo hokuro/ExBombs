@@ -14,11 +14,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 public class RenderNuclearExplosivePrimed extends Render {
-	//private RenderBlocks blockRenderer = new RenderBlocks();
 
 	public RenderNuclearExplosivePrimed(RenderManager renderManager) {
 		super(renderManager);
-		//this.blockRenderer = new RenderBlocks();
 		this.shadowSize = 0.5F;
 	}
 
@@ -86,6 +84,6 @@ public class RenderNuclearExplosivePrimed extends Render {
 	}
 
 	protected ResourceLocation func_110808_a(Entity entity) {
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 }

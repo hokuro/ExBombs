@@ -46,7 +46,8 @@ public class RadarData extends WorldSavedData {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setInteger("INDEX", entityIndex);
+		return nbt;
 	}
 }

@@ -6,9 +6,9 @@ import java.util.Random;
 import mod.exbombs.core.Mod_ExBombs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
@@ -40,8 +40,8 @@ public class ItemUranium extends Item {
 			return;
 		}
 		EntityLivingBase living = (EntityLivingBase)entity;
-		living.addPotionEffect(new PotionEffect(Potion.potionRegistry.getObjectById(9), 100, 1));
-		living.addPotionEffect(new PotionEffect(Potion.potionRegistry.getObjectById(4), 100, 3));
-		living.addPotionEffect(new PotionEffect(Potion.potionRegistry.getObjectById(18), 100, 3));
+		living.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 100, 1));
+		living.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 100, 3));
+		living.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 100, 3));
 	}
 }

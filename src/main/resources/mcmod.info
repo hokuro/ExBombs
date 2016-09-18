@@ -2,13 +2,13 @@
 {
     "modid": "ExBombs",
     "name": "ExBombs",
-    "description": "Add some bombs ",
-    "mcversion": "$mcversion",
-    "version": "$version",
+    "description": "”š’e‚Æƒ~ƒTƒCƒ‹‚ð’Ç‰Á‚·‚é ",
+    "mcversion": "1.9.4",
+    "version": "1.0.0",
     "url": "",
     "updateUrl": "",
     "authors": [
-        "OhoNou"
+        "hoquro"
     ],
     "credits": "",
     "logoFile": "",

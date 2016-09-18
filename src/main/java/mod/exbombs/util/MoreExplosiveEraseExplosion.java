@@ -35,8 +35,8 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 
 	public boolean isMatch(IBlockState state, List<BlockAndMetadata> match){
 		if ((state != null) &&
-				(state.getBlock() != Blocks.bedrock) &&
-				(state.getMaterial() != Material.air)){
+				(state.getBlock() != Blocks.BEDROCK) &&
+				(state.getMaterial() != Material.AIR)){
 			for (int mcc = 0; mcc < match.size(); mcc++){
 				if (match.get(mcc).toString().equals(state.getBlock().getRegistryName().toString())){
 					return true;

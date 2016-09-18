@@ -34,10 +34,11 @@ public class TileEntityFuse extends TileEntity implements ITickable{
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
 		nbttagcompound.setBoolean("isBurning", this.isBurning);
 		nbttagcompound.setInteger("burnTime", this.burnTime);
+		return nbttagcompound;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class TileEntityFuse extends TileEntity implements ITickable{
 				tryIgnite(this.pos.getX(),     this.pos.getY() - 1, this.pos.getZ());
 				tryIgnite(this.pos.getX() + 1, this.pos.getY(),     this.pos.getZ());
 				tryIgnite(this.pos.getX() - 1, this.pos.getY(),     this.pos.getZ());
-				this.worldObj.setBlockState(this.getPos(), Blocks.air.getDefaultState());
+				this.worldObj.setBlockState(this.getPos(), Blocks.AIR.getDefaultState());
 			}
 			if (this.worldObj.isRemote) {
 				this.helper.spawn();
@@ -64,9 +65,9 @@ public class TileEntityFuse extends TileEntity implements ITickable{
 		if (this.worldObj.getBlockState(tagetPos).getBlock() == ModRegisterBlock.block_Fuse) {
 			((TileEntityFuse) this.worldObj.getTileEntity(tagetPos)).setBurning();
 		}
-		if (this.worldObj.getBlockState(tagetPos).getBlock() == Blocks.tnt) {
-			BlockTNT tnt = ((BlockTNT)(this.worldObj.getBlockState(new BlockPos(x, y, z)).getBlock()));
-			tnt.onBlockExploded(this.worldObj, tagetPos, new Explosion(this.worldObj,null,(double)pos.getX(),(double)pos.getY(),(double)pos.getZ(),1.0F,false,false));
+		if (this.worldObj.getBlockState(tagetPos).getBlock() == Blocks.TNT) {
+			BlockTNT TNT = ((BlockTNT)(this.worldObj.getBlockState(new BlockPos(x, y, z)).getBlock()));
+			TNT.onBlockExploded(this.worldObj, tagetPos, new Explosion(this.worldObj,null,(double)pos.getX(),(double)pos.getY(),(double)pos.getZ(),1.0F,false,false));
 		}
 		if (this.worldObj.getBlockState(tagetPos).getBlock() == ModRegisterBlock.block_NCBomb) {
 			ModRegisterBlock.block_NCBomb.onBlockExploded(this.worldObj, tagetPos,

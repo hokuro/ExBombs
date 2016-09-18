@@ -35,7 +35,7 @@ public class MoreExplosivesSuperExplosion extends Explosion {
 		this.world = world;
 		this.random = new Random(randomSeed);
 
-		this.world.playSound((EntityPlayer)null, this.xPos, this.yPos, this.zPos, SoundEvents.entity_generic_explode, SoundCategory.BLOCKS, 4.0F,
+		this.world.playSound((EntityPlayer)null, this.xPos, this.yPos, this.zPos, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
 				(1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F);
 
 		radiusX += 0.5D;
@@ -109,7 +109,7 @@ public class MoreExplosivesSuperExplosion extends Explosion {
 
 	private final void setBlock(double x, double y, double z) {
 		IBlockState state = this.world.getBlockState(new BlockPos((int) x + this.xPos, (int) y + this.yPos, (int) z + this.zPos));
-		if ((state.getMaterial() != Material.air) && (state.getBlock() != Blocks.bedrock)) {
+		if ((state.getMaterial() != Material.AIR) && (state.getBlock() != Blocks.BEDROCK)) {
 			this.world.setBlockToAir(new BlockPos((int) x + this.xPos, (int) y + this.yPos, (int) z + this.zPos));
 		}
 	}

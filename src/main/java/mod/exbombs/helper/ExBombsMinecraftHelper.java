@@ -3,7 +3,7 @@ package mod.exbombs.helper;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -19,7 +19,7 @@ public class ExBombsMinecraftHelper {
 		return Minecraft.getMinecraft().thePlayer;
 	}
 
-	public static void addEffect(EntityFX fx) {
+	public static void addEffect(Particle fx) {
 		Minecraft.getMinecraft().effectRenderer.addEffect(fx);
 	}
 

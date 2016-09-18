@@ -53,7 +53,7 @@ public class ModRegisterItem {
 	public static final Item item_Bomb = new ItemBomb(EnumBombType.BOMB)
 			.setUnlocalizedName(NAME_ITEMBOMB);
 	public static final Item item_WaterBomb = new ItemBomb(EnumBombType.WARTER)
-			.setContainerItem(Items.bucket)
+			.setContainerItem(Items.BUCKET)
 			.setUnlocalizedName(NAME_ITEMWATERBOMB);
 	public static final Item item_paintBomb = new ItemBomb(EnumBombType.PAINT)
 			.setUnlocalizedName(NAME_ITEMPAINTBOMB);
