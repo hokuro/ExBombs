@@ -1,8 +1,9 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.item;
 
-import mod.exbombs.core.ExBombs;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityBomb;
+import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -18,7 +19,7 @@ public class ItemMolotovCoctail extends Item {
 	public ItemMolotovCoctail() {
 		super();
 		this.maxStackSize = 64;
-		this.setCreativeTab(ExBombs.tabExBombs);
+		this.setCreativeTab(Mod_ExBombs.tabExBombs);
 	}
 
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
@@ -29,7 +30,7 @@ public class ItemMolotovCoctail extends Item {
     	worldIn.playSound((EntityPlayer)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.entity_snowball_throw, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
     	if (!worldIn.isRemote){
-    		EntityBomb bomb = new EntityBomb(worldIn, playerIn);
+    		EntityBomb bomb = new EntityBomb(worldIn, playerIn, EnumBombType.BOMB);
     		bomb.coctail = true;
     		bomb.func_184538_a(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
     		worldIn.spawnEntityInWorld(bomb);

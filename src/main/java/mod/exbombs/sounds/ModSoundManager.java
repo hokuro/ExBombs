@@ -16,7 +16,6 @@ public class ModSoundManager {
 			.setRegistryName(new ResourceLocation(ModCommon.MOD_ID+":" + SOUND_PAINTBOMB));
 
 	public static void RegisterSounds(){
-
 		GameRegistry.register(sound_eraseExplosive);
 		GameRegistry.register(sound_paintBombInpackt);
 	}

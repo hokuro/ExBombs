@@ -1,10 +1,11 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.item;
 
-import mod.exbombs.core.ExBombs;
-import mod.exbombs.core.RadarData;
+import mod.exbombs.core.ModCommon;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.network.MessageShowGui;
+import mod.exbombs.util.RadarData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -21,7 +22,7 @@ public class ItemRadar extends Item {
 	public ItemRadar() {
 		super();
 		this.maxStackSize = 1;
-		this.setCreativeTab(ExBombs.tabExBombs);
+		this.setCreativeTab(Mod_ExBombs.tabExBombs);
 	}
 
 	public void onUpdate(ItemStack item, World world, Entity entity, int itemSlot, boolean isSelected) {
@@ -38,7 +39,7 @@ public class ItemRadar extends Item {
 
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand){
     	if (!worldIn.isRemote) {
-    		ExBombs.INSTANCE.sendToServer(new MessageShowGui(data.index()));
+    		Mod_ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_RADAR, new Object[]{new Integer(data.index())}));
 		}
 		return  new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
 	}

@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import mod.exbombs.core.ExBombs;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityMissile;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.network.MessageMissileLaunchClient;
@@ -94,7 +94,7 @@ public class GuiMissile extends GuiScreen {
 					ExBombsMinecraftHelper.getPlayer().addChatComponentMessage(new TextComponentString("Missile Target out of range!"));
 				} else {
 					ExBombsMinecraftHelper.getPlayer().addChatComponentMessage(new TextComponentString("Missile launching!"));
-					ExBombs.INSTANCE.sendToServer(new MessageMissileLaunchClient(this.missile.getEntityId(), x, z));
+					Mod_ExBombs.INSTANCE.sendToServer(new MessageMissileLaunchClient(this.missile.getEntityId(), x, z));
 				}
 			} catch (Exception exception) {
 				if ((exception instanceof NumberFormatException)) {

@@ -1,6 +1,6 @@
-/*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.helper;
 
+import mod.exbombs.core.ModCommon;
 import mod.exbombs.gui.GuiRadar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -15,10 +15,11 @@ public class ExBombsGuiHelper {
 		FMLClientHandler.instance().displayGuiScreen(player, (GuiScreen) gui);
 	}
 
-	public void displayGuiByID(EntityPlayer player, int ID) {
+	public void displayGuiByID(EntityPlayer player, int GuiID, Object[] param) {
 		GuiScreen gui = null;
-		gui = new GuiRadar(Minecraft.getMinecraft(),ID);
-
+		if ( GuiID == ModCommon.MOD_GUI_ID_RADAR){
+			gui = new GuiRadar(Minecraft.getMinecraft(), (int)param[0]);
+		}
 		if (gui != null) {
 			displayGui(player, gui);
 		}

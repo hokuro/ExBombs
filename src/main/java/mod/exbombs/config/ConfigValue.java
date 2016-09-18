@@ -37,9 +37,6 @@ public class ConfigValue {
 		// 手榴弾での地形破壊を行うか
 		@ConfigProperty(comment="conf.bomb_destory_block")
 		public static boolean bomb_destroy_block = false;
-		// 水爆弾での地形破壊を行うか
-		@ConfigProperty(comment="conf.wtbomb_destory_block")
-		public static boolean wtbomb_destroy_block = false;
 		@ConfigProperty(comment="conf.tunnel_depth", max="255", min="1")
 		public static int tunnel_depth  = 20;
 		@ConfigProperty(comment="conf.tunnel_width", max="16", min="1")

@@ -1,6 +1,6 @@
 {
   "items.eraseexplosive":{
-    "category":"neutral",
+    "category":"blocks",
     "sounds":[
       {
         "name": "exbombs:items/eraseexplosive",
@@ -12,7 +12,7 @@
     ]
   },
     "items.paintbombinpackt":{
-    "category":"neutral",
+    "category":"blocks",
     "sounds":[
       {
         "name": "exbombs:items/paintbombimpact",

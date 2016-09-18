@@ -1,4 +1,4 @@
-package mod.exbombs.core;
+package mod.exbombs.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,7 +16,7 @@ public class RadarData extends WorldSavedData {
 	public RadarData(String name)
 	{
 		super(name);
-		entityIndex = -1;
+		entityIndex = 0;
 	}
 
 	public void onUpdate(World world, EntityPlayer player)

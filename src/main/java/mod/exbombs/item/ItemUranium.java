@@ -3,7 +3,7 @@ package mod.exbombs.item;
 
 import java.util.Random;
 
-import mod.exbombs.core.ExBombs;
+import mod.exbombs.core.Mod_ExBombs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -19,7 +19,7 @@ public class ItemUranium extends Item {
 	public ItemUranium() {
 		super();
 		this.random = new Random();
-		this.setCreativeTab(ExBombs.tabExBombs);
+		this.setCreativeTab(Mod_ExBombs.tabExBombs);
 	}
 
 	public static void setEffect(boolean hasEffect) {

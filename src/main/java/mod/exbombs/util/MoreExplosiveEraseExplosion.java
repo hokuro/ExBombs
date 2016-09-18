@@ -1,4 +1,4 @@
-package mod.exbombs.core;
+package mod.exbombs.util;
 
 import java.util.List;
 import java.util.Random;

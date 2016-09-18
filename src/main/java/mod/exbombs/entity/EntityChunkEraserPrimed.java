@@ -2,8 +2,8 @@ package mod.exbombs.entity;
 
 import io.netty.buffer.ByteBuf;
 import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
-import mod.exbombs.core.ExBombs;
 import mod.exbombs.item.ItemDefuser;
+import mod.exbombs.util.UtilExproder;
 import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -147,7 +147,7 @@ public class EntityChunkEraserPrimed extends Entity implements IEntityAdditional
 	}
 
 	private void explode() {
-		ExBombs.createEraserExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, eraseType);
+		UtilExproder.createEraserExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, eraseType);
 	}
 
 	public EnumEraseType getType(){

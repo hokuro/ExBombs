@@ -1,9 +1,9 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.tileentity;
 
-import mod.exbombs.core.ExBombs;
-import mod.exbombs.core.MoreExplosivesFuse;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.network.MessageFuseSetBurn;
+import mod.exbombs.util.MoreExplosivesFuse;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.init.Blocks;
@@ -76,11 +76,19 @@ public class TileEntityFuse extends TileEntity implements ITickable{
 			ModRegisterBlock.bolock_TunnelBomb.onBlockExploded(this.worldObj, tagetPos,
 					new MoreExplosivesFuse(this.worldObj, null, (double)pos.getX(),(double)pos.getY(),(double)pos.getZ(),1.0F,false,false));
 		}
+		if (this.worldObj.getBlockState(tagetPos).getBlock() == ModRegisterBlock.block_eraser) {
+			ModRegisterBlock.block_eraser.onBlockExploded(this.worldObj, tagetPos,
+					new MoreExplosivesFuse(this.worldObj, null, (double)pos.getX(),(double)pos.getY(),(double)pos.getZ(),1.0F,false,false));
+		}
+		if (this.worldObj.getBlockState(tagetPos).getBlock() == ModRegisterBlock.block_unmach) {
+			ModRegisterBlock.block_unmach.onBlockExploded(this.worldObj, tagetPos,
+					new MoreExplosivesFuse(this.worldObj, null, (double)pos.getX(),(double)pos.getY(),(double)pos.getZ(),1.0F,false,false));
+		}
 	}
 
 	public void setBurning() {
 		this.isBurning = true;
-		ExBombs.INSTANCE.sendToServer(new MessageFuseSetBurn(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
+		Mod_ExBombs.INSTANCE.sendToServer(new MessageFuseSetBurn(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
 	}
 
 	private class ParticleHelper {

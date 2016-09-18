@@ -16,5 +16,4 @@ public class ModEventHandler {
 		}
 		ConfigValue.reloadConfig(Minecraft.getMinecraft().thePlayer);
 	}
-
 }

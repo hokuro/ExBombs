@@ -1,6 +1,6 @@
 package mod.exbombs.item;
 
-import mod.exbombs.core.ExBombs;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityMissile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -17,7 +17,7 @@ public class ItemMissile extends Item {
 	public ItemMissile() {
 		super();
 		this.maxStackSize = 1;
-		this.setCreativeTab(ExBombs.tabExBombs);
+		this.setCreativeTab(Mod_ExBombs.tabExBombs);
 	}
 
 	public Item setMissileType(int type) {

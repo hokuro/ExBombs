@@ -2,8 +2,8 @@
 package mod.exbombs.entity;
 
 import io.netty.buffer.ByteBuf;
-import mod.exbombs.core.ExBombs;
 import mod.exbombs.item.ItemDefuser;
+import mod.exbombs.util.UtilExproder;
 import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -120,7 +120,7 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 
 	private void explode() {
 		int meta = (metaData & 0x0E) >> 1;
-		ExBombs.createTunnelExplosion(this.worldObj, null, this.posX, this.posY, this.posZ, meta);
+		UtilExproder.createTunnelExplosion(this.worldObj, null, this.posX, this.posY, this.posZ, meta);
 	}
 
 

@@ -3,9 +3,9 @@ package mod.exbombs.block;
 
 import java.util.Random;
 
-import mod.exbombs.core.ExBombs;
-import mod.exbombs.core.MoreExplosivesFuse;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityTunnelExplosivePrimed;
+import mod.exbombs.util.MoreExplosivesFuse;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockPistonBase;
@@ -40,7 +40,7 @@ public class BlockTunnelExplosive extends Block {
 		super(Material.tnt);
 		this.setResistance(2000);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(EXPLODE, Boolean.valueOf(false)));
-		setCreativeTab(ExBombs.tabExBombs);
+		setCreativeTab(Mod_ExBombs.tabExBombs);
 	}
 	@Override
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {

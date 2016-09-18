@@ -11,8 +11,8 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
-import mod.exbombs.core.ExBombs;
-import mod.exbombs.entity.EntityMissile;
+import mod.exbombs.core.ModCommon;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.network.MessageRadarUpdate;
 import mod.exbombs.network.MessageShowGui;
 import net.minecraft.client.Minecraft;
@@ -39,16 +39,19 @@ public class GuiRadar extends GuiScreen {
 	private int imgHeight;
 	private int imgLeft;
 	private int imgTop;
-	int renderTicks;
+	private int renderTicks;
+	private int alphaTicks;
+	private float renderAlpha;
 	private List<Class> entityClass;
 	private Map<Class,Entity> entityMap;
 	private List<BlockPos> spawnerPos;
 	private int index;
 
-
 	public GuiRadar(Minecraft minecraft, int idx) {
 		this.mc = minecraft;
 		this.renderTicks = 0;
+		this.alphaTicks = 0;
+		this.renderAlpha = 1.0F;
 		this.index = idx;
 		// IDリストの初期化
 		entityMap = new HashMap<Class,Entity>();
@@ -67,9 +70,9 @@ public class GuiRadar extends GuiScreen {
 				}
 			}
 		}
-		if (index >= entityClass.size()){
+		if (index >= entityClass.size() || index < 0){
 			index = 0;
-    		ExBombs.INSTANCE.sendToServer(new MessageShowGui(index));
+			SendMessage();
 		}
 		searchSpawner();
 	}
@@ -97,11 +100,13 @@ public class GuiRadar extends GuiScreen {
 		renderSpawner();
 
 		GL11.glPushMatrix();
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 		this.mc.renderEngine.bindTexture(tex);
 		GL11.glTranslatef(this.imgLeft + 100, this.imgTop + 100, 0.0F);
 		GL11.glRotatef(360 - this.renderTicks * 3 % 360, 0.0F, 0.0F, 1.0F);
 		drawTexturedModalRect(0, 0, 0, 214, 120, 42);
+		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 
 		GL11.glPushMatrix();
@@ -109,6 +114,7 @@ public class GuiRadar extends GuiScreen {
 		this.mc.renderEngine.bindTexture(texOver);
 		drawTexturedModalRect(this.imgLeft - 28, this.imgTop - 37, 0, 0, 256, 256);
 		GL11.glPopMatrix();
+
 		for (int index = 0; index < this.buttonList.size(); index++) {
 			GuiButton guibutton = (GuiButton) this.buttonList.get(index);
 			guibutton.drawButton(this.mc, i, j);
@@ -116,7 +122,7 @@ public class GuiRadar extends GuiScreen {
 
 		FontRenderer font = this.fontRendererObj;
 		if (entityClass.get(index) == null){
-			font.drawString("ALL", this.width / 2 - 103, this.imgTop + 200, 0xFFFFFF);
+			font.drawString("ALL", this.width / 2 - 103, this.imgTop + 205, 0xFFFFFF);
 		}else{
 			Entity entity = this.entityMap.get(entityClass.get(index));
 			String dworString = entity!=null?entity.getName():"Unknown";
@@ -126,21 +132,29 @@ public class GuiRadar extends GuiScreen {
 	}
 
 	private void renderSpawner() {
-		for (int i = 0; i < this.mc.theWorld.loadedEntityList.size(); i++) {
-			if ((this.mc.theWorld.loadedEntityList.get(i) instanceof EntityMissile)) {
-				Entity missile = (Entity) this.mc.theWorld.loadedEntityList.get(i);
-				if ((Math.abs(missile.posX - this.mc.thePlayer.posX) <= 500.0D) && (Math.abs(missile.posZ - this.mc.thePlayer.posZ) <= 500.0D)) {
-					int x = (int) (missile.posX - this.mc.thePlayer.posX) / 5;
-					int z = (int) (missile.posZ - this.mc.thePlayer.posZ) / 5;
+		Iterator<BlockPos> posList = spawnerPos.iterator();
+		while(posList.hasNext()){
+			BlockPos pos = posList.next();
+			if ((Math.abs(pos.getX() - this.mc.thePlayer.posX) <= 200.0D) && (Math.abs(pos.getZ() - this.mc.thePlayer.posZ) <= 200.0D)) {
+				int x = (int) (pos.getX() - this.mc.thePlayer.posX) / 2;
+				int z = (int) (pos.getZ() - this.mc.thePlayer.posZ) / 2;
 
-					GL11.glPushMatrix();
-					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-					this.mc.renderEngine.bindTexture(tex);
-					GL11.glTranslatef(this.imgLeft + 100, this.imgTop + 100, 0.0F);
-					GL11.glRotatef(-((int) this.mc.thePlayer.rotationYaw % 360), 0.0F, 0.0F, 1.0F);
-					drawTexturedModalRect(-2 - x, -2 - z, 252, 252, 4, 4);
-					GL11.glPopMatrix();
+				GL11.glPushMatrix();
+				GL11.glEnable(GL11.GL_BLEND);
+				int y = (int) this.mc.thePlayer.posY - pos.getY();
+				if (Math.abs(y) <= 10){
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, renderAlpha);
+				}else if (y < 0){
+					GL11.glColor4f(0.098039216F, 0.490196078F, 0.862745098F, renderAlpha);
+				}else{
+					GL11.glColor4f(1.0F, 0.54902F, 0.0F, renderAlpha);
 				}
+				this.mc.renderEngine.bindTexture(tex);
+				GL11.glTranslatef(this.imgLeft + 100, this.imgTop + 100, 0.0F);
+				GL11.glRotatef(-((int) this.mc.thePlayer.rotationYaw % 360), 0.0F, 0.0F, 1.0F);
+				drawTexturedModalRect(-2 - x, -2 - z, 252, 252, 4, 4);
+				GL11.glDisable(GL11.GL_BLEND);
+				GL11.glPopMatrix();
 			}
 		}
 	}
@@ -160,7 +174,7 @@ public class GuiRadar extends GuiScreen {
 			}
 			break;
 		}
-		ExBombs.INSTANCE.sendToServer(new MessageShowGui(index));
+		SendMessage();
 		searchSpawner();
 	}
 
@@ -173,30 +187,15 @@ public class GuiRadar extends GuiScreen {
 			if (((et = it.next()) instanceof TileEntityMobSpawner) &&
 					(id == null || id == getEntityId((TileEntityMobSpawner)et))){
 				spawnerPos.add(et.getPos());
-				if (id == null){System.out.println("## ALL");}else{}
-				}else{
-				if (et instanceof TileEntityMobSpawner){
-				}
 			}
 		}
 	}
-
-	private int convPos(int value){
-		if ( value == 0){return value;}
-		if ((value%2) == 0){
-			return value/2;
-		}else{
-			return -1 *((value-1)/2);
-		}
-	}
-
-
 
 	@Override
 	protected void keyTyped(char par1, int par2) {
 		if (par2 == 1) {
 			// データをサーバーへ送る
-			ExBombs.INSTANCE.sendToServer(new MessageRadarUpdate(index));
+			Mod_ExBombs.INSTANCE.sendToServer(new MessageRadarUpdate(index));
 		}
 		try {
 			super.keyTyped(par1, par2);
@@ -224,9 +223,21 @@ public class GuiRadar extends GuiScreen {
 
 	public void updateScreen() {
 		this.renderTicks += 1;
+		this.alphaTicks += 1;
+		if (alphaTicks%2 == 0){
+			renderAlpha -= 0.1F;
+			if (renderAlpha <= -0.2F){
+				alphaTicks = 0;
+				renderAlpha = 1.0F;
+			}
+		}
 	}
 
 	public boolean doesGuiPauseGame() {
 		return false;
+	}
+
+	private void SendMessage(){
+		Mod_ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_RADAR, new Object[]{new Integer(index)}));
 	}
 }

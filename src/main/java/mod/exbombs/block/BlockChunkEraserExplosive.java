@@ -2,9 +2,9 @@ package mod.exbombs.block;
 
 import java.util.Random;
 
-import mod.exbombs.core.ExBombs;
-import mod.exbombs.core.MoreExplosivesFuse;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityChunkEraserPrimed;
+import mod.exbombs.util.MoreExplosivesFuse;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -33,7 +33,7 @@ public class BlockChunkEraserExplosive extends Block {
 	public BlockChunkEraserExplosive(EnumEraseType type) {
 		super(Material.tnt);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(EXPLODE, Boolean.valueOf(false)));
-		setCreativeTab(ExBombs.tabExBombs);
+		setCreativeTab(Mod_ExBombs.tabExBombs);
 		eraseType = type;
 	}
 

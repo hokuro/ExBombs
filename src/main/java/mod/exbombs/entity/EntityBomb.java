@@ -1,8 +1,8 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.entity;
 
-import mod.exbombs.config.ConfigValue;
-import mod.exbombs.core.ExBombs;
+import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
+import mod.exbombs.util.UtilExproder;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.DamageSource;
@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 
 public class EntityBomb extends EntityThrowable {
 	public boolean coctail;
+	protected EnumBombType bombType = EnumBombType.BOMB;
 
 	public EntityBomb(World world) {
 		super(world);
@@ -25,6 +26,11 @@ public class EntityBomb extends EntityThrowable {
 		super(world, d, d1, d2);
 	}
 
+	public EntityBomb(World world, EntityLivingBase entityliving, EnumBombType type) {
+		super(world, entityliving);
+		bombType = type;
+	}
+
 	@Override
 	protected void onImpact(RayTraceResult result) {
         if (result.entityHit != null)
@@ -34,7 +40,7 @@ public class EntityBomb extends EntityThrowable {
 
 		if (!this.worldObj.isRemote){
 			if (!this.coctail){
-				ExBombs.createBetterExplosion(this.worldObj, null, this.posX, this.posY, this.posZ, 5.0F, false, false, ConfigValue.General.bomb_destroy_block);
+				UtilExproder.createExplesion(this.worldObj, this, this.posX, this.posY, this.posZ, getBombType().getSize(), false, false, getBombType());
 			}else{
 				this.worldObj.newExplosion(null, this.posX, this.posY, this.posZ, 5.0F, true, false);
 			}
@@ -43,5 +49,9 @@ public class EntityBomb extends EntityThrowable {
 		if (!this.worldObj.isRemote){
 			this.setDead();
 		}
+	}
+
+	public EnumBombType getBombType(){
+		return this.bombType;
 	}
 }

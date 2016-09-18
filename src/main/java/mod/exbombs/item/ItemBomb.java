@@ -1,8 +1,10 @@
 package mod.exbombs.item;
 
-import mod.exbombs.core.ExBombs;
-import mod.exbombs.entity.EntityBomb;
+import mod.exbombs.core.Mod_ExBombs;
+import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
+import mod.exbombs.util.UtilExproder;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,21 +16,29 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 public class ItemBomb extends Item {
-	public ItemBomb() {
+
+	private EnumBombType bombType;
+
+	public ItemBomb(EnumBombType type) {
 		super();
 		this.maxStackSize = 64;
-		this.setCreativeTab(ExBombs.tabExBombs);
+		this.setCreativeTab(Mod_ExBombs.tabExBombs);
+		bombType = type;
 	}
 
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
+    	EntityThrowable bomb = null;
+    	if (!worldIn.isRemote){
+    		bomb = UtilExproder.createBombEntity(worldIn, playerIn, itemStackIn, bombType);
+        	if (bomb == null){return new ActionResult(EnumActionResult.PASS, itemStackIn);}
+    	}
     	if (!playerIn.capabilities.isCreativeMode){
     		--itemStackIn.stackSize;
     	}
     	worldIn.playSound((EntityPlayer)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.entity_snowball_throw, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
     	if (!worldIn.isRemote){
-    		EntityBomb bomb = new EntityBomb(worldIn, playerIn);
     		bomb.func_184538_a(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
     		worldIn.spawnEntityInWorld(bomb);
     	}

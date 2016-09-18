@@ -2,8 +2,8 @@
 package mod.exbombs.entity;
 
 import io.netty.buffer.ByteBuf;
-import mod.exbombs.core.ExBombs;
 import mod.exbombs.item.ItemDefuser;
+import mod.exbombs.util.UtilExproder;
 import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -134,6 +134,6 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 	}
 
 	private void explode() {
-		ExBombs.createSuperExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 80.0F);
+		UtilExproder.createSuperExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 80.0F);
 	}
 }

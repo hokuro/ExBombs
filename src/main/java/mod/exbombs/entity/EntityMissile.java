@@ -3,11 +3,12 @@ package mod.exbombs.entity;
 
 import io.netty.buffer.ByteBuf;
 import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
-import mod.exbombs.core.ExBombs;
 import mod.exbombs.gui.GuiMissile;
 import mod.exbombs.helper.ExBombsGuiHelper;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.item.ItemDefuser;
+import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
+import mod.exbombs.util.UtilExproder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,19 +61,19 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 				this.prevRotationYaw = (this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / 3.141592653589793D));
 				this.prevRotationPitch = (this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / 3.141592653589793D));
 			}
-			Vec3d vec3d = new Vec3d(this.posX, this.posY, this.posZ);
+			Vec3d vec3d = new Vec3d(this.posX, this.posY+1, this.posZ);
 			Vec3d vec3d1 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 			RayTraceResult  movingobjectposition = this.worldObj.rayTraceBlocks(vec3d, vec3d1, false, true, false);
 			if (movingobjectposition != null) {
 				setDead();
 				if (this.missileType == 0) {
-					ExBombs.createBetterExplosion(this.worldObj, null, this.posX, this.posY, this.posZ, 10.0F, false, false, true);
+					UtilExproder.createExplesion(this.worldObj, null, this.posX, this.posY, this.posZ, 10.0F, false, false, EnumBombType.PRIME);
 				} else if (this.missileType == 1) {
-					ExBombs.createSuperExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 70.0F);
+					UtilExproder.createSuperExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 70.0F);
 				}else if (this.missileType == 2) {
-					ExBombs.createEraserExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEALL);
+					UtilExproder.createEraserExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEALL);
 				}else if (this.missileType == 3) {
-					ExBombs.createEraserExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEUNMATCH);
+					UtilExproder.createEraserExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEUNMATCH);
 				}
 			}
 			this.posX += this.motionX;

@@ -3,7 +3,7 @@ package mod.exbombs.block;
 
 import java.util.Random;
 
-import mod.exbombs.core.ExBombs;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityNuclearExplosivePrimed;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -31,7 +31,7 @@ public class BlockNuclearExplosive extends Block {
 	public BlockNuclearExplosive() {
 		super(Material.tnt);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(EXPLODE, Boolean.valueOf(false)));
-		setCreativeTab(ExBombs.tabExBombs);
+		setCreativeTab(Mod_ExBombs.tabExBombs);
 	}
 
 	@Override

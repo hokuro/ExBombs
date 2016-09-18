@@ -3,7 +3,7 @@ package mod.exbombs.network;
 import java.util.List;
 
 import io.netty.buffer.ByteBuf;
-import mod.exbombs.core.ExBombs;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityMissile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,7 +64,7 @@ public class MessageMissileLaunchClient implements IMessageHandler<MessageMissil
 			}
 			missile.launch(x, z);
 			for (EntityPlayer aplayer : ctx.getServerHandler().playerEntity.worldObj.playerEntities){
-				ExBombs.INSTANCE.sendTo(new MessageMissileLaunchServer(entityID), (EntityPlayerMP)aplayer);
+				Mod_ExBombs.INSTANCE.sendTo(new MessageMissileLaunchServer(entityID), (EntityPlayerMP)aplayer);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();

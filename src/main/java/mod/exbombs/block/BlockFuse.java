@@ -3,8 +3,8 @@ package mod.exbombs.block;
 
 import java.util.List;
 
-import mod.exbombs.core.ExBombs;
 import mod.exbombs.core.ICableBlock;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.tileentity.TileEntityFuse;
 import net.minecraft.block.Block;
@@ -36,7 +36,7 @@ public class BlockFuse extends BlockContainer implements ICableBlock {
 
 	public BlockFuse() {
 		super(Material.tnt);
-		setCreativeTab(ExBombs.tabExBombs);
+		setCreativeTab(Mod_ExBombs.tabExBombs);
 
 	}
 
@@ -205,6 +205,12 @@ public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
 			return true;
 		}
 		if (ModRegisterBlock.block_NCBomb == state.getBlock()) {
+			return true;
+		}
+		if (ModRegisterBlock.block_eraser == state.getBlock()) {
+			return true;
+		}
+		if (ModRegisterBlock.block_unmach == state.getBlock()) {
 			return true;
 		}
 		return false;

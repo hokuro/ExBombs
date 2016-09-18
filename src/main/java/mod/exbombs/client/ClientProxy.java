@@ -1,9 +1,11 @@
 package mod.exbombs.client;
 
 import mod.exbombs.core.CommonProxy;
-import mod.exbombs.core.ExBombs;
+import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityBomb;
 import mod.exbombs.entity.EntityChunkEraserPrimed;
+import mod.exbombs.entity.EntityFrozenBomb;
+import mod.exbombs.entity.EntityIcicleBomb;
 import mod.exbombs.entity.EntityMissile;
 import mod.exbombs.entity.EntityNuclearExplosivePrimed;
 import mod.exbombs.entity.EntityPaintBomb;
@@ -11,6 +13,8 @@ import mod.exbombs.entity.EntityTunnelExplosivePrimed;
 import mod.exbombs.entity.EntityWaterBomb;
 import mod.exbombs.render.RenderBomb;
 import mod.exbombs.render.RenderChunkEraserEsplosivePrived;
+import mod.exbombs.render.RenderFrozenBomb;
+import mod.exbombs.render.RenderIcicleBomb;
 import mod.exbombs.render.RenderMissile;
 import mod.exbombs.render.RenderNuclearExplosivePrimed;
 import mod.exbombs.render.RenderPaintBomb;
@@ -40,6 +44,34 @@ public class ClientProxy extends CommonProxy {
 			}
 		});
 
+		RenderingRegistry.registerEntityRenderingHandler(EntityWaterBomb.class,   new IRenderFactory<EntityWaterBomb>() {
+			@Override
+			public Render<? super EntityWaterBomb> createRenderFor(RenderManager manager) {
+				return new RenderWaterBomb(manager);
+			}
+		});
+
+		RenderingRegistry.registerEntityRenderingHandler(EntityFrozenBomb.class,   new IRenderFactory<EntityFrozenBomb>() {
+			@Override
+			public Render<? super EntityFrozenBomb> createRenderFor(RenderManager manager) {
+				return new RenderFrozenBomb(manager);
+			}
+		});
+
+		RenderingRegistry.registerEntityRenderingHandler(EntityIcicleBomb.class,   new IRenderFactory<EntityIcicleBomb>() {
+			@Override
+			public Render<? super EntityIcicleBomb> createRenderFor(RenderManager manager) {
+				return new RenderIcicleBomb(manager);
+			}
+		});
+
+		RenderingRegistry.registerEntityRenderingHandler(EntityPaintBomb.class,   new IRenderFactory<EntityPaintBomb>() {
+			@Override
+			public Render<? super EntityPaintBomb> createRenderFor(RenderManager manager) {
+				return new RenderPaintBomb(manager);
+			}
+		});
+
 		RenderingRegistry.registerEntityRenderingHandler(EntityMissile.class,   new IRenderFactory<EntityMissile>() {
 			@Override
 			public Render<? super EntityMissile> createRenderFor(RenderManager manager) {
@@ -61,24 +93,10 @@ public class ClientProxy extends CommonProxy {
 			}
 		});
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityWaterBomb.class,   new IRenderFactory<EntityWaterBomb>() {
-			@Override
-			public Render<? super EntityWaterBomb> createRenderFor(RenderManager manager) {
-				return new RenderWaterBomb(manager);
-			}
-		});
-
 		RenderingRegistry.registerEntityRenderingHandler(EntityChunkEraserPrimed.class,   new IRenderFactory<EntityChunkEraserPrimed>() {
 			@Override
 			public Render<? super EntityChunkEraserPrimed> createRenderFor(RenderManager manager) {
 				return new RenderChunkEraserEsplosivePrived(manager);
-			}
-		});
-
-		RenderingRegistry.registerEntityRenderingHandler(EntityPaintBomb.class,   new IRenderFactory<EntityPaintBomb>() {
-			@Override
-			public Render<? super EntityPaintBomb> createRenderFor(RenderManager manager) {
-				return new RenderPaintBomb(manager);
 			}
 		});
 	}
@@ -90,6 +108,6 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerCompnents(){
-		ClientRegistry.registerTileEntity(TileEntityFuse.class, ExBombs.TileEntity_Fuse, new TileEntityFuseRender());
+		ClientRegistry.registerTileEntity(TileEntityFuse.class, Mod_ExBombs.TileEntity_Fuse, new TileEntityFuseRender());
 	}
 }
