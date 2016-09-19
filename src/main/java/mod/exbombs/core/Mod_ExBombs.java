@@ -229,11 +229,11 @@ public class Mod_ExBombs {
 	}
 
 	public void RegisterMessage(){
-		this.INSTANCE.registerMessage(MessageFuseSetBurn.class, MessageFuseSetBurn.class, 1, net.minecraftforge.fml.relauncher.Side.SERVER);
-		this.INSTANCE.registerMessage(MessageMissileLaunchClient.class, MessageMissileLaunchClient.class, 2, net.minecraftforge.fml.relauncher.Side.SERVER);
-		this.INSTANCE.registerMessage(MessageMissileLaunchServer.class, MessageMissileLaunchServer.class, 3, net.minecraftforge.fml.relauncher.Side.CLIENT);
-		this.INSTANCE.registerMessage(MessageShowGui.class, MessageShowGui.class, 101, net.minecraftforge.fml.relauncher.Side.SERVER);
-		this.INSTANCE.registerMessage(MessageRadarUpdate.class, MessageRadarUpdate.class, 102, net.minecraftforge.fml.relauncher.Side.SERVER);
+		Mod_ExBombs.INSTANCE.registerMessage(MessageFuseSetBurn.class, MessageFuseSetBurn.class, 1, net.minecraftforge.fml.relauncher.Side.SERVER);
+		Mod_ExBombs.INSTANCE.registerMessage(MessageMissileLaunchClient.class, MessageMissileLaunchClient.class, 2, net.minecraftforge.fml.relauncher.Side.SERVER);
+		Mod_ExBombs.INSTANCE.registerMessage(MessageMissileLaunchServer.class, MessageMissileLaunchServer.class, 3, net.minecraftforge.fml.relauncher.Side.CLIENT);
+		Mod_ExBombs.INSTANCE.registerMessage(MessageShowGui.class, MessageShowGui.class, 101, net.minecraftforge.fml.relauncher.Side.SERVER);
+		Mod_ExBombs.INSTANCE.registerMessage(MessageRadarUpdate.class, MessageRadarUpdate.class, 102, net.minecraftforge.fml.relauncher.Side.SERVER);
 	}
 
 

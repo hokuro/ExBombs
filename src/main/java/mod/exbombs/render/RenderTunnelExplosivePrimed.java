@@ -16,7 +16,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class RenderTunnelExplosivePrimed extends Render {
+public class RenderTunnelExplosivePrimed extends Render<EntityTunnelExplosivePrimed> {
 
 	public RenderTunnelExplosivePrimed(RenderManager renderManager) {
 		super(renderManager);
@@ -89,12 +89,12 @@ public class RenderTunnelExplosivePrimed extends Render {
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity par1Entity) {
+	protected ResourceLocation getEntityTexture(EntityTunnelExplosivePrimed par1Entity) {
 		return func_110808_a(par1Entity);
 	}
 
 	@Override
-	public void doRender(Entity entity, double d, double d1, double d2, float f, float f1) {
+	public void doRender(EntityTunnelExplosivePrimed entity, double d, double d1, double d2, float f, float f1) {
 		render((EntityTunnelExplosivePrimed) entity, d, d1, d2, f, f1);
 	}
 }

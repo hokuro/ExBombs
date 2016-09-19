@@ -6,11 +6,10 @@ import mod.exbombs.entity.EntityMissile;
 import mod.exbombs.model.ModelMissile;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 
-public class RenderMissile extends Render {
+public class RenderMissile extends Render<EntityMissile> {
 	private static final ResourceLocation tex3 = new ResourceLocation("exbombs:textures/entity/unmatcheraserSTSMissile.png");
 	private static final ResourceLocation tex2 = new ResourceLocation("exbombs:textures/entity/eraserSTSMissile.png");
 	private static final ResourceLocation tex1 = new ResourceLocation("exbombs:textures/entity/nuclearSTSMissile.png");
@@ -37,12 +36,12 @@ public class RenderMissile extends Render {
 	}
 
 	@Override
-	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
+	public void doRender(EntityMissile par1Entity, double par2, double par4, double par6, float par8, float par9) {
 		renderArrow((EntityMissile) par1Entity, par2, par4, par6, par8, par9);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
+	protected ResourceLocation getEntityTexture(EntityMissile entity) {
 		EntityMissile missile = (EntityMissile) entity;
 		ResourceLocation tex = null;
 		switch(missile.missileType){

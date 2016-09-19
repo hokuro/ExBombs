@@ -57,7 +57,7 @@ public class ConfigValue {
 
 
 		private static List<BlockAndMetadata> idStringToArray(String s){
-			List<BlockAndMetadata> list = new ArrayList();
+			List<BlockAndMetadata> list = new ArrayList<BlockAndMetadata>();
 			String[] ss = s.split(",");
 			for (String str : ss){
 				String metastr = null;
@@ -99,7 +99,7 @@ public class ConfigValue {
 				if ((0 != (f.getModifiers() & 0x1)) && (0 != (f.getModifiers() & 0x8))) {
 					if (PropertyEnum.class == f.getType()) {
 						try {
-							enumCls = ((PropertyEnum) f.get(null)).getValueClass();
+							enumCls = ((PropertyEnum<?>) f.get(null)).getValueClass();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

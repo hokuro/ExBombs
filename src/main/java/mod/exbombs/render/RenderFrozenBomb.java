@@ -6,10 +6,9 @@ import mod.exbombs.entity.EntityFrozenBomb;
 import mod.exbombs.model.ModelCube;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderFrozenBomb extends Render {
+public class RenderFrozenBomb extends Render<EntityFrozenBomb> {
 	ModelCube model;
 	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/entity/frozenBomb.png");
 
@@ -20,7 +19,7 @@ public class RenderFrozenBomb extends Render {
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
+	protected ResourceLocation getEntityTexture(EntityFrozenBomb entity) {
 		return tex;
 	}
 
@@ -34,7 +33,7 @@ public class RenderFrozenBomb extends Render {
 		GL11.glPopMatrix();
 	}
 
-	public void doRender(Entity entity, double d, double d1, double d2, float f, float f1) {
+	public void doRender(EntityFrozenBomb entity, double d, double d1, double d2, float f, float f1) {
 		RenderEntityBomb((EntityFrozenBomb) entity, d, d1, d2, f, f1);
 	}
 

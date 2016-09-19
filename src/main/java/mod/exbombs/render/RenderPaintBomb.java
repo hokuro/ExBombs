@@ -6,10 +6,9 @@ import mod.exbombs.entity.EntityPaintBomb;
 import mod.exbombs.model.ModelCube;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderPaintBomb extends Render {
+public class RenderPaintBomb extends Render<EntityPaintBomb> {
 	ModelCube model;
 	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/entity/paintBomb.png");
 
@@ -20,7 +19,7 @@ public class RenderPaintBomb extends Render {
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
+	protected ResourceLocation getEntityTexture(EntityPaintBomb entity) {
 		return tex;
 	}
 
@@ -34,7 +33,7 @@ public class RenderPaintBomb extends Render {
 		GL11.glPopMatrix();
 	}
 
-	public void doRender(Entity entity, double d, double d1, double d2, float f, float f1) {
+	public void doRender(EntityPaintBomb entity, double d, double d1, double d2, float f, float f1) {
 		RenderEntityBomb((EntityPaintBomb) entity, d, d1, d2, f, f1);
 	}
 

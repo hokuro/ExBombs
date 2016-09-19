@@ -41,7 +41,7 @@ public class ItemRadar extends Item {
     	if (!worldIn.isRemote) {
     		Mod_ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_RADAR, new Object[]{new Integer(data.index())}));
 		}
-		return  new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+		return  new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
 	}
 
 	public static RadarData getRadarData(ItemStack item, World world)

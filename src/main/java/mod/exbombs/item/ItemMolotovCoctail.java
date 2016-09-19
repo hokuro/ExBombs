@@ -36,6 +36,6 @@ public class ItemMolotovCoctail extends Item {
     		worldIn.spawnEntityInWorld(bomb);
     	}
     	playerIn.addStat(StatList.getObjectUseStats(this));
-        return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
     }
 }

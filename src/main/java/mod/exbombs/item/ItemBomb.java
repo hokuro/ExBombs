@@ -31,7 +31,7 @@ public class ItemBomb extends Item {
     	EntityThrowable bomb = null;
     	if (!worldIn.isRemote){
     		bomb = UtilExproder.createBombEntity(worldIn, playerIn, itemStackIn, bombType);
-        	if (bomb == null){return new ActionResult(EnumActionResult.PASS, itemStackIn);}
+        	if (bomb == null){return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);}
     	}
     	if (!playerIn.capabilities.isCreativeMode){
     		--itemStackIn.stackSize;
@@ -43,6 +43,6 @@ public class ItemBomb extends Item {
     		worldIn.spawnEntityInWorld(bomb);
     	}
     	playerIn.addStat(StatList.getObjectUseStats(this));
-        return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
     }
 }

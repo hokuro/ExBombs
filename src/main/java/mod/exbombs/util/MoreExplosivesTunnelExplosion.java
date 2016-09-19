@@ -25,12 +25,12 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 	public double explosionZ;
 	public int direction;
 	public Entity exploder;
-	public Set destroyedBlockPositions;
+	public Set<BlockPos> destroyedBlockPositions;
 
 	public MoreExplosivesTunnelExplosion(World world, Entity entity, double i, double j, double k, int direction2) {
 		super(world, entity, i, j, k, 0.0F,true,true);
 
-		this.destroyedBlockPositions = new HashSet();
+		this.destroyedBlockPositions = new HashSet<BlockPos>();
 		this.worldObj = world;
 		this.exploder = entity;
 		this.explosionX = i;
@@ -102,7 +102,7 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 				}
 			}
 		}
-		ArrayList arraylist = new ArrayList();
+		ArrayList<BlockPos> arraylist = new ArrayList<BlockPos>();
 		arraylist.addAll(this.destroyedBlockPositions);
 	}
 
@@ -120,7 +120,7 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 	public void doExplosionB(boolean flag) {
 		this.worldObj.playSound((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 		this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
-		ArrayList arraylist = new ArrayList();
+		ArrayList<BlockPos> arraylist = new ArrayList<BlockPos>();
 		arraylist.addAll(this.destroyedBlockPositions);
 		for (int i = arraylist.size() - 1; i >= 0; i--) {
 			BlockPos pos = (BlockPos)arraylist.get(i);

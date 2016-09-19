@@ -33,7 +33,7 @@ public class MessageRadarUpdate implements IMessageHandler<MessageRadarUpdate, I
 	@Override
 	public IMessage onMessage(MessageRadarUpdate message, MessageContext ctx) {
 		try{
-			((ItemRadar)ModRegisterItem.item_Radar).setRadarData(new ItemStack(ModRegisterItem.item_Radar),
+			ItemRadar.setRadarData(new ItemStack(ModRegisterItem.item_Radar),
 					ctx.getServerHandler().playerEntity.worldObj, message.index);
 		}catch(Exception ex){
 			ex.printStackTrace();

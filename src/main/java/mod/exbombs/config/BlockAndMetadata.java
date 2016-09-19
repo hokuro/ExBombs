@@ -6,11 +6,6 @@ public class BlockAndMetadata {
 	private final Block _block;
 	private final int _meta;
 
-	private BlockAndMetadata() {
-		this._block = null;
-		this._meta = -1;
-	}
-
 	public BlockAndMetadata(Block b, int meta) {
 		this._block = b;
 		this._meta = meta;

@@ -51,7 +51,7 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 		this.CanDestroyBlock = true;
 		this.isFlaming = false;
 		this.ExplosionRNG = new Random();
-		this.destroyedBlockPositions = new HashSet();
+		this.destroyedBlockPositions = new HashSet<BlockPos>();
 		this.worldObj = world;
 		this.exploder = entity;
 		this.explosionSize = size;
@@ -133,11 +133,13 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 				d10 /= d11;
 				double d12 = this.worldObj.getBlockDensity(vec3d, entity.getEntityBoundingBox());
 				double d13 = (1.0D - d4) * d12;
+				double d15 = Math.abs(explosionSize - d11)/this.explosionSize;
 				if (bombType == EnumBombType.FROZEN && entity instanceof EntityLivingBase){
-					((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 200, 10));
+					((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, (int)(600*d15), 256));
 				}else{
 					if (bombType == EnumBombType.ICICLE && entity instanceof EntityLivingBase){
-						((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 200, 10));
+						((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, (int)(600*d15), 256));
+						((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, (int)(600*d15), 256));
 					}
 					entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (int) ((d13 * d13 + d13) / 2.0D * 8.0D * this.explosionSize + 1.0D));
 				}
@@ -160,7 +162,7 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 		this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
 		ArrayList<BlockPos> arraylist = new ArrayList<BlockPos>();
 		arraylist.addAll(this.destroyedBlockPositions);
-		Set posSet = new HashSet();
+		Set<BlockPos> posSet = new HashSet<BlockPos>();
 		for (BlockPos blockpos : arraylist)
 		{
 			IBlockState iblockstate = this.worldObj.getBlockState(blockpos);

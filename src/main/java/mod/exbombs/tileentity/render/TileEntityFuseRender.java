@@ -6,24 +6,15 @@ import mod.exbombs.tileentity.TileEntityFuse;
 import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class TileEntityFuseRender extends TileEntitySpecialRenderer {
+public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFuse> {
 	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/entity/fuse.png");
 	private ModelCube mainmodel = new ModelCube();
-	private ModelCube submodel1 = new ModelCube();
-	private ModelCube submodel2 = new ModelCube();
-
 	public TileEntityFuseRender() {
 	}
 
 	public void renderFuse(TileEntityFuse te, double posX, double posY, double posZ, float per8, int per9) {
-		double sx,sy,sz = 0.0D;
-		double tx,ty,tz = 0.0D;
-		sx = sy = sz = 0.03125D;
-		tx = ty = tz = 0.5D;
-
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float) posX + 0.5F , (float) posY + 0.5F, (float) posZ + 0.5F);
 		GlStateManager.scale(0.03125D, 0.03125D, 0.03125D);
@@ -99,7 +90,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer {
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity te, double posX, double posZ, double posY, float rot_rot, int p_180535_9_) {
+	public void renderTileEntityAt(TileEntityFuse te, double posX, double posZ, double posY, float rot_rot, int p_180535_9_) {
 		renderFuse((TileEntityFuse)te, posX, posZ, posY, rot_rot, p_180535_9_);
 	}
 }

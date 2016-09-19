@@ -81,7 +81,7 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 			}
 		}
 
-		List list = world.getEntitiesWithinAABB(Entity.class,  new AxisAlignedBB(x_start, 2, z_start, x_start+16, 255, z_start+16));
+		List<Entity> list = world.getEntitiesWithinAABB(Entity.class,  new AxisAlignedBB(x_start, 2, z_start, x_start+16, 255, z_start+16));
 		for (int index = 0; index < list.size(); index++) {
 			if (list.get(index) instanceof EntityLivingBase){
 				  ((Entity)list.get(index)).setPositionAndUpdate(xPos,-10,zPos);

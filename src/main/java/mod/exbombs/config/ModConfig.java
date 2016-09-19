@@ -12,6 +12,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+@SuppressWarnings("deprecation")
 public class ModConfig {
 	public static final ModConfig config = new ModConfig();
 	protected Class<?>[] _cls = null;

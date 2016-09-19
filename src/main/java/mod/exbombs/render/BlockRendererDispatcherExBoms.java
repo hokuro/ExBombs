@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -20,7 +19,6 @@ public class BlockRendererDispatcherExBoms extends BlockRendererDispatcher{
     @Override
     public void renderBlockBrightness(IBlockState state, float brightness)
     {
-        EnumBlockRenderType enumblockrendertype = state.getRenderType();
         IBakedModel ibakedmodel = this.getModelForState(state);
         ibakedmodel.getQuads(state, state.getValue(BlockTunnelExplosive.FACING), 0);
         getBlockModelRenderer().renderModelBrightness(ibakedmodel, state, brightness, true);

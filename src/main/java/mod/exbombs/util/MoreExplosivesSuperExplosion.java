@@ -51,7 +51,6 @@ public class MoreExplosivesSuperExplosion extends Explosion {
 		int ceilRadiusZ = (int)Math.ceil(radiusZ);
 
 		double nextXn = 0.0D;
-		boolean flag = true;
 		labelfin:{
 			for (int x = 0; x <= ceilRadiusX; x++){
 				labelSuper:{
@@ -98,7 +97,7 @@ public class MoreExplosivesSuperExplosion extends Explosion {
 			}
 			}
 		}
-		List list = world.getEntitiesWithinAABB(Entity.class,  new AxisAlignedBB(xPos - radiusX, yPos - radiusY, zPos - radiusY, xPos + radiusX, yPos + radiusY, zPos + radiusY));
+		List<Entity> list = world.getEntitiesWithinAABB(Entity.class,  new AxisAlignedBB(xPos - radiusX, yPos - radiusY, zPos - radiusY, xPos + radiusX, yPos + radiusY, zPos + radiusY));
 		for (int index = 0; index < list.size(); index++) {
 		  ((Entity)list.get(index)).attackEntityFrom(DamageSource.causeExplosionDamage(this), 100.0F);
 		}

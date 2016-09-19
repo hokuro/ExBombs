@@ -159,9 +159,9 @@ public class BlockTunnelExplosive extends Block {
     	EnumFacing fc = BlockPistonBase.getFacingFromEntity(pos, placer);
     	EnumFacing fcwrite;
     	if ((fc.getIndex() % 2) == 0){
-    		fcwrite = fc.getFront(fc.getIndex()+1);
+    		fcwrite = EnumFacing.getFront(fc.getIndex()+1);
     	}else{
-    		fcwrite = fc.getFront(fc.getIndex()-1);
+    		fcwrite = EnumFacing.getFront(fc.getIndex()-1);
     	}
 
         return this.getDefaultState().withProperty(FACING, fcwrite);

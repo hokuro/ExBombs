@@ -10,6 +10,7 @@ import mod.exbombs.item.ItemDefuser;
 import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
 import mod.exbombs.util.UtilExproder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -31,7 +32,7 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 	public EntityMissile(World world) {
 		super(world);
 		setSize(1.0F, 3.5F);
-		this.setRenderDistanceWeight(50.0D);
+		Entity.setRenderDistanceWeight(50.0D);
 		this.ignoreFrustumCheck = true;
 		if (world.isRemote) {
 			this.helper = new ParticleHelper();
@@ -198,7 +199,7 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0F,
 						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0F, 10.0F);
 				fx.setLife(120);
-				fx.interpPosY=8.0D;
+				Particle.interpPosY=8.0D;
 				fx.setAll((float) (Math.random() * 0.30000001192092896D));
 				ExBombsMinecraftHelper.addEffect(fx);
 			}
