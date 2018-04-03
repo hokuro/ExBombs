@@ -36,34 +36,6 @@ public class ClientProxy extends CommonProxy {
 			}
 		});
 
-//		RenderingRegistry.registerEntityRenderingHandler(EntityWaterBomb.class,   new IRenderFactory<EntityWaterBomb>() {
-//			@Override
-//			public Render<? super EntityWaterBomb> createRenderFor(RenderManager manager) {
-//				return new RenderWaterBomb(manager);
-//			}
-//		});
-//
-//		RenderingRegistry.registerEntityRenderingHandler(EntityFrozenBomb.class,   new IRenderFactory<EntityFrozenBomb>() {
-//			@Override
-//			public Render<? super EntityFrozenBomb> createRenderFor(RenderManager manager) {
-//				return new RenderFrozenBomb(manager);
-//			}
-//		});
-//
-//		RenderingRegistry.registerEntityRenderingHandler(EntityIcicleBomb.class,   new IRenderFactory<EntityIcicleBomb>() {
-//			@Override
-//			public Render<? super EntityIcicleBomb> createRenderFor(RenderManager manager) {
-//				return new RenderIcicleBomb(manager);
-//			}
-//		});
-
-//		RenderingRegistry.registerEntityRenderingHandler(EntityPaintBomb.class,   new IRenderFactory<EntityPaintBomb>() {
-//			@Override
-//			public Render<? super EntityPaintBomb> createRenderFor(RenderManager manager) {
-//				return new RenderBomb(manager);
-//			}
-//		});
-
 		RenderingRegistry.registerEntityRenderingHandler(EntityMissile.class,   new IRenderFactory<EntityMissile>() {
 			@Override
 			public Render<? super EntityMissile> createRenderFor(RenderManager manager) {
@@ -91,13 +63,6 @@ public class ClientProxy extends CommonProxy {
 				return new RenderChunkEraserEsplosivePrived(manager);
 			}
 		});
-
-//		RenderingRegistry.registerEntityRenderingHandler(EntityLavaBomb.class,   new IRenderFactory<EntityLavaBomb>() {
-//			@Override
-//			public Render<? super EntityLavaBomb> createRenderFor(RenderManager manager) {
-//				return new RenderLavalBomb(manager);
-//			}
-//		});
 	}
 
     @Override
