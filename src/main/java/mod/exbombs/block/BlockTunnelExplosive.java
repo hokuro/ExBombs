@@ -8,7 +8,7 @@ import mod.exbombs.entity.EntityTunnelExplosivePrimed;
 import mod.exbombs.util.MoreExplosivesFuse;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
-import net.minecraft.block.BlockPistonBase;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -37,10 +37,12 @@ public class BlockTunnelExplosive extends Block {
 
 
 	public BlockTunnelExplosive() {
-		super(Material.tnt);
+		super(Material.TNT);
 		this.setResistance(2000);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(EXPLODE, Boolean.valueOf(false)));
 		setCreativeTab(Mod_ExBombs.tabExBombs);
+		setHardness(0.0F);
+		setSoundType(SoundType.PLANT);
 	}
 	@Override
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
@@ -52,7 +54,7 @@ public class BlockTunnelExplosive extends Block {
 	}
 
 	@Override
-	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos fromPos){
 		if (worldIn.isBlockPowered(pos)) {
 			onBlockDestroyedByPlayer(worldIn, pos, state.withProperty(EXPLODE, Boolean.valueOf(true)));
 			worldIn.setBlockToAir(pos);
@@ -73,7 +75,7 @@ public class BlockTunnelExplosive extends Block {
 			EntityTunnelExplosivePrimed entitynucexpprimed =
 					new EntityTunnelExplosivePrimed(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
 			entitynucexpprimed.fuse = (world.rand.nextInt(entitynucexpprimed.getFuse() / 4) + entitynucexpprimed.getFuse() / 8);
-			world.spawnEntityInWorld(entitynucexpprimed);
+			world.spawnEntity(entitynucexpprimed);
 		}
 	}
 
@@ -84,27 +86,29 @@ public class BlockTunnelExplosive extends Block {
             if (((Boolean)state.getValue(EXPLODE)).booleanValue())
             {
             	EntityTunnelExplosivePrimed entitytntprimed = new EntityTunnelExplosivePrimed(worldIn, (double)((float)pos.getX() + 0.5F), (double)pos.getY(), (double)((float)pos.getZ() + 0.5F), state.getBlock().getMetaFromState(state));
-                worldIn.spawnEntityInWorld(entitytntprimed);
-                worldIn.playSound((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.entity_tnt_primed, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                worldIn.spawnEntity(entitytntprimed);
+                worldIn.playSound((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }
 	}
 
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ){
+	@Override
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
 		if (worldIn.isRemote) {
 			return true;
 		}
-		 if (heldItem != null && (heldItem.getItem() == Items.flint_and_steel || heldItem.getItem() == Items.fire_charge)){
+		ItemStack heldItem = playerIn.getHeldItem(hand);
+		 if (heldItem != null && (heldItem.getItem() == Items.FLINT_AND_STEEL || heldItem.getItem() == Items.FIRE_CHARGE)){
 			onBlockDestroyedByPlayer(worldIn, pos, state.withProperty(EXPLODE, Boolean.valueOf(true)));
-			worldIn.setBlockState(pos, Blocks.air.getDefaultState(), 11);
+			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
 
-            if (heldItem.getItem() == Items.flint_and_steel)
+            if (heldItem.getItem() == Items.FLINT_AND_STEEL)
             {
                 heldItem.damageItem(1, playerIn);
             }
             else if (!playerIn.capabilities.isCreativeMode)
             {
-                --heldItem.stackSize;
+                heldItem.shrink(1);
             }
 			return true;
 		}
@@ -154,9 +158,9 @@ public class BlockTunnelExplosive extends Block {
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
-    	EnumFacing fc = BlockPistonBase.getFacingFromEntity(pos, placer);
+    	EnumFacing fc = EnumFacing.getDirectionFromEntityLiving(pos, placer);
     	EnumFacing fcwrite;
     	if ((fc.getIndex() % 2) == 0){
     		fcwrite = fc.getFront(fc.getIndex()+1);

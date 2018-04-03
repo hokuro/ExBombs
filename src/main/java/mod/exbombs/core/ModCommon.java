@@ -27,5 +27,6 @@ public class ModCommon {
 	public static final String MOD_EVENTCHANEL ="Mod_EventChannel_ExBombs";
 
 	public static final int MOD_GUI_ID_MISSILE = 10;
-	public static final int MOD_GUI_ID_RADAR = 0;
+	public static final int MOD_GUI_ID_SPAWNRADAR = 0;
+	public static final int MOD_GUI_ID_BLOCKRADER = 1;
 }

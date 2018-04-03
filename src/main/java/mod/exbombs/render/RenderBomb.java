@@ -38,6 +38,6 @@ public class RenderBomb extends Render<EntityBomb> {
 
 	@Override
 	protected ResourceLocation getEntityTexture(EntityBomb entity) {
-		return tex;
+		return entity.getBombType().getTexture();
 	}
 }

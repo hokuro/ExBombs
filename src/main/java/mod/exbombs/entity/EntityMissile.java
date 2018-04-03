@@ -6,6 +6,7 @@ import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
 import mod.exbombs.gui.GuiMissile;
 import mod.exbombs.helper.ExBombsGuiHelper;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
+import mod.exbombs.item.ItemCore;
 import mod.exbombs.item.ItemDefuser;
 import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
 import mod.exbombs.util.UtilExproder;
@@ -13,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModRegisterItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -50,36 +50,36 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 		if (!this.flying) {
 			return;
 		}
-		if (!this.worldObj.isRemote) {
+		if (!this.world.isRemote) {
 			for (int motionX = -5; motionX < 5; motionX++) {
 				for (int motionZ = -5; motionZ < 5; motionZ++) {
-					this.worldObj.getChunkProvider().getLoadedChunk(this.chunkCoordX + motionX, this.chunkCoordZ + motionZ);
+					this.world.getChunkProvider().getLoadedChunk(this.chunkCoordX + motionX, this.chunkCoordZ + motionZ);
 				}
 			}
 			if ((this.prevRotationPitch == 0.0F) && (this.prevRotationYaw == 0.0F)) {
-				float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+				float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 				this.prevRotationYaw = (this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / 3.141592653589793D));
 				this.prevRotationPitch = (this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / 3.141592653589793D));
 			}
 			Vec3d vec3d = new Vec3d(this.posX, this.posY+1, this.posZ);
 			Vec3d vec3d1 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-			RayTraceResult  movingobjectposition = this.worldObj.rayTraceBlocks(vec3d, vec3d1, false, true, false);
+			RayTraceResult  movingobjectposition = this.world.rayTraceBlocks(vec3d, vec3d1, false, true, false);
 			if (movingobjectposition != null) {
 				setDead();
 				if (this.missileType == 0) {
-					UtilExproder.createExplesion(this.worldObj, null, this.posX, this.posY, this.posZ, 10.0F, false, false, EnumBombType.PRIME);
+					UtilExproder.createExplesion(this.world, null, this.posX, this.posY, this.posZ, 10.0F, false, false, EnumBombType.PRIME);
 				} else if (this.missileType == 1) {
-					UtilExproder.createSuperExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 70.0F);
+					UtilExproder.createSuperExplosion(this.world, null, (int) this.posX, (int) this.posY, (int) this.posZ, 70.0F);
 				}else if (this.missileType == 2) {
-					UtilExproder.createEraserExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEALL);
+					UtilExproder.createEraserExplosion(this.world, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEALL);
 				}else if (this.missileType == 3) {
-					UtilExproder.createEraserExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEUNMATCH);
+					UtilExproder.createEraserExplosion(this.world, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEUNMATCH);
 				}
 			}
 			this.posX += this.motionX;
 			this.posY += this.motionY;
 			this.posZ += this.motionZ;
-			float f3 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+			float f3 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 			this.rotationYaw = ((float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / 3.141592653589793D));
 			for (this.rotationPitch = ((float) (Math.atan2(this.motionY, f3) * 180.0D / 3.141592653589793D)); this.rotationPitch
 					- this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
@@ -100,40 +100,41 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 	}
 
 	@Override
-	public boolean processInitialInteract(EntityPlayer player, ItemStack stack, EnumHand hand){
+	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
 		if (hand == EnumHand.OFF_HAND){
 			// オフハンドは処理をしない
-			return super.processInitialInteract(player, stack, hand);
+			return super.processInitialInteract(player, hand);
 		}
+		ItemStack stack = player.getHeldItem(hand);
 		ItemStack offHand = player.getHeldItem(EnumHand.OFF_HAND);
 		// メインハンドにDefuserをし装備している場合または
 		// メインハンドに何も持っておらず、オフハンドにDefuserを装備している場合信管を外す
-		if (((stack != null) && (stack.getItem() == ModRegisterItem.item_defuser)) ||
-			((stack == null) &&(offHand != null && offHand.getItem() == ModRegisterItem.item_defuser))) {
-			if ((!this.worldObj.isRemote) && (!this.isDead)) {
+		if (((stack != null) && (stack.getItem() == ItemCore.item_defuser)) ||
+			((stack == null) &&(offHand != null && offHand.getItem() == ItemCore.item_defuser))) {
+			if ((!this.world.isRemote) && (!this.isDead)) {
 				if (!player.capabilities.isCreativeMode) {
-					ItemDefuser.onItemUsed(stack, player);
+					ItemDefuser.defuserUse(stack, player);
 				}
 				this.setDead();
 				if (this.missileType == 0) {
-					this.dropItem(ModRegisterItem.item_TntMissile, 1);
+					this.dropItem(ItemCore.item_TntMissile, 1);
 				}
 				if (this.missileType == 1) {
-					this.dropItem(ModRegisterItem.item_NCMissile, 1);
+					this.dropItem(ItemCore.item_NCMissile, 1);
 				}
 				if (this.missileType == 2) {
-					this.dropItem(ModRegisterItem.item_CEMissile, 1);
+					this.dropItem(ItemCore.item_CEMissile, 1);
 				}
 				if (this.missileType == 3) {
-					this.dropItem(ModRegisterItem.item_MCEMissile, 1);
+					this.dropItem(ItemCore.item_MCEMissile, 1);
 				}
 				return true;
 			}
-		} else if (this.worldObj.isRemote) {
-			new ExBombsGuiHelper().displayGui(player, new GuiMissile(this.worldObj, Minecraft.getMinecraft(), this));
+		} else if (this.world.isRemote) {
+			new ExBombsGuiHelper().displayGui(player, new GuiMissile(this.world, Minecraft.getMinecraft(), this));
 			return true;
 		}
-		return super.processInitialInteract(player, stack, hand);
+		return super.processInitialInteract(player, hand);
 	}
 
 	@Override
@@ -192,11 +193,11 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 
 		public void spawn() {
 			for (int iterator = 0; iterator < 50; iterator++) {
-				EntityExBombsSmokeFX fx = new EntityExBombsSmokeFX(EntityMissile.this.worldObj,
+				EntityExBombsSmokeFX fx = new EntityExBombsSmokeFX(EntityMissile.this.world,
 						EntityMissile.this.posX, EntityMissile.this.posY, EntityMissile.this.posZ,
-						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0F,
-						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0F,
-						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0F, 10.0F);
+						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D,
+						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D,
+						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D);
 				fx.setLife(120);
 				fx.interpPosY=8.0D;
 				fx.setAll((float) (Math.random() * 0.30000001192092896D));

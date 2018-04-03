@@ -3,13 +3,15 @@ package mod.exbombs.block;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import mod.exbombs.core.ICableBlock;
 import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.tileentity.TileEntityFuse;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.ModRegisterBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -35,13 +37,15 @@ public class BlockFuse extends BlockContainer implements ICableBlock {
 	};
 
 	public BlockFuse() {
-		super(Material.tnt);
+		super(Material.TNT);
 		setCreativeTab(Mod_ExBombs.tabExBombs);
+		setHardness(0.0F);
+		setSoundType(SoundType.PLANT);
 
 	}
 
 @Override
-public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB p_185477_4_, List<AxisAlignedBB> p_185477_5_, Entity p_185477_6_)
+public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB p_185477_4_, List<AxisAlignedBB> p_185477_5_, @Nullable Entity p_185477_6_,boolean isActualState)
 {
     addCollisionBoxToList(pos, p_185477_4_, p_185477_5_,field_185730_f[0]);
     if (this.shouldConnectTo(worldIn.getBlockState(pos.add(0,1,0)))){
@@ -115,22 +119,22 @@ public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
 		ignite(world, i, j, k);
 		return;
 	}
-	if (world.getBlockState(pos.add(1,0,0)).getBlock() == Blocks.fire) {
+	if (world.getBlockState(pos.add(1,0,0)).getBlock() == Blocks.FIRE) {
 		ignite(world, i, j, k);
 	}
-	if (world.getBlockState(pos.add(-1,0,0)).getBlock() == Blocks.fire) {
+	if (world.getBlockState(pos.add(-1,0,0)).getBlock() == Blocks.FIRE) {
 		ignite(world, i, j, k);
 	}
-	if (world.getBlockState(pos.add(0,1,0)).getBlock() == Blocks.fire) {
+	if (world.getBlockState(pos.add(0,1,0)).getBlock() == Blocks.FIRE) {
 		ignite(world, i, j, k);
 	}
-	if (world.getBlockState(pos.add(0,-1,0)).getBlock() == Blocks.fire) {
+	if (world.getBlockState(pos.add(0,-1,0)).getBlock() == Blocks.FIRE) {
 		ignite(world, i, j, k);
 	}
-	if (world.getBlockState(pos.add(0,0,1)).getBlock() == Blocks.fire) {
+	if (world.getBlockState(pos.add(0,0,1)).getBlock() == Blocks.FIRE) {
 		ignite(world, i, j, k);
 	}
-	if (world.getBlockState(pos.add(0,0,-1)).getBlock() == Blocks.fire) {
+	if (world.getBlockState(pos.add(0,0,-1)).getBlock() == Blocks.FIRE) {
 		ignite(world, i, j, k);
 	}
 }
@@ -143,7 +147,7 @@ public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos){
 		int i,j,k;
 		i = pos.getX();
 		j = pos.getY();
@@ -151,22 +155,22 @@ public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
 		if (world.isBlockPowered(pos)) {
 			ignite(world, i, j, k);
 		}
-		if (world.getBlockState(pos.add(1,0,0)).getBlock() == Blocks.fire) {
+		if (world.getBlockState(pos.add(1,0,0)).getBlock() == Blocks.FIRE) {
 			ignite(world, i, j, k);
 		}
-		if (world.getBlockState(pos.add(-1,0,0)).getBlock() == Blocks.fire) {
+		if (world.getBlockState(pos.add(-1,0,0)).getBlock() == Blocks.FIRE) {
 			ignite(world, i, j, k);
 		}
-		if (world.getBlockState(pos.add(0,1,0)).getBlock() == Blocks.fire) {
+		if (world.getBlockState(pos.add(0,1,0)).getBlock() == Blocks.FIRE) {
 			ignite(world, i, j, k);
 		}
-		if (world.getBlockState(pos.add(0,-1,0)).getBlock() == Blocks.fire) {
+		if (world.getBlockState(pos.add(0,-1,0)).getBlock() == Blocks.FIRE) {
 			ignite(world, i, j, k);
 		}
-		if (world.getBlockState(pos.add(0,0,1)).getBlock() == Blocks.fire) {
+		if (world.getBlockState(pos.add(0,0,1)).getBlock() == Blocks.FIRE) {
 			ignite(world, i, j, k);
 		}
-		if (world.getBlockState(pos.add(0,0,-1)).getBlock() == Blocks.fire) {
+		if (world.getBlockState(pos.add(0,0,-1)).getBlock() == Blocks.FIRE) {
 			ignite(world, i, j, k);
 		}
 	}
@@ -198,19 +202,19 @@ public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
 		if (this == state.getBlock()) {
 			return true;
 		}
-		if (Blocks.tnt == state.getBlock()) {
+		if (Blocks.TNT == state.getBlock()) {
 			return true;
 		}
-		if (ModRegisterBlock.block_NCBomb == state.getBlock()) {
+		if (BlockCore.block_nuclear == state.getBlock()) {
 			return true;
 		}
-		if (ModRegisterBlock.block_NCBomb == state.getBlock()) {
+		if (BlockCore.block_tunnel == state.getBlock()) {
 			return true;
 		}
-		if (ModRegisterBlock.block_eraser == state.getBlock()) {
+		if (BlockCore.block_chunkeraser == state.getBlock()) {
 			return true;
 		}
-		if (ModRegisterBlock.block_unmach == state.getBlock()) {
+		if (BlockCore.block_muchblockeraser == state.getBlock()) {
 			return true;
 		}
 		return false;

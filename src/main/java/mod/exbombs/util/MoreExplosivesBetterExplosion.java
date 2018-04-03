@@ -20,6 +20,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -83,22 +84,34 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 							BlockPos blockpos = new BlockPos(eX, eY, eZ);
 							IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
 							if (bombType == EnumBombType.PAINT){
-								if ((iblockstate.getBlock() != Blocks.bedrock && !ignoreMaterial(iblockstate.getMaterial())) ||
-										(iblockstate.getBlock() == Blocks.grass)){
+								if ((iblockstate.getBlock() != Blocks.BEDROCK && !ignoreMaterial(iblockstate.getMaterial())) ||
+										(iblockstate.getBlock() == Blocks.GRASS)){
 									if(checkBolock(blockpos)){
 										this.destroyedBlockPositions.add(blockpos);
 									}
 								}
+							}else if (bombType == EnumBombType.LAVA){
+								if (MathHelper.floor(eY) == MathHelper.floor(explosionY)-1){
+									if ((iblockstate.getBlock() != Blocks.BEDROCK) && (iblockstate.getBlock() != Blocks.AIR)){
+										this.destroyedBlockPositions.add(blockpos);
+									}
+								}
+							} else if (bombType == EnumBombType.WARTER){
+									if (MathHelper.floor(eY) == MathHelper.floor(explosionY)-1){
+										if ((iblockstate.getBlock() != Blocks.BEDROCK) && (iblockstate.getBlock() != Blocks.AIR)){
+											this.destroyedBlockPositions.add(blockpos);
+										}
+									}
 							} else if (bombType == EnumBombType.FROZEN || bombType == EnumBombType.ICICLE ||  bombType == EnumBombType.WARTER){
-								if ((esize1 > 0.0F) || (iblockstate.getBlock() != Blocks.bedrock)){
+								if ((esize1 > 0.0F) || (iblockstate.getBlock() != Blocks.BEDROCK)){
 									this.destroyedBlockPositions.add(blockpos);
 								}
 							}else{
-								if (iblockstate.getMaterial() != Material.air){
+								if (iblockstate.getMaterial() != Material.AIR){
 									float f3 = this.exploder != null ? this.exploder.getExplosionResistance(this, this.worldObj, blockpos, iblockstate) : iblockstate.getBlock().getExplosionResistance(worldObj, blockpos, (Entity)null, this);
 									esize1 -= (f3 + 0.3F) * f2;
 								}
-								if ((esize1 > 0.0F) || (iblockstate.getBlock() != Blocks.bedrock)){
+								if ((esize1 > 0.0F) || (iblockstate.getBlock() != Blocks.BEDROCK)){
 									this.destroyedBlockPositions.add(blockpos);
 								}
 							}
@@ -113,12 +126,12 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 		}
 		this.explosionSize *= 2.0F;
 		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this.exploder,
-				new AxisAlignedBB(MathHelper.floor_double(this.explosionX - this.explosionSize - 1.0D),
-									MathHelper.floor_double(this.explosionY - this.explosionSize - 1.0D),
-									MathHelper.floor_double(this.explosionZ - this.explosionSize - 1.0D),
-									MathHelper.floor_double(this.explosionX + this.explosionSize + 1.0D),
-									MathHelper.floor_double(this.explosionY + this.explosionSize + 1.0D),
-									MathHelper.floor_double(this.explosionZ + this.explosionSize + 1.0D)));
+				new AxisAlignedBB(MathHelper.floor(this.explosionX - this.explosionSize - 1.0D),
+									MathHelper.floor(this.explosionY - this.explosionSize - 1.0D),
+									MathHelper.floor(this.explosionZ - this.explosionSize - 1.0D),
+									MathHelper.floor(this.explosionX + this.explosionSize + 1.0D),
+									MathHelper.floor(this.explosionY + this.explosionSize + 1.0D),
+									MathHelper.floor(this.explosionZ + this.explosionSize + 1.0D)));
 		Vec3d vec3d = new Vec3d(this.explosionX, this.explosionY, this.explosionZ);
 		for (int k2 = 0; k2 < list.size(); k2++) {
 			Entity entity = (Entity) list.get(k2);
@@ -127,17 +140,17 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 				double d6 = entity.posX - this.explosionX;
 				double d8 = entity.posY - this.explosionY;
 				double d10 = entity.posZ - this.explosionZ;
-				double d11 = MathHelper.sqrt_double(d6 * d6 + d8 * d8 + d10 * d10);
+				double d11 = MathHelper.sqrt(d6 * d6 + d8 * d8 + d10 * d10);
 				d6 /= d11;
 				d8 /= d11;
 				d10 /= d11;
 				double d12 = this.worldObj.getBlockDensity(vec3d, entity.getEntityBoundingBox());
 				double d13 = (1.0D - d4) * d12;
 				if (bombType == EnumBombType.FROZEN && entity instanceof EntityLivingBase){
-					((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.moveSlowdown, 200, 10));
+					((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 200, 10));
 				}else{
 					if (bombType == EnumBombType.ICICLE && entity instanceof EntityLivingBase){
-						((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.moveSlowdown, 200, 10));
+						((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 200, 10));
 					}
 					entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (int) ((d13 * d13 + d13) / 2.0D * 8.0D * this.explosionSize + 1.0D));
 				}
@@ -154,7 +167,7 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 		if (bombType == EnumBombType.PAINT){
 			this.worldObj.playSound((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, ModSoundManager.sound_paintBombInpackt, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 		}else{
-			this.worldObj.playSound((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, SoundEvents.entity_generic_explode, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+			this.worldObj.playSound((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 		}
 
 		this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
@@ -174,7 +187,7 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 				double d3 = d0 - this.explosionX;
 				double d4 = d1 - this.explosionY;
 				double d5 = d2 - this.explosionZ;
-				double d6 = (double)MathHelper.sqrt_double(d3 * d3 + d4 * d4 + d5 * d5);
+				double d6 = (double)MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
 				d3 = d3 / d6;
 				d4 = d4 / d6;
 				d5 = d5 / d6;
@@ -188,66 +201,79 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 
 			}
 
-			if (bombType == EnumBombType.WARTER){
-				if (this.CanDestroyBlock){
-					if (this.enableDrops) {
-						iblockstate.getBlock().dropBlockAsItemWithChance(this.worldObj, blockpos, iblockstate, 0.3F, 0);
-					}
-					this.worldObj.setBlockState(blockpos, Blocks.flowing_water.getDefaultState());
-					if (iblockstate.getMaterial() != Material.air) {
-						iblockstate.getBlock().onBlockExploded(this.worldObj, blockpos, this);
-					}
-				}else{
-					if (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.water || iblockstate.getMaterial() == Material.lava) {
-						this.worldObj.setBlockState(blockpos,  Blocks.flowing_water.getDefaultState());
-					}
+			if (bombType == EnumBombType.WARTER ){
+				// 爆発半径全部を水源に変える爆弾から、着弾地点に深さ1の水たまりを作る爆弾に変更
+				if (iblockstate.getMaterial() != Material.AIR || iblockstate.getMaterial() == Material.WATER || iblockstate.getMaterial() == Material.LAVA) {
+					this.worldObj.setBlockState(blockpos,  Blocks.FLOWING_WATER.getDefaultState());
+				}
+//				if (this.CanDestroyBlock){
+//					if (this.enableDrops) {
+//						iblockstate.getBlock().dropBlockAsItemWithChance(this.worldObj, blockpos, iblockstate, 0.3F, 0);
+//					}
+//					this.worldObj.setBlockState(blockpos, Blocks.FLOWING_WATER.getDefaultState());
+//					if (iblockstate.getMaterial() != Material.AIR) {
+//						iblockstate.getBlock().onBlockExploded(this.worldObj, blockpos, this);
+//					}
+//				}else{
+//					if (iblockstate.getMaterial() == Material.AIR || iblockstate.getMaterial() == Material.WATER || iblockstate.getMaterial() == Material.LAVA) {
+//						this.worldObj.setBlockState(blockpos,  Blocks.FLOWING_WATER.getDefaultState());
+//					}
+//				}
+			}else if (bombType == EnumBombType.LAVA){
+				if (iblockstate.getMaterial() != Material.AIR || iblockstate.getMaterial() == Material.WATER || iblockstate.getMaterial() == Material.LAVA) {
+					this.worldObj.setBlockState(blockpos,  Blocks.LAVA.getDefaultState());
 				}
 			}else if (bombType == EnumBombType.ICICLE){
-				if (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.water || iblockstate.getMaterial() == Material.lava) {
+				if (iblockstate.getMaterial() == Material.AIR || iblockstate.getMaterial() == Material.WATER || iblockstate.getMaterial() == Material.LAVA) {
 					if ((ExplosionRNG.nextInt(10000)%20) == 0){
-						this.worldObj.setBlockState(blockpos,  Blocks.frosted_ice.getDefaultState());
+						this.worldObj.setBlockState(blockpos,  Blocks.FROSTED_ICE.getDefaultState());
 					}else{
-						this.worldObj.setBlockState(blockpos,  Blocks.ice.getDefaultState());
+						this.worldObj.setBlockState(blockpos,  Blocks.ICE.getDefaultState());
 					}
 				}
 			}else if (bombType == EnumBombType.FROZEN){
-				if (iblockstate.getMaterial() == Material.water){
+				if (iblockstate.getMaterial() == Material.WATER){
 					if ((ExplosionRNG.nextInt(10000)%20) == 0){
-						this.worldObj.setBlockState(blockpos,  Blocks.frosted_ice.getDefaultState());
+						this.worldObj.setBlockState(blockpos,  Blocks.FROSTED_ICE.getDefaultState());
 					}else{
-						this.worldObj.setBlockState(blockpos,  Blocks.ice.getDefaultState());
+						this.worldObj.setBlockState(blockpos,  Blocks.ICE.getDefaultState());
 					}
-				}else if (iblockstate.getMaterial() == Material.lava){
-					if (iblockstate.getBlock() == Blocks.lava){
-						this.worldObj.setBlockState(blockpos,  Blocks.stone.getDefaultState());
-					}else if (iblockstate.getBlock() == Blocks.flowing_lava){
-						this.worldObj.setBlockState(blockpos,  Blocks.cobblestone.getDefaultState());
+				}else if (iblockstate.getMaterial() == Material.LAVA){
+					if (iblockstate.getBlock() == Blocks.LAVA){
+						this.worldObj.setBlockState(blockpos,  Blocks.STONE.getDefaultState());
+					}else if (iblockstate.getBlock() == Blocks.FLOWING_LAVA){
+						this.worldObj.setBlockState(blockpos,  Blocks.COBBLESTONE.getDefaultState());
 					}else{
 						if ((ExplosionRNG.nextInt(10000)%2) == 0){
-							this.worldObj.setBlockState(blockpos,  Blocks.stone.getDefaultState());
+							this.worldObj.setBlockState(blockpos,  Blocks.STONE.getDefaultState());
 						}else{
-							this.worldObj.setBlockState(blockpos,  Blocks.cobblestone.getDefaultState());
+							this.worldObj.setBlockState(blockpos,  Blocks.COBBLESTONE.getDefaultState());
 						}
 					}
-				}else if (iblockstate.getMaterial() == Material.air){
+				}else if (iblockstate.getMaterial() == Material.AIR){
 					if ((ExplosionRNG.nextInt(10000)%3) == 0){
 						BlockPos underPos = blockpos.add(0, -1, 0);
 						IBlockState w = this.worldObj.getBlockState(underPos);
-						if ((w.getMaterial() == Material.sand || w.getMaterial() == Material.clay || w.getMaterial() == Material.cloth ||
-							w.getMaterial() == Material.gourd || w.getMaterial() == Material.ice || w.getMaterial() == Material.iron ||
-							w.getMaterial() == Material.packedIce || w.getMaterial() == Material.rock || w.getMaterial() == Material.wood ||
-							w.getMaterial() == Material.snow || w.getMaterial() == Material.grass) && w.getBlock() != Blocks.snow_layer &&
+						if ((w.getMaterial() == Material.SAND || w.getMaterial() == Material.CLAY || w.getMaterial() == Material.CLOTH ||
+							w.getMaterial() == Material.GOURD || w.getMaterial() == Material.ICE || w.getMaterial() == Material.IRON ||
+							w.getMaterial() == Material.PACKED_ICE || w.getMaterial() == Material.ROCK || w.getMaterial() == Material.WOOD ||
+							w.getMaterial() == Material.SNOW || w.getMaterial() == Material.GRASS) && w.getBlock() != Blocks.SNOW_LAYER &&
 							!posSet.contains(underPos)){
-							this.worldObj.setBlockState(blockpos, Blocks.snow_layer.getStateFromMeta(ExplosionRNG.nextInt(4)));
+							this.worldObj.setBlockState(blockpos, Blocks.SNOW_LAYER.getStateFromMeta(ExplosionRNG.nextInt(4)));
 							posSet.add(blockpos);
 						}
 					}
 				}
 			}else if (bombType == EnumBombType.PAINT && exploder instanceof EntityPaintBomb){
-				this.worldObj.setBlockState(blockpos, ((EntityPaintBomb)exploder).getBlockState());
+				IBlockState next = ((EntityPaintBomb)exploder).checkNextBlock();
+				IBlockState chgBlock = this.worldObj.getBlockState(blockpos);
+				if (next.getBlock() != Blocks.AIR && next.getBlock() != chgBlock.getBlock()){
+					((EntityPaintBomb)exploder).getBlockState();
+					this.worldObj.setBlockState(blockpos, next);
+				}
 			}else{
 				if (this.CanDestroyBlock){
-	                if (iblockstate.getMaterial() != Material.air)
+	                if (iblockstate.getMaterial() != Material.AIR)
 	                {
 	                    if (this.enableDrops)
 	                    {
@@ -263,9 +289,9 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 		if (this.isFlaming) {
 			for (BlockPos blockpos1 : this.destroyedBlockPositions)
 			{
-				if (this.worldObj.getBlockState(blockpos1).getMaterial() == Material.air && this.worldObj.getBlockState(blockpos1.down()).isFullBlock() && this.ExplosionRNG.nextInt(3) == 0)
+				if (this.worldObj.getBlockState(blockpos1).getMaterial() == Material.AIR && this.worldObj.getBlockState(blockpos1.down()).isFullBlock() && this.ExplosionRNG.nextInt(3) == 0)
 				{
-					this.worldObj.setBlockState(blockpos1, Blocks.fire.getDefaultState());
+					this.worldObj.setBlockState(blockpos1, Blocks.FIRE.getDefaultState());
 				}
 			}
 		}
@@ -273,55 +299,72 @@ public class MoreExplosivesBetterExplosion extends Explosion {
 
 
 	private boolean checkBolock(BlockPos pos){
-		if ((ignoreMaterial(this.worldObj.getBlockState(pos.add(1,0,0)).getMaterial()) && this.worldObj.getBlockState(pos.add(1,0,0)).getBlock() != Blocks.grass) ||
-			(ignoreMaterial(this.worldObj.getBlockState(pos.add(-1,0,0)).getMaterial()) && this.worldObj.getBlockState(pos.add(-1,0,0)).getBlock() != Blocks.grass) ||
-			(ignoreMaterial(this.worldObj.getBlockState(pos.add(0,1,0)).getMaterial()) && this.worldObj.getBlockState(pos.add(0,1,0)).getBlock() != Blocks.grass) ||
-			(ignoreMaterial(this.worldObj.getBlockState(pos.add(0,-1,0)).getMaterial()) && this.worldObj.getBlockState(pos.add(0,-1,0)).getBlock() != Blocks.grass) ||
-			(ignoreMaterial(this.worldObj.getBlockState(pos.add(0,0,1)).getMaterial()) && this.worldObj.getBlockState(pos.add(0,0,1)).getBlock() != Blocks.grass) ||
-			(ignoreMaterial(this.worldObj.getBlockState(pos.add(0,0,-1)).getMaterial()) && this.worldObj.getBlockState(pos.add(0,0,-1)).getBlock() != Blocks.grass)){
+		if ((ignoreMaterial(this.worldObj.getBlockState(pos.add(1,0,0)).getMaterial()) && this.worldObj.getBlockState(pos.add(1,0,0)).getBlock() != Blocks.GRASS) ||
+			(ignoreMaterial(this.worldObj.getBlockState(pos.add(-1,0,0)).getMaterial()) && this.worldObj.getBlockState(pos.add(-1,0,0)).getBlock() != Blocks.GRASS) ||
+			(ignoreMaterial(this.worldObj.getBlockState(pos.add(0,1,0)).getMaterial()) && this.worldObj.getBlockState(pos.add(0,1,0)).getBlock() != Blocks.GRASS) ||
+			(ignoreMaterial(this.worldObj.getBlockState(pos.add(0,-1,0)).getMaterial()) && this.worldObj.getBlockState(pos.add(0,-1,0)).getBlock() != Blocks.GRASS) ||
+			(ignoreMaterial(this.worldObj.getBlockState(pos.add(0,0,1)).getMaterial()) && this.worldObj.getBlockState(pos.add(0,0,1)).getBlock() != Blocks.GRASS) ||
+			(ignoreMaterial(this.worldObj.getBlockState(pos.add(0,0,-1)).getMaterial()) && this.worldObj.getBlockState(pos.add(0,0,-1)).getBlock() != Blocks.GRASS)){
 			return true;
 		}
 		return false;
 	}
 
 	private boolean ignoreMaterial(Material mat){
-		if (mat != Material.air &&
-			mat != Material.cactus &&
-			mat != Material.barrier &&
-			mat != Material.cake &&
-			mat != Material.carpet &&
-			mat != Material.circuits &&
-			mat != Material.dragonEgg &&
-			mat != Material.fire &&
-			mat != Material.plants &&
-			mat != Material.portal &&
-			mat != Material.vine &&
-			mat != Material.web &&
-			mat != Material.grass &&
-			mat != Material.water &&
-			mat != Material.lava){
+		if (mat != Material.AIR &&
+			mat != Material.CACTUS &&
+			mat != Material.BARRIER &&
+			mat != Material.CAKE &&
+			mat != Material.CARPET &&
+			mat != Material.CIRCUITS &&
+			mat != Material.DRAGON_EGG &&
+			mat != Material.FIRE &&
+			mat != Material.PLANTS &&
+			mat != Material.PORTAL &&
+			mat != Material.VINE &&
+			mat != Material.WEB &&
+			mat != Material.GRASS &&
+			mat != Material.WATER &&
+			mat != Material.LAVA){
 			return false;
 		}
 		return true;
 	}
 
 	public static enum EnumBombType{
-		BOMB(0,5.0F),
-		WARTER(1,1.0F),
-		ICICLE(2,3.0F),
-		FROZEN(3,3.0F),
-		PAINT(4,2.0F),
-		PRIME(5,5.0F);
+		BOMB(0,5.0F,"exbombs:textures/entity/bomb.png"),
+		WARTER(1,1.0F,"exbombs:textures/entity/waterBomb.png"),
+		ICICLE(2,3.0F,"exbombs:textures/entity/icicleBomb.png"),
+		FROZEN(3,3.0F,"exbombs:textures/entity/frozenBomb.png"),
+		PAINT(4,2.0F,"exbombs:textures/entity/paintBomb.png"),
+		PRIME(5,5.0F),
+		LAVA(6,1.0F,"exbombs:textures/entity/lavabomb.png");
 
 		private int index;
 		private float explodSize;
+		private ResourceLocation texture;
+		private static final EnumBombType[] values = new EnumBombType[]{BOMB,WARTER,ICICLE,FROZEN,PAINT,PRIME,LAVA};
 
 		private EnumBombType(int idx, float size){
 			index = idx;
 			explodSize = size;
 		}
 
+		private EnumBombType(int idx, float size, String tex){
+			index = idx;
+			explodSize = size;
+			texture = new ResourceLocation(tex);
+		}
+
 		public int getIndex(){return index;}
 		public float getSize(){return explodSize;}
+		public ResourceLocation getTexture(){return texture;}
+		public static EnumBombType intToBombType(int idx){
+			if (idx >= 0 && idx < values.length){
+				return values[idx];
+			}
+			return BOMB;
+		}
+
 	}
 }

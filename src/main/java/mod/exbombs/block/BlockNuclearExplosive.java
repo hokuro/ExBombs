@@ -6,6 +6,7 @@ import java.util.Random;
 import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityNuclearExplosivePrimed;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -29,9 +30,11 @@ public class BlockNuclearExplosive extends Block {
 	public static final PropertyBool EXPLODE = PropertyBool.create("explode");
 
 	public BlockNuclearExplosive() {
-		super(Material.tnt);
+		super(Material.TNT);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(EXPLODE, Boolean.valueOf(false)));
 		setCreativeTab(Mod_ExBombs.tabExBombs);
+		setHardness(0.0F);
+		setSoundType(SoundType.PLANT);
 	}
 
 	@Override
@@ -44,7 +47,7 @@ public class BlockNuclearExplosive extends Block {
 	}
 
 	@Override
-	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos fromPos){
 		if (worldIn.isBlockPowered(pos)) {
 			onBlockDestroyedByPlayer(worldIn, pos, state.withProperty(EXPLODE, Boolean.valueOf(true)));
 			worldIn.setBlockToAir(pos);
@@ -64,7 +67,7 @@ public class BlockNuclearExplosive extends Block {
 		EntityNuclearExplosivePrimed entitynucexpprimed =
 				new EntityNuclearExplosivePrimed(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
 		entitynucexpprimed.fuse = (world.rand.nextInt(entitynucexpprimed.getFuse() / 4) + entitynucexpprimed.getFuse() / 8);
-		world.spawnEntityInWorld(entitynucexpprimed);
+		world.spawnEntity(entitynucexpprimed);
 	}
 
 	@Override
@@ -74,27 +77,29 @@ public class BlockNuclearExplosive extends Block {
             if (((Boolean)state.getValue(EXPLODE)).booleanValue())
             {
             	EntityNuclearExplosivePrimed entitytntprimed = new EntityNuclearExplosivePrimed(worldIn, (double)((float)pos.getX() + 0.5F), (double)pos.getY(), (double)((float)pos.getZ() + 0.5F));
-                worldIn.spawnEntityInWorld(entitytntprimed);
-                worldIn.playSound((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.entity_tnt_primed, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                worldIn.spawnEntity(entitytntprimed);
+                worldIn.playSound((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }
 	}
 
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ){
+	@Override
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
 		if (worldIn.isRemote) {
 			return true;
 		}
-		 if (heldItem != null && (heldItem.getItem() == Items.flint_and_steel || heldItem.getItem() == Items.fire_charge)){
+		ItemStack heldItem = playerIn.getHeldItem(hand);
+		 if (heldItem != null && (heldItem.getItem() == Items.FLINT_AND_STEEL || heldItem.getItem() == Items.FIRE_CHARGE)){
 			onBlockDestroyedByPlayer(worldIn, pos, state.withProperty(EXPLODE, Boolean.valueOf(true)));
-			worldIn.setBlockState(pos, Blocks.air.getDefaultState(), 11);
+			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
 
-            if (heldItem.getItem() == Items.flint_and_steel)
+            if (heldItem.getItem() == Items.FLINT_AND_STEEL)
             {
                 heldItem.damageItem(1, playerIn);
             }
             else if (!playerIn.capabilities.isCreativeMode)
             {
-                --heldItem.stackSize;
+                heldItem.shrink(1);
             }
 			return true;
 		}

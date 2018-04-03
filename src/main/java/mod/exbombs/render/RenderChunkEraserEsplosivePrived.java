@@ -1,7 +1,7 @@
 package mod.exbombs.render;
 
+import mod.exbombs.block.BlockCore;
 import mod.exbombs.entity.EntityChunkEraserPrimed;
-import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -28,7 +28,7 @@ public class RenderChunkEraserEsplosivePrived extends Render {
         if ((float)entity.getFuse() - partialTicks + 1.0F < 10.0F)
         {
             float f = 1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 10.0F;
-            f = MathHelper.clamp_float(f, 0.0F, 1.0F);
+            f = MathHelper.clamp(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;
             float f1 = 1.0F + f * 0.3F;
@@ -39,7 +39,7 @@ public class RenderChunkEraserEsplosivePrived extends Render {
         this.bindEntityTexture(entity);
         GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(-0.5F, -0.5F, 0.5F);
-        blockrendererdispatcher.renderBlockBrightness(getBlockState(entity), entity.getBrightness(partialTicks));
+        blockrendererdispatcher.renderBlockBrightness(getBlockState(entity), entity.getBrightness());
         GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
         if (this.renderOutlines)
@@ -86,14 +86,14 @@ public class RenderChunkEraserEsplosivePrived extends Render {
 	protected IBlockState getBlockState(EntityChunkEraserPrimed entity){
 		switch(entity.getType()){
 			case ERASEALL:
-				return ModRegisterBlock.block_eraser.getDefaultState();
+				return BlockCore.block_chunkeraser.getDefaultState();
 			case ERASEUNMATCH:
-				return ModRegisterBlock.block_unmach.getDefaultState();
+				return BlockCore.block_muchblockeraser.getDefaultState();
 		}
 		return null;
 	}
 
 	protected ResourceLocation func_110808_a(Entity entity) {
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 }

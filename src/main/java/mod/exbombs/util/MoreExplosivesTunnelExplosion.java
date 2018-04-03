@@ -40,9 +40,9 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 	}
 
 	public void doExplosionA() {
-		int explosionX2 = MathHelper.floor_double(this.explosionX);
-		int explosionY2 = MathHelper.floor_double(this.explosionY);
-		int explosionZ2 = MathHelper.floor_double(this.explosionZ);
+		int explosionX2 = MathHelper.floor(this.explosionX);
+		int explosionY2 = MathHelper.floor(this.explosionY);
+		int explosionZ2 = MathHelper.floor(this.explosionZ);
 		int width = ConfigValue.General.tunnel_width;
 		int height = ConfigValue.General.tunnel_width;;
 		int depth = ConfigValue.General.tunnel_depth;
@@ -118,7 +118,7 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 	}
 
 	public void doExplosionB(boolean flag) {
-		this.worldObj.playSound((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, SoundEvents.entity_generic_explode, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+		this.worldObj.playSound((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 		this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
 		ArrayList arraylist = new ArrayList();
 		arraylist.addAll(this.destroyedBlockPositions);
@@ -144,7 +144,7 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 				this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + this.explosionX) / 2.0D, (d1 + this.explosionY) / 2.0D, (d2 + this.explosionZ) / 2.0D, d3, d4, d5, new int[0]);
                 this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
 			}
-            if (state.getMaterial() != Material.air)
+            if (state.getMaterial() != Material.AIR)
             {
                 if (state.getBlock().canDropFromExplosion(this))
                 {

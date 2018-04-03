@@ -2,13 +2,13 @@
 package mod.exbombs.entity;
 
 import io.netty.buffer.ByteBuf;
+import mod.exbombs.block.BlockCore;
+import mod.exbombs.item.ItemCore;
 import mod.exbombs.item.ItemDefuser;
 import mod.exbombs.util.UtilExproder;
-import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModRegisterItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
@@ -46,18 +46,19 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 	}
 
 	@Override
-	public boolean processInitialInteract(EntityPlayer player, ItemStack stack, EnumHand hand){
-		if (this.worldObj.isRemote) {
+	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
+		if (this.world.isRemote) {
 			return false;
 		}
-		if ((stack != null)  && (EnumHand.MAIN_HAND == hand) && (stack.getItem() == ModRegisterItem.item_defuser)) {
+		ItemStack stack = player.getHeldItem(hand);
+		if ((stack != null)  && (EnumHand.MAIN_HAND == hand) && (stack.getItem() == ItemCore.item_defuser)) {
 			if(!player.capabilities.isCreativeMode){
-				ItemDefuser.onItemUsed(stack, player);
+				ItemDefuser.defuserUse(stack, player);
 			}
 			this.isDead = true;
-			this.dropItem(new ItemStack(ModRegisterBlock.bolock_TunnelBomb).getItem(), 1);
+			this.dropItem(new ItemStack(BlockCore.block_tunnel).getItem(), 1);
 		}
-		return super.processInitialInteract(player,stack,hand);
+		return super.processInitialInteract(player,hand);
 	}
 
     @Override
@@ -73,7 +74,7 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 	@Override
 	public void onUpdate() {
 		if (this.fuse-- <= 0) {
-			if (!this.worldObj.isRemote) {
+			if (!this.world.isRemote) {
 				setDead();
 				explode();
 			} else {
@@ -120,7 +121,7 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 
 	private void explode() {
 		int meta = (metaData & 0x0E) >> 1;
-		UtilExproder.createTunnelExplosion(this.worldObj, null, this.posX, this.posY, this.posZ, meta);
+		UtilExproder.createTunnelExplosion(this.world, null, this.posX, this.posY, this.posZ, meta);
 	}
 
 

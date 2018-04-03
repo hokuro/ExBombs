@@ -1,5 +1,6 @@
 package mod.exbombs.core;
 
+import mod.exbombs.entity.EntityCore;
 import mod.exbombs.tileentity.TileEntityFuse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -14,7 +15,7 @@ public class CommonProxy {
 
 	}
 	public void registerCompnents(){
-		GameRegistry.registerTileEntity(TileEntityFuse.class, Mod_ExBombs.TileEntity_Fuse);
+		GameRegistry.registerTileEntity(TileEntityFuse.class, EntityCore.TILEENTITY_FUSE);
 	}
 
     public EntityPlayer getEntityPlayerInstance() {return null;}

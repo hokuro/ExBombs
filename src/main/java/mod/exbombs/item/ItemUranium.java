@@ -40,8 +40,8 @@ public class ItemUranium extends Item {
 			return;
 		}
 		EntityLivingBase living = (EntityLivingBase)entity;
-		living.addPotionEffect(new PotionEffect(Potion.potionRegistry.getObjectById(9), 100, 1));
-		living.addPotionEffect(new PotionEffect(Potion.potionRegistry.getObjectById(4), 100, 3));
-		living.addPotionEffect(new PotionEffect(Potion.potionRegistry.getObjectById(18), 100, 3));
+		living.addPotionEffect(new PotionEffect(Potion.REGISTRY.getObjectById(9), 100, 1));
+		living.addPotionEffect(new PotionEffect(Potion.REGISTRY.getObjectById(4), 100, 3));
+		living.addPotionEffect(new PotionEffect(Potion.REGISTRY.getObjectById(18), 100, 3));
 	}
 }

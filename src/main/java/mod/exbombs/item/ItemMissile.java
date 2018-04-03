@@ -4,7 +4,6 @@ import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityMissile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -28,16 +27,17 @@ public class ItemMissile extends Item {
     /**
      * Called when a Block is right-clicked with this Item
      */
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	@Override
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
     	if (!worldIn.isRemote){
     		EntityMissile missile = new EntityMissile(worldIn, pos);
     		missile.missileType = this.type;
     		missile.rotationPitch += 90F;
-    		worldIn.spawnEntityInWorld(missile);
+    		worldIn.spawnEntity(missile);
     	}
     	if (!playerIn.capabilities.isCreativeMode){
-    		stack.stackSize -= 1;
+    		playerIn.getHeldItem(hand).shrink(1);
     	}
         return EnumActionResult.SUCCESS;
     }

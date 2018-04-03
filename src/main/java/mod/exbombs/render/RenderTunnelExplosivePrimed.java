@@ -1,9 +1,9 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.render;
 
+import mod.exbombs.block.BlockCore;
 import mod.exbombs.block.BlockTunnelExplosive;
 import mod.exbombs.entity.EntityTunnelExplosivePrimed;
-import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -25,14 +25,14 @@ public class RenderTunnelExplosivePrimed extends Render {
 	public void render(EntityTunnelExplosivePrimed entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
         BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        IBlockState modelState = ModRegisterBlock.bolock_TunnelBomb.getStateFromMeta(entity.metaData);
+        IBlockState modelState = BlockCore.block_tunnel.getStateFromMeta(entity.metaData);
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
 
         if ((float)entity.getFuse() - partialTicks + 1.0F < 10.0F)
         {
             float f = 1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 10.0F;
-            f = MathHelper.clamp_float(f, 0.0F, 1.0F);
+            f = MathHelper.clamp(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;
             float f1 = 1.0F + f * 0.3F;
@@ -53,7 +53,7 @@ public class RenderTunnelExplosivePrimed extends Render {
         }
         blockrendererdispatcher.renderBlockBrightness(
         		modelState,
-        		entity.getBrightness(partialTicks));
+        		entity.getBrightness());
         GlStateManager.translate(0.0F, 0.0F, 1.0F);
         if (this.renderOutlines)
         {
@@ -85,7 +85,7 @@ public class RenderTunnelExplosivePrimed extends Render {
     }
 
 	protected ResourceLocation func_110808_a(Entity entity) {
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 
 	@Override

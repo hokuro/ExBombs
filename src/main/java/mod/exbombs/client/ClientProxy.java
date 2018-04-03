@@ -1,25 +1,17 @@
 package mod.exbombs.client;
 
 import mod.exbombs.core.CommonProxy;
-import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityBomb;
 import mod.exbombs.entity.EntityChunkEraserPrimed;
-import mod.exbombs.entity.EntityFrozenBomb;
-import mod.exbombs.entity.EntityIcicleBomb;
+import mod.exbombs.entity.EntityCore;
 import mod.exbombs.entity.EntityMissile;
 import mod.exbombs.entity.EntityNuclearExplosivePrimed;
-import mod.exbombs.entity.EntityPaintBomb;
 import mod.exbombs.entity.EntityTunnelExplosivePrimed;
-import mod.exbombs.entity.EntityWaterBomb;
 import mod.exbombs.render.RenderBomb;
 import mod.exbombs.render.RenderChunkEraserEsplosivePrived;
-import mod.exbombs.render.RenderFrozenBomb;
-import mod.exbombs.render.RenderIcicleBomb;
 import mod.exbombs.render.RenderMissile;
 import mod.exbombs.render.RenderNuclearExplosivePrimed;
-import mod.exbombs.render.RenderPaintBomb;
 import mod.exbombs.render.RenderTunnelExplosivePrimed;
-import mod.exbombs.render.RenderWaterBomb;
 import mod.exbombs.tileentity.TileEntityFuse;
 import mod.exbombs.tileentity.render.TileEntityFuseRender;
 import net.minecraft.client.Minecraft;
@@ -44,33 +36,33 @@ public class ClientProxy extends CommonProxy {
 			}
 		});
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityWaterBomb.class,   new IRenderFactory<EntityWaterBomb>() {
-			@Override
-			public Render<? super EntityWaterBomb> createRenderFor(RenderManager manager) {
-				return new RenderWaterBomb(manager);
-			}
-		});
+//		RenderingRegistry.registerEntityRenderingHandler(EntityWaterBomb.class,   new IRenderFactory<EntityWaterBomb>() {
+//			@Override
+//			public Render<? super EntityWaterBomb> createRenderFor(RenderManager manager) {
+//				return new RenderWaterBomb(manager);
+//			}
+//		});
+//
+//		RenderingRegistry.registerEntityRenderingHandler(EntityFrozenBomb.class,   new IRenderFactory<EntityFrozenBomb>() {
+//			@Override
+//			public Render<? super EntityFrozenBomb> createRenderFor(RenderManager manager) {
+//				return new RenderFrozenBomb(manager);
+//			}
+//		});
+//
+//		RenderingRegistry.registerEntityRenderingHandler(EntityIcicleBomb.class,   new IRenderFactory<EntityIcicleBomb>() {
+//			@Override
+//			public Render<? super EntityIcicleBomb> createRenderFor(RenderManager manager) {
+//				return new RenderIcicleBomb(manager);
+//			}
+//		});
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityFrozenBomb.class,   new IRenderFactory<EntityFrozenBomb>() {
-			@Override
-			public Render<? super EntityFrozenBomb> createRenderFor(RenderManager manager) {
-				return new RenderFrozenBomb(manager);
-			}
-		});
-
-		RenderingRegistry.registerEntityRenderingHandler(EntityIcicleBomb.class,   new IRenderFactory<EntityIcicleBomb>() {
-			@Override
-			public Render<? super EntityIcicleBomb> createRenderFor(RenderManager manager) {
-				return new RenderIcicleBomb(manager);
-			}
-		});
-
-		RenderingRegistry.registerEntityRenderingHandler(EntityPaintBomb.class,   new IRenderFactory<EntityPaintBomb>() {
-			@Override
-			public Render<? super EntityPaintBomb> createRenderFor(RenderManager manager) {
-				return new RenderPaintBomb(manager);
-			}
-		});
+//		RenderingRegistry.registerEntityRenderingHandler(EntityPaintBomb.class,   new IRenderFactory<EntityPaintBomb>() {
+//			@Override
+//			public Render<? super EntityPaintBomb> createRenderFor(RenderManager manager) {
+//				return new RenderBomb(manager);
+//			}
+//		});
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityMissile.class,   new IRenderFactory<EntityMissile>() {
 			@Override
@@ -99,15 +91,22 @@ public class ClientProxy extends CommonProxy {
 				return new RenderChunkEraserEsplosivePrived(manager);
 			}
 		});
+
+//		RenderingRegistry.registerEntityRenderingHandler(EntityLavaBomb.class,   new IRenderFactory<EntityLavaBomb>() {
+//			@Override
+//			public Render<? super EntityLavaBomb> createRenderFor(RenderManager manager) {
+//				return new RenderLavalBomb(manager);
+//			}
+//		});
 	}
 
     @Override
     public EntityPlayer getEntityPlayerInstance() {
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 
 	@Override
 	public void registerCompnents(){
-		ClientRegistry.registerTileEntity(TileEntityFuse.class, Mod_ExBombs.TileEntity_Fuse, new TileEntityFuseRender());
+		ClientRegistry.registerTileEntity(TileEntityFuse.class, EntityCore.TILEENTITY_FUSE, new TileEntityFuseRender());
 	}
 }

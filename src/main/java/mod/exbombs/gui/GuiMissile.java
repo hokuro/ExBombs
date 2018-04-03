@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 
 public class GuiMissile extends GuiScreen {
 	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/gui/missileGUI.png");
-	private Minecraft f;
+	private Minecraft mc;
 	private World world;
 	private int imgWidth;
 	private int imgHeight;
@@ -32,7 +32,7 @@ public class GuiMissile extends GuiScreen {
 	public EntityMissile missile;
 
 	public GuiMissile(World worldObj, Minecraft minecraft, EntityMissile missile) {
-		this.f = minecraft;
+		this.mc = minecraft;
 		this.world = worldObj;
 		this.missile = missile;
 	}
@@ -46,9 +46,9 @@ public class GuiMissile extends GuiScreen {
 		this.buttonList.clear();
 		this.buttonList.add(new GuiButton(0, this.width / 2 - 75, this.imgTop + 110, 150, 20, "Launch"));
 
-		this.textX = new GuiTextField(1,this.fontRendererObj, this.width / 2 + 5, this.imgTop + 50, 60, 14);
+		this.textX = new GuiTextField(1,this.fontRenderer, this.width / 2 + 5, this.imgTop + 50, 60, 14);
 		this.textX.setMaxStringLength(8);
-		this.textZ = new GuiTextField(2,this.fontRendererObj, this.width / 2 + 5, this.imgTop + 75, 60, 14);
+		this.textZ = new GuiTextField(2,this.fontRenderer, this.width / 2 + 5, this.imgTop + 75, 60, 14);
 		this.textZ.setMaxStringLength(8);
 
 		Keyboard.enableRepeatEvents(true);
@@ -63,13 +63,13 @@ public class GuiMissile extends GuiScreen {
 
 		this.textX.drawTextBox();
 		this.textZ.drawTextBox();
-		this.fontRendererObj.drawString("X Coordinate:", this.width / 2 - 70, this.imgTop + 53, 4210752);
-		this.fontRendererObj.drawString("Z Coordinate:", this.width / 2 - 70, this.imgTop + 78, 4210752);
+		this.fontRenderer.drawString("X Coordinate:", this.width / 2 - 70, this.imgTop + 53, 4210752);
+		this.fontRenderer.drawString("Z Coordinate:", this.width / 2 - 70, this.imgTop + 78, 4210752);
 		for (int index = 0; index < this.buttonList.size(); index++) {
 			GuiButton guibutton = (GuiButton) this.buttonList.get(index);
-			guibutton.drawButton(this.f, i, j);
+			guibutton.drawButton(this.mc, i, j, f);
 		}
-		drawCenteredStringWithoutShadow(this.fontRendererObj, "Missile:", this.width / 2, this.imgTop + 15, 4210752);
+		drawCenteredStringWithoutShadow(this.fontRenderer, "Missile:", this.width / 2, this.imgTop + 15, 4210752);
 	}
 
 	protected void drawCenteredStringWithoutShadow(FontRenderer fontrenderer, String s, int i, int j, int k) {
@@ -91,18 +91,18 @@ public class GuiMissile extends GuiScreen {
 				double XCoord = x - this.missile.posX;
 				double YCoord = z - this.missile.posZ;
 				if ((Math.abs(XCoord) > 500.0D) || (Math.abs(YCoord) > 500.0D)) {
-					ExBombsMinecraftHelper.getPlayer().addChatComponentMessage(new TextComponentString("Missile Target out of range!"));
+					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Missile Target out of range!"),false);
 				} else {
-					ExBombsMinecraftHelper.getPlayer().addChatComponentMessage(new TextComponentString("Missile launching!"));
+					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Missile launching!"),false);
 					Mod_ExBombs.INSTANCE.sendToServer(new MessageMissileLaunchClient(this.missile.getEntityId(), x, z));
 				}
 			} catch (Exception exception) {
 				if ((exception instanceof NumberFormatException)) {
-					ExBombsMinecraftHelper.getPlayer().addChatComponentMessage(new TextComponentString("Illegal input!"));
+					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Illegal input!"),false);
 				}
 			} finally {
-				this.f.displayGuiScreen(null);
-				this.f.setIngameFocus();
+				this.mc.displayGuiScreen(null);
+				this.mc.setIngameFocus();
 			}
 		}
 	}
@@ -119,8 +119,8 @@ public class GuiMissile extends GuiScreen {
 
 	protected void keyTyped(char c, int i) {
 		if (i == 1) {
-			this.f.displayGuiScreen(null);
-			this.f.setIngameFocus();
+			this.mc.displayGuiScreen(null);
+			this.mc.setIngameFocus();
 		}
 		if (this.textX.isFocused()) {
 			this.textX.textboxKeyTyped(c, i);

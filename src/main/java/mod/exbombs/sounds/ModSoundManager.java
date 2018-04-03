@@ -3,7 +3,7 @@ package mod.exbombs.sounds;
 import mod.exbombs.core.ModCommon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class ModSoundManager {
 	public static String SOUND_ERASEEXPLOSIVE = "items.eraseexplosive";
@@ -16,7 +16,7 @@ public class ModSoundManager {
 			.setRegistryName(new ResourceLocation(ModCommon.MOD_ID+":" + SOUND_PAINTBOMB));
 
 	public static void RegisterSounds(){
-		GameRegistry.register(sound_eraseExplosive);
-		GameRegistry.register(sound_paintBombInpackt);
+		ForgeRegistries.SOUND_EVENTS.register(sound_eraseExplosive);
+		ForgeRegistries.SOUND_EVENTS.register(sound_paintBombInpackt);
 	}
 }

@@ -14,6 +14,6 @@ public class ModEventHandler {
 		if (!TickEvent.Phase.END.equals(event.phase)) {
 			return;
 		}
-		ConfigValue.reloadConfig(Minecraft.getMinecraft().thePlayer);
+		ConfigValue.reloadConfig(Minecraft.getMinecraft().player);
 	}
 }

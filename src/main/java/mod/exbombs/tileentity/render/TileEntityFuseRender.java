@@ -1,15 +1,14 @@
 package mod.exbombs.tileentity.render;
 
+import mod.exbombs.block.BlockCore;
 import mod.exbombs.block.BlockFuse;
 import mod.exbombs.model.ModelCube;
 import mod.exbombs.tileentity.TileEntityFuse;
-import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class TileEntityFuseRender extends TileEntitySpecialRenderer {
+public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFuse> {
 	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/entity/fuse.png");
 	private ModelCube mainmodel = new ModelCube();
 	private ModelCube submodel1 = new ModelCube();
@@ -34,7 +33,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer {
 		GlStateManager.popMatrix();
 
 
-		if (((BlockFuse)ModRegisterBlock.block_Fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(1,0,0)))){
+		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(1,0,0)))){
 			GlStateManager.pushMatrix();
 			GlStateManager.translate((float) posX + 0.875D , (float) posY + 0.5, (float) posZ + 0.5);
 			GlStateManager.scale(0.015625D, 0.03125D, 0.03125D);
@@ -44,7 +43,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer {
 			this.mainmodel.render(1.0F);
 			GlStateManager.popMatrix();
 		}
-		if (((BlockFuse)ModRegisterBlock.block_Fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(-1,0,0)))){
+		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(-1,0,0)))){
 			GlStateManager.pushMatrix();
 			GlStateManager.translate((float) posX + 0.125D , (float) posY + 0.5, (float) posZ + 0.5);
 			GlStateManager.scale(0.015625D, 0.03125D, 0.03125D);
@@ -55,7 +54,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer {
 			GlStateManager.popMatrix();
 		}
 
-		if (((BlockFuse)ModRegisterBlock.block_Fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,1,0)))){
+		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,1,0)))){
 			GlStateManager.pushMatrix();
 			GlStateManager.translate((float) posX + 0.5D , (float) posY + 0.875D, (float) posZ + 0.5);
 			GlStateManager.scale(0.03125D, 0.015625D, 0.03125D);
@@ -65,7 +64,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer {
 			this.mainmodel.render(1.0F);
 			GlStateManager.popMatrix();
 		}
-		if (((BlockFuse)ModRegisterBlock.block_Fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,-1,0)))){
+		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,-1,0)))){
 			GlStateManager.pushMatrix();
 			GlStateManager.translate((float) posX + 0.5D , (float) posY + 0.125D, (float) posZ + 0.5);
 			GlStateManager.scale(0.03125D, 0.015625D, 0.03125D);
@@ -76,7 +75,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer {
 			GlStateManager.popMatrix();
 		}
 
-		if (((BlockFuse)ModRegisterBlock.block_Fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,0,1)))){
+		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,0,1)))){
 			GlStateManager.pushMatrix();
 			GlStateManager.translate((float) posX + 0.5D , (float) posY + 0.5D, (float) posZ + 0.875D);
 			GlStateManager.scale(0.03125D, 0.03125D, 0.015625D);
@@ -86,7 +85,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer {
 			this.mainmodel.render(1.0F);
 			GlStateManager.popMatrix();
 		}
-		if (((BlockFuse)ModRegisterBlock.block_Fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,0,-1)))){
+		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,0,-1)))){
 			GlStateManager.pushMatrix();
 			GlStateManager.translate((float) posX + 0.5D , (float) posY + 0.5D, (float) posZ + 0.125D);
 			GlStateManager.scale(0.03125D, 0.03125D, 0.015625D);
@@ -99,7 +98,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer {
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity te, double posX, double posZ, double posY, float rot_rot, int p_180535_9_) {
-		renderFuse((TileEntityFuse)te, posX, posZ, posY, rot_rot, p_180535_9_);
+	public void render(TileEntityFuse te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		renderFuse((TileEntityFuse)te, x, y, z, partialTicks, destroyStage);
 	}
 }

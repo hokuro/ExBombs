@@ -1,15 +1,14 @@
 package mod.exbombs.entity;
 
-import net.minecraft.client.particle.EntitySmokeFX;
+import net.minecraft.client.particle.ParticleSmokeLarge;
 import net.minecraft.world.World;
 
-public class EntityExBombsSmokeFX extends EntitySmokeFX {
+public class EntityExBombsSmokeFX extends ParticleSmokeLarge {
 	private int light;
 	private boolean useLight;
 
-	public EntityExBombsSmokeFX(World par1World, double par2, double par4, double par6, double par8, double par10,
-			double par12, float par14) {
-		super(par1World, par2, par4, par6, par8, par10, par12, par14);
+	protected EntityExBombsSmokeFX(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double p_i1201_8_, double p_i1201_10_, double p_i1201_12_){
+		super(worldIn, xCoordIn, yCoordIn, zCoordIn, p_i1201_8_, p_i1201_10_, p_i1201_12_);
 		this.particleRed = (this.particleBlue = this.particleGreen = 0.0F);
 	}
 

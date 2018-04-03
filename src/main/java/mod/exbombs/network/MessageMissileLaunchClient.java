@@ -54,7 +54,7 @@ public class MessageMissileLaunchClient implements IMessageHandler<MessageMissil
 			int entityID = message.entityID;
 			int x = message.posX;
 			int z = message.posZ;
-			Entity entity = getEntityByID(entityID, ctx.getServerHandler().playerEntity.worldObj);
+			Entity entity = getEntityByID(entityID, ctx.getServerHandler().player.world);
 			if ((entity == null) || (!(entity instanceof EntityMissile))){
 				return null;
 			}
@@ -63,7 +63,7 @@ public class MessageMissileLaunchClient implements IMessageHandler<MessageMissil
 				return null;
 			}
 			missile.launch(x, z);
-			for (EntityPlayer aplayer : ctx.getServerHandler().playerEntity.worldObj.playerEntities){
+			for (EntityPlayer aplayer : ctx.getServerHandler().player.world.playerEntities){
 				Mod_ExBombs.INSTANCE.sendTo(new MessageMissileLaunchServer(entityID), (EntityPlayerMP)aplayer);
 			}
 		} catch (Exception exception) {

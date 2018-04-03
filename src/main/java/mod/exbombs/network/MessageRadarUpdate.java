@@ -1,9 +1,9 @@
 package mod.exbombs.network;
 
 import io.netty.buffer.ByteBuf;
-import mod.exbombs.item.ItemRadar;
+import mod.exbombs.item.ItemCore;
+import mod.exbombs.item.ItemSpawnerRadar;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModRegisterItem;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -33,8 +33,8 @@ public class MessageRadarUpdate implements IMessageHandler<MessageRadarUpdate, I
 	@Override
 	public IMessage onMessage(MessageRadarUpdate message, MessageContext ctx) {
 		try{
-			((ItemRadar)ModRegisterItem.item_Radar).setRadarData(new ItemStack(ModRegisterItem.item_Radar),
-					ctx.getServerHandler().playerEntity.worldObj, message.index);
+			((ItemSpawnerRadar)ItemCore.item_Radar).setRadarData(new ItemStack(ItemCore.item_Radar),
+					ctx.getServerHandler().player.world, message.index);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}

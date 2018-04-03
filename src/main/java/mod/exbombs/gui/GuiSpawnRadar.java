@@ -30,7 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;;
 
-public class GuiRadar extends GuiScreen {
+public class GuiSpawnRadar extends GuiScreen {
 	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/gui/radarGUI.png");
 	private static final ResourceLocation texOver = new ResourceLocation("exbombs:textures/gui/radarOverGUI.png");
 
@@ -42,35 +42,52 @@ public class GuiRadar extends GuiScreen {
 	private int renderTicks;
 	private int alphaTicks;
 	private float renderAlpha;
-	private List<Class> entityClass;
-	private Map<Class,Entity> entityMap;
+	private Map<ResourceLocation,Entity> entityMap;
 	private List<BlockPos> spawnerPos;
 	private int index;
 
-	public GuiRadar(Minecraft minecraft, int idx) {
+	private List<ResourceLocation> entityList;
+
+	public GuiSpawnRadar(Minecraft minecraft, int idx) {
 		this.mc = minecraft;
 		this.renderTicks = 0;
 		this.alphaTicks = 0;
 		this.renderAlpha = 1.0F;
 		this.index = idx;
 		// IDリストの初期化
-		entityMap = new HashMap<Class,Entity>();
-		entityClass = new ArrayList();
-		entityClass.add(null);			// ALL用
-		Iterator<Integer> keyIt = EntityList.idToClassMapping.keySet().iterator();
-		while(keyIt.hasNext()){
-			Integer key = keyIt.next();
-			Class cl = EntityList.idToClassMapping.get(key);
-			if (EntityLiving.class.isAssignableFrom(cl) && cl != EntityLiving.class && cl != EntityMob.class){
-				entityClass.add(cl);
+		entityMap = new HashMap<ResourceLocation,Entity>();
+		entityList = new ArrayList<ResourceLocation>();
+		entityList.add(null); 			// ALL指定フラグ
+
+		for (ResourceLocation name : EntityList.getEntityNameList()){
+			if (name == null){continue;}
+			Class cl = EntityList.getClass(name);
+			if (cl != null && (EntityLiving.class.isAssignableFrom(cl) && cl != EntityLiving.class && cl != EntityMob.class)){
 				try {
-					entityMap.put(cl, (Entity)cl.getConstructor(new Class[]{World.class}).newInstance(new Object[]{mc.getMinecraft().theWorld}));
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					entityMap.put(name, (Entity)cl.getConstructor(new Class[]{World.class}).newInstance(new Object[]{mc.getMinecraft().world}));
+					entityList.add(name);
+				} catch (InstantiationException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
 				}
 			}
 		}
-		if (index >= entityClass.size() || index < 0){
+		if (index >= entityList.size() || index < 0){
 			index = 0;
 			SendMessage();
 		}
@@ -117,14 +134,14 @@ public class GuiRadar extends GuiScreen {
 
 		for (int index = 0; index < this.buttonList.size(); index++) {
 			GuiButton guibutton = (GuiButton) this.buttonList.get(index);
-			guibutton.drawButton(this.mc, i, j);
+			guibutton.drawButton(this.mc, i, j, f);
 		}
 
-		FontRenderer font = this.fontRendererObj;
-		if (entityClass.get(index) == null){
+		FontRenderer font = this.fontRenderer;
+		if (entityList.get(index) == null){
 			font.drawString("ALL", this.width / 2 - 103, this.imgTop + 205, 0xFFFFFF);
 		}else{
-			Entity entity = this.entityMap.get(entityClass.get(index));
+			Entity entity = this.entityMap.get(entityList.get(index));
 			String dworString = entity!=null?entity.getName():"Unknown";
 			font.drawString(dworString, this.width / 2 - 103, this.imgTop + 205, 0xFFFFFF);
 		}
@@ -135,13 +152,13 @@ public class GuiRadar extends GuiScreen {
 		Iterator<BlockPos> posList = spawnerPos.iterator();
 		while(posList.hasNext()){
 			BlockPos pos = posList.next();
-			if ((Math.abs(pos.getX() - this.mc.thePlayer.posX) <= 200.0D) && (Math.abs(pos.getZ() - this.mc.thePlayer.posZ) <= 200.0D)) {
-				int x = (int) (pos.getX() - this.mc.thePlayer.posX) / 2;
-				int z = (int) (pos.getZ() - this.mc.thePlayer.posZ) / 2;
+			if ((Math.abs(pos.getX() - this.mc.player.posX) <= 200.0D) && (Math.abs(pos.getZ() - this.mc.player.posZ) <= 200.0D)) {
+				int x = (int) (pos.getX() - this.mc.player.posX) / 2;
+				int z = (int) (pos.getZ() - this.mc.player.posZ) / 2;
 
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_BLEND);
-				int y = (int) this.mc.thePlayer.posY - pos.getY();
+				int y = (int) this.mc.player.posY - pos.getY();
 				if (Math.abs(y) <= 10){
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, renderAlpha);
 				}else if (y < 0){
@@ -151,7 +168,7 @@ public class GuiRadar extends GuiScreen {
 				}
 				this.mc.renderEngine.bindTexture(tex);
 				GL11.glTranslatef(this.imgLeft + 100, this.imgTop + 100, 0.0F);
-				GL11.glRotatef(-((int) this.mc.thePlayer.rotationYaw % 360), 0.0F, 0.0F, 1.0F);
+				GL11.glRotatef(-((int) this.mc.player.rotationYaw % 360), 0.0F, 0.0F, 1.0F);
 				drawTexturedModalRect(-2 - x, -2 - z, 252, 252, 4, 4);
 				GL11.glDisable(GL11.GL_BLEND);
 				GL11.glPopMatrix();
@@ -163,14 +180,14 @@ public class GuiRadar extends GuiScreen {
 		switch(guibutton.id){
 		case 101:
 			++index;
-			if (index >= entityClass.size()){
+			if (index >= entityList.size()){
 				index = 0;
 			}
 			break;
 		case 102:
 			--index;
 			if (index < 0){
-				index = entityClass.size()-1;
+				index = entityList.size()-1;
 			}
 			break;
 		}
@@ -180,12 +197,12 @@ public class GuiRadar extends GuiScreen {
 
 	private void searchSpawner(){
 		spawnerPos = new ArrayList<BlockPos>();
-		Class id = entityClass.get(index);
-		Iterator<TileEntity> it = mc.getMinecraft().theWorld.loadedTileEntityList.iterator();
+		ResourceLocation id = entityList.get(index);
+		Iterator<TileEntity> it = mc.getMinecraft().world.loadedTileEntityList.iterator();
 		TileEntity et;
 		while(it.hasNext()){
 			if (((et = it.next()) instanceof TileEntityMobSpawner) &&
-					(id == null || id == getEntityId((TileEntityMobSpawner)et))){
+					(id == null || id.toString().equals(getEntityId((TileEntityMobSpawner)et).toString()))){
 				spawnerPos.add(et.getPos());
 			}
 		}
@@ -205,7 +222,7 @@ public class GuiRadar extends GuiScreen {
 		}
 	}
 
-	private Class getEntityId(TileEntityMobSpawner spawner){
+	private ResourceLocation getEntityId(TileEntityMobSpawner spawner){
 		int ret = -1;
 		NBTTagCompound tag = new NBTTagCompound();
 		spawner.writeToNBT(tag);
@@ -214,7 +231,7 @@ public class GuiRadar extends GuiScreen {
         {
 			nbttag.setString("id", "Pig");
         }
-		return EntityList.stringToClassMapping.get(nbttag.getString("id"));
+		return new ResourceLocation(nbttag.getString("id"));
 	}
 
 	private void drawCenteredStringWithoutShadow(FontRenderer fontrenderer, String s, int i, int j, int k) {
@@ -238,6 +255,6 @@ public class GuiRadar extends GuiScreen {
 	}
 
 	private void SendMessage(){
-		Mod_ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_RADAR, new Object[]{new Integer(index)}));
+		Mod_ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(index)}));
 	}
 }

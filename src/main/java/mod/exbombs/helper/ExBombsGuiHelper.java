@@ -1,7 +1,8 @@
 package mod.exbombs.helper;
 
 import mod.exbombs.core.ModCommon;
-import mod.exbombs.gui.GuiRadar;
+import mod.exbombs.gui.GuiBlockRadar;
+import mod.exbombs.gui.GuiSpawnRadar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,8 +18,14 @@ public class ExBombsGuiHelper {
 
 	public void displayGuiByID(EntityPlayer player, int GuiID, Object[] param) {
 		GuiScreen gui = null;
-		if ( GuiID == ModCommon.MOD_GUI_ID_RADAR){
-			gui = new GuiRadar(Minecraft.getMinecraft(), (int)param[0]);
+		if ( GuiID == ModCommon.MOD_GUI_ID_SPAWNRADAR){
+			gui = new GuiSpawnRadar(Minecraft.getMinecraft(), new Integer(param[0].toString()).intValue());
+		}else if (GuiID == ModCommon.MOD_GUI_ID_BLOCKRADER){
+			if (param.length == 3){
+				gui = new GuiBlockRadar(Minecraft.getMinecraft(), param[0].toString(),
+						new Integer(param[1].toString()).intValue(),
+						new Integer(param[2].toString()).intValue());
+			}
 		}
 		if (gui != null) {
 			displayGui(player, gui);

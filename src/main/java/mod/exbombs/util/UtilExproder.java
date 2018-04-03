@@ -6,10 +6,7 @@ import java.util.Random;
 import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
 import mod.exbombs.config.ConfigValue;
 import mod.exbombs.entity.EntityBomb;
-import mod.exbombs.entity.EntityFrozenBomb;
-import mod.exbombs.entity.EntityIcicleBomb;
 import mod.exbombs.entity.EntityPaintBomb;
-import mod.exbombs.entity.EntityWaterBomb;
 import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -17,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraft.util.math.Vec3d;
@@ -31,21 +29,24 @@ public class UtilExproder {
 			bomb = new EntityBomb(world,player);
 			break;
 		case WARTER:
-			bomb = new EntityWaterBomb(world,player);
+			bomb = new EntityBomb(world,player,type);
 			break;
 		case FROZEN:
-			bomb = new EntityFrozenBomb(world,player);
+			bomb = new EntityBomb(world,player,type);
 			break;
 		case ICICLE:
-			bomb = new EntityIcicleBomb(world,player);
+			bomb = new EntityBomb(world,player,type);
 			break;
 		case PAINT:
 			ItemStack heldItem = player.getHeldItemOffhand();
-			if ((heldItem != null) && (Block.getBlockFromItem(heldItem.getItem()) != null)){
+			if (!heldItem.isEmpty() && Block.getBlockFromItem(heldItem.getItem()) != Blocks.AIR){
 				IBlockState block =  heldItem.getItem().getHasSubtypes()? Block.getBlockFromItem(heldItem.getItem()).getStateFromMeta(heldItem.getItemDamage()):
 	    			Block.getBlockFromItem(heldItem.getItem()).getDefaultState();
 				bomb = new EntityPaintBomb(world,player,block);
 			}
+			break;
+		case LAVA:
+			bomb = new EntityBomb(world,player,type);
 			break;
 		default:
 			bomb = new EntityBomb(world,player);
@@ -53,6 +54,7 @@ public class UtilExproder {
 		}
 		return bomb;
 	}
+
 
 
 	// 爆発
@@ -92,7 +94,7 @@ public class UtilExproder {
 		while (players.hasNext()) {
 			EntityPlayer player = (EntityPlayer) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
-				((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+				((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
 						 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
 			}
 		}
@@ -103,7 +105,7 @@ public class UtilExproder {
 		while (players.hasNext()) {
 			EntityPlayer player = (EntityPlayer) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
-				 ((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+				 ((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
 						 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
 			}
 		}
@@ -115,11 +117,11 @@ public class UtilExproder {
 			EntityPlayer player = (EntityPlayer) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
 				if (type == EnumEraseType.ERASEALL){
-					((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+					((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
 							 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
 					//INSTANCE.sendTo(new MessageExplosion(EnumExplosionType.ERASE.getType(),(int) x, (int) y, (int) z, 0L, 0F), (EntityPlayerMP)player);
 				}else{
-					((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+					((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
 							 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
 					//INSTANCE.sendTo(new MessageExplosion(EnumExplosionType.MACHING.getType(),(int) x, (int) y, (int) z, 0L, 0F), (EntityPlayerMP)player);
 				}

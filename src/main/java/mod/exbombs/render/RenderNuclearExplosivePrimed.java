@@ -1,8 +1,8 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.render;
 
+import mod.exbombs.block.BlockCore;
 import mod.exbombs.entity.EntityNuclearExplosivePrimed;
-import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,7 +30,7 @@ public class RenderNuclearExplosivePrimed extends Render {
         if ((float)entity.getFuse() - partialTicks + 1.0F < 10.0F)
         {
             float f = 1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 10.0F;
-            f = MathHelper.clamp_float(f, 0.0F, 1.0F);
+            f = MathHelper.clamp(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;
             float f1 = 1.0F + f * 0.3F;
@@ -41,14 +41,14 @@ public class RenderNuclearExplosivePrimed extends Render {
         this.bindEntityTexture(entity);
         GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(-0.5F, -0.5F, 0.5F);
-        blockrendererdispatcher.renderBlockBrightness(ModRegisterBlock.block_NCBomb.getDefaultState(), entity.getBrightness(partialTicks));
+        blockrendererdispatcher.renderBlockBrightness(BlockCore.block_nuclear.getDefaultState(), entity.getBrightness());
         GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
         if (this.renderOutlines)
         {
             GlStateManager.enableColorMaterial();
             GlStateManager.enableOutlineMode(this.getTeamColor(entity));
-            blockrendererdispatcher.renderBlockBrightness(ModRegisterBlock.block_NCBomb.getDefaultState(), 1.0F);
+            blockrendererdispatcher.renderBlockBrightness(BlockCore.block_nuclear.getDefaultState(), 1.0F);
             GlStateManager.disableOutlineMode();
             GlStateManager.disableColorMaterial();
         }
@@ -61,7 +61,7 @@ public class RenderNuclearExplosivePrimed extends Render {
             GlStateManager.color(1.0F, 1.0F, 1.0F, f2);
             GlStateManager.doPolygonOffset(-3.0F, -3.0F);
             GlStateManager.enablePolygonOffset();
-            blockrendererdispatcher.renderBlockBrightness(ModRegisterBlock.block_NCBomb.getDefaultState(), 1.0F);
+            blockrendererdispatcher.renderBlockBrightness(BlockCore.block_nuclear.getDefaultState(), 1.0F);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
             GlStateManager.disablePolygonOffset();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -86,6 +86,6 @@ public class RenderNuclearExplosivePrimed extends Render {
 	}
 
 	protected ResourceLocation func_110808_a(Entity entity) {
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 }

@@ -35,8 +35,8 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 
 	public boolean isMatch(IBlockState state, List<BlockAndMetadata> match){
 		if ((state != null) &&
-				(state.getBlock() != Blocks.bedrock) &&
-				(state.getMaterial() != Material.air)){
+				(state.getBlock() != Blocks.BEDROCK) &&
+				(state.getMaterial() != Material.AIR)){
 			for (int mcc = 0; mcc < match.size(); mcc++){
 				if (match.get(mcc).toString().equals(state.getBlock().getRegistryName().toString())){
 					return true;
@@ -62,8 +62,8 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 		List<BlockAndMetadata> match = ConfigValue.General.getUnEraseBlock();
 		if (ConfigValue.General.erase_method == 0){
 			Chunk ck = world.getChunkFromBlockCoords(new BlockPos(xPos,yPos,zPos));
-			x_start = ck.xPosition* 16;
-			z_start = ck.zPosition * 16;
+			x_start = ck.x* 16;
+			z_start = ck.z * 16;
 		}else{
 			x_start = xPos - 8;
 			z_start = zPos - 8;

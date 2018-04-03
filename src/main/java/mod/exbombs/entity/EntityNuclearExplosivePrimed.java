@@ -2,13 +2,14 @@
 package mod.exbombs.entity;
 
 import io.netty.buffer.ByteBuf;
+import mod.exbombs.block.BlockCore;
+import mod.exbombs.item.ItemCore;
 import mod.exbombs.item.ItemDefuser;
 import mod.exbombs.util.UtilExproder;
-import net.minecraft.block.ModRegisterBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModRegisterItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -47,16 +48,17 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 	}
 
     @Override
-    public boolean processInitialInteract(EntityPlayer player, ItemStack stack, EnumHand hand){
-		if (this.worldObj.isRemote) {
+    public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
+		if (this.world.isRemote) {
 			return false;
 		}
-		if ((stack != null) && (stack.getItem() == ModRegisterItem.item_defuser) && (hand == EnumHand.MAIN_HAND)) {
+		ItemStack stack = player.getHeldItem(hand);
+		if ((stack != null) && (stack.getItem() == ItemCore.item_defuser) && (hand == EnumHand.MAIN_HAND)) {
 			if (!player.capabilities.isCreativeMode){
-				ItemDefuser.onItemUsed(stack, player);
+				ItemDefuser.defuserUse(stack, player);
 			}
 			this.isDead = true;
-			this.dropItem(new ItemStack(ModRegisterBlock.block_NCBomb).getItem(), 1);
+			this.dropItem(new ItemStack(BlockCore.block_nuclear).getItem(), 1);
 			return true;
 		}
 		return false;
@@ -78,7 +80,7 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= 0.03999999910593033D;
-		moveEntity(this.motionX, this.motionY, this.motionZ);
+		move(MoverType.PLAYER, this.motionX, this.motionY, this.motionZ);
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
@@ -88,14 +90,14 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 			this.motionY *= -0.5D;
 		}
 		if (this.fuse-- <= 0) {
-			if (!this.worldObj.isRemote) {
+			if (!this.world.isRemote) {
 				setDead();
 				explode();
 			} else {
 				setDead();
 			}
 		} else {
-			this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+			this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 		}
 	}
 
@@ -134,6 +136,6 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 	}
 
 	private void explode() {
-		UtilExproder.createSuperExplosion(this.worldObj, null, (int) this.posX, (int) this.posY, (int) this.posZ, 80.0F);
+		UtilExproder.createSuperExplosion(this.world, null, (int) this.posX, (int) this.posY, (int) this.posZ, 80.0F);
 	}
 }

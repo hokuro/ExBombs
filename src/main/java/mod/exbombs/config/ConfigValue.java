@@ -27,7 +27,7 @@ public class ConfigValue {
 	public static void reloadConfig(EntityPlayer player){
 		if (config.reloadConfig()){
 			if (player != null){
-				player.addChatComponentMessage(new TextComponentString("ExBombs reload Configration!"));
+				player.sendStatusMessage(new TextComponentString("ExBombs reload Configration!"),false);
 			}
 			General.init();
 		}
@@ -45,6 +45,8 @@ public class ConfigValue {
 		public static int erase_method = 0;
 		@ConfigProperty(comment="conf.erase_mach_block")
 		public static String erase_match_block ="dirt,stone,sand,stonesand";
+		@ConfigProperty(comment="conf.cheat_paint")
+		public static boolean cheat_paint = false;
 
 		private static List<BlockAndMetadata> erase_match_block_list;
 		protected static void init(){
@@ -71,7 +73,7 @@ public class ConfigValue {
 				b = Block.getBlockFromName(str);
 				if(null != b)
 				{
-					if(Blocks.air != b){
+					if(Blocks.AIR != b){
 						Block block = (Block)b;
 						BlockAndMetadata bam = new BlockAndMetadata(block, convertMetaString(block,metastr));
 						list.add(bam);
