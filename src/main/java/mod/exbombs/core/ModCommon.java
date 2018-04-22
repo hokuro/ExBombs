@@ -17,7 +17,7 @@ public class ModCommon {
     // 起動出来るMinecraft本体のバージョン。記法はMavenのVersion Range Specificationを検索すること。
     public static final String MOD_ACCEPTED_MC_VERSIONS = "[1.12]";
 	// モッドバージョン
-	public static final String MOD_VERSION = "@VERSION@";
+	public static final String MOD_VERSION = "1.12.0";
 	// コンフィグファイル名
 	public static final String MOD_CONFIG_FILE = "";
 	// コンフィグ
