@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "tunnelexplosive",
+  "pattern": [
+    "CCC",
+    "SCS",
+    "SSS"
+  ],
+  "key": {
+    "C": {
+          "item": "minecraft:tnt"
+    },
+    "S": {
+          "item": "minecraft:stone",
+          "data": 0
+    }
+  },
+  "result": {
+    "item": "exbombs:tunnelexplosive",
+    "count": 1
+  }
+}

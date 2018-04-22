@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearexplosive",
+  "pattern": [
+    "UTU",
+    "TUT",
+    "UTU"
+  ],
+  "key": {
+    "U": {
+          "item": "exbombs:uranium"
+    },
+    "T": {
+          "item": "minecraft:tnt"
+    }
+  },
+  "result": {
+    "item": "exbombs:nuclearexplosive",
+    "count": 1
+  }
+}

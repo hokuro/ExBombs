@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "chunkunmacheraser",
+  "pattern": [
+    "IRI",
+    "ITI",
+    "IPI"
+  ],
+  "key": {
+    "I": {
+          "item": "minecraft:iron_block"
+    },
+    "R": {
+          "item": "minecraft:redstone_torch"
+    },
+    "T": {
+          "item": "exbombs:nuclearexplosive"
+    },
+    "P": {
+          "item": "minecraft:compass"
+    }
+  },
+  "result": {
+    "item": "exbombs:chunkunmacheraser",
+    "count": 1
+  }
+}

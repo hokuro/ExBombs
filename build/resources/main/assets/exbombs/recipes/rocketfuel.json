@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "rocketfuel",
+  "pattern": [
+    "PGP",
+    "GPG",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+          "item": "exbombs:plastic"
+    },
+    "G": {
+          "item": "minecraft:gunpowder"
+    }
+  },
+  "result": {
+    "item": "exbombs:rocketfuel",
+    "count": 6
+  }
+}

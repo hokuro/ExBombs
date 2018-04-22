@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "oil",
+  "pattern": [
+    " C ",
+    "CCC",
+    " C "
+  ],
+  "key": {
+    "C": [
+         {
+          "item": "minecraft:coal",
+          "data": 0
+         },
+         {
+          "item": "minecraft:coal",
+          "data": 1
+         }
+    ]
+  },
+  "result": {
+    "item": "exbombs:oil",
+    "count": 5
+  }
+}

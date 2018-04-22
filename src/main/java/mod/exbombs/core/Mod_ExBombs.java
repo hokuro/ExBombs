@@ -29,7 +29,10 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = ModCommon.MOD_ID, name = ModCommon.MOD_NAME, version = ModCommon.MOD_VERSION)
+@Mod(modid = ModCommon.MOD_ID,
+name = ModCommon.MOD_NAME,
+version = ModCommon.MOD_VERSION,
+acceptedMinecraftVersions = ModCommon.MOD_ACCEPTED_MC_VERSIONS)
 public class Mod_ExBombs {
 	@Mod.Instance(ModCommon.MOD_ID)
 	public static Mod_ExBombs instance;
@@ -45,7 +48,6 @@ public class Mod_ExBombs {
 	public void preInit(FMLPreInitializationEvent event) {
 		// コンフィグ読み込み
 		ConfigValue.init(event);
-
 		// ブロック登録
 		BlockCore.register(event);
 		// アイテム登録
@@ -67,7 +69,7 @@ public class Mod_ExBombs {
 		MinecraftForge.EVENT_BUS.register(mcEvent);
 
 		// レシピ追加
-		this.RegisterRecipe();
+		//this.RegisterRecipe();
 	}
 
 	@EventHandler

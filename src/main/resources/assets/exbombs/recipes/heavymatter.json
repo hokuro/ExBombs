@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "heavymatter",
+  "pattern": [
+    "OOO",
+    "OOO",
+    "OOO"
+  ],
+  "key": {
+    "O": {
+          "item": "minecraft:obsidian"
+    }
+  },
+  "result": {
+    "item": "exbombs:heavymatter",
+    "count": 6
+  }
+}

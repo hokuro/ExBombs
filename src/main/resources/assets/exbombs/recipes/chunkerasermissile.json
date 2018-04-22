@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "tntmissile",
+  "pattern": [
+    "ITI",
+    "IRI",
+    "IRI"
+  ],
+  "key": {
+    "I": {
+          "item": "minecraft:iron_ingot"
+    },
+    "T": {
+          "item": "exbombs:chunkeraser"
+    },
+    "R": {
+          "item": "exbombs:rocketfuel"
+    }
+  },
+  "result": {
+    "item": "exbombs:chunkerasermissile",
+    "count": 1
+  }
+}

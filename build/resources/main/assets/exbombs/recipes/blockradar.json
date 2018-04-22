@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "blockradar",
+  "pattern": [
+    "IRI",
+    "RDR",
+    "ICI"
+  ],
+  "key": {
+    "R": {
+          "item": "minecraft:redstone"
+    },
+    "D": {
+          "item": "minecraft:compass"
+    },
+    "I": {
+          "item": "minecraft:iron_ingot"
+    },
+    "C": {
+          "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "exbombs:blockradar",
+    "count": 1
+  }
+}

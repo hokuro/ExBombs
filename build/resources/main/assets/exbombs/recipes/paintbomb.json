@@ -1,0 +1,45 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "bomb",
+  "pattern": [
+    "APB",
+    "WTK",
+    "YPG"
+  ],
+  "key": {
+    "A": {
+          "item": "minecraft:dye",
+          "data":1
+    },
+    "P": {
+          "item": "minecraft:paper"
+    },
+    "B": {
+          "item": "minecraft:dye",
+          "data":4
+    },
+    "W": {
+          "item": "minecraft:dye",
+          "data":15
+    },
+    "T": {
+          "item": "minecraft:tnt"
+    },
+    "K": {
+          "item": "minecraft:dye",
+          "data":0
+    },
+    "Y": {
+          "item": "minecraft:dye",
+          "data":11
+    },
+    "G": {
+          "item": "minecraft:dye",
+          "data":2
+    }
+  },
+  "result": {
+    "item": "exbombs:paintbomb",
+    "count": 6
+  }
+}

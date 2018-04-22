@@ -1,0 +1,16 @@
+{
+    "variants": {
+        "explode=false,facing=down":  { "model": "exbombs:tunnelexplosive", "x": 180 },
+        "explode=false,facing=up":    { "model": "exbombs:tunnelexplosive"},
+        "explode=false,facing=north": { "model": "exbombs:tunnelexplosive", "x":90},
+        "explode=false,facing=south": { "model": "exbombs:tunnelexplosive", "x":90, "y": 180 },
+        "explode=false,facing=west":  { "model": "exbombs:tunnelexplosive", "x":90, "y": 270 },
+        "explode=false,facing=east":  { "model": "exbombs:tunnelexplosive", "x":90, "y": 90 },
+        "explode=true,facing=down":  { "model": "exbombs:tunnelexplosive", "x": 180 },
+        "explode=true,facing=up":    { "model": "exbombs:tunnelexplosive"},
+        "explode=true,facing=north": { "model": "exbombs:tunnelexplosive", "x":90},
+        "explode=true,facing=south": { "model": "exbombs:tunnelexplosive", "x":90, "y": 180 },
+        "explode=true,facing=west":  { "model": "exbombs:tunnelexplosive", "x":90, "y": 270 },
+        "explode=true,facing=east":  { "model": "exbombs:tunnelexplosive", "x":90, "y": 90 }
+    }
+}

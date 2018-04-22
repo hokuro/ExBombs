@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "plastic",
+  "pattern": [
+    "OSO",
+    "SOS",
+    "OSO"
+  ],
+  "key": {
+    "O": {
+          "item": "exbombs:oil"
+    },
+    "S": {
+          "item": "minecraft:slime_ball"
+    }
+  },
+  "result": {
+    "item": "exbombs:plastic",
+    "count": 8
+  }
+}
