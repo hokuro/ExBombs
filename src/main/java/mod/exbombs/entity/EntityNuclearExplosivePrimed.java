@@ -1,7 +1,6 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.entity;
 
-import io.netty.buffer.ByteBuf;
 import mod.exbombs.block.BlockCore;
 import mod.exbombs.item.ItemCore;
 import mod.exbombs.item.ItemDefuser;
@@ -9,10 +8,11 @@ import mod.exbombs.util.UtilExproder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -22,7 +22,7 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 	public float yOffset;
 
 	public EntityNuclearExplosivePrimed(World world) {
-		super(world);
+		super(EntityCore.Inst().NCBOMB, world);
 		this.fuse = 0;
 		this.preventEntitySpawning = true;
 		setSize(0.98F, 0.98F);
@@ -42,11 +42,6 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 		this.prevPosZ = d2;
 	}
 
-	@Override
-	public void entityInit(){
-
-	}
-
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
 		if (this.world.isRemote) {
@@ -54,11 +49,11 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 		}
 		ItemStack stack = player.getHeldItem(hand);
 		if ((stack != null) && (stack.getItem() == ItemCore.item_defuser) && (hand == EnumHand.MAIN_HAND)) {
-			if (!player.capabilities.isCreativeMode){
+			if (!player.isCreative()){
 				ItemDefuser.defuserUse(stack, player);
 			}
-			this.isDead = true;
-			this.dropItem(new ItemStack(BlockCore.block_nuclear).getItem(), 1);
+			this.removed = true;
+			this.entityDropItem(new ItemStack(BlockCore.block_nuclear).getItem(), 1);
 			return true;
 		}
 		return false;
@@ -71,11 +66,11 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 
     @Override
 	public boolean canBeCollidedWith() {
-		return !this.isDead;
+		return this.isAlive();
 	}
 
     @Override
-	public void onUpdate() {
+	public void tick() {
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
@@ -91,34 +86,34 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 		}
 		if (this.fuse-- <= 0) {
 			if (!this.world.isRemote) {
-				setDead();
+				remove();
 				explode();
 			} else {
-				setDead();
+				remove();
 			}
 		} else {
-			this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+			this.world.spawnParticle(Particles.SMOKE, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 		}
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf buffer) {
+	public void writeSpawnData(PacketBuffer buffer) {
 		buffer.writeInt(this.fuse);
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf additionalData) {
+	public void readSpawnData(PacketBuffer additionalData) {
 		this.fuse = additionalData.readInt();
 	}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound tagCompund) {
-		this.fuse = tagCompund.getInteger("Fuse");
+	protected void readAdditional(NBTTagCompound tagCompund) {
+		this.fuse = tagCompund.getInt("Fuse");
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound tagCompound) {
-		tagCompound.setInteger("Fuse", (byte) this.fuse);
+	protected void writeAdditional(NBTTagCompound tagCompound) {
+		tagCompound.setInt("Fuse", (byte) this.fuse);
 	}
 
 	@Override
@@ -138,4 +133,24 @@ public class EntityNuclearExplosivePrimed extends Entity implements IEntityAddit
 	private void explode() {
 		UtilExproder.createSuperExplosion(this.world, null, (int) this.posX, (int) this.posY, (int) this.posZ, 80.0F);
 	}
+
+	@Override
+	public NBTTagCompound serializeNBT() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
+	@Override
+	protected void registerData() {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
 }

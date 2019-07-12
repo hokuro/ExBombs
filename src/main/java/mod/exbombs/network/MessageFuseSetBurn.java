@@ -1,14 +1,14 @@
 package mod.exbombs.network;
 
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
+
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.tileentity.TileEntityFuse;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageFuseSetBurn implements IMessageHandler<MessageFuseSetBurn, IMessage>, IMessage {
+public class MessageFuseSetBurn {
 
 	private int posX,posY,posZ;
 
@@ -22,27 +22,30 @@ public class MessageFuseSetBurn implements IMessageHandler<MessageFuseSetBurn, I
 		posZ = z;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		posX = buf.readInt();
-		posY = buf.readInt();
-		posZ = buf.readInt();
+	public static void encode(MessageFuseSetBurn pkt, PacketBuffer buf)
+	{
+		buf.writeInt(pkt.posX);
+		buf.writeInt(pkt.posY);
+		buf.writeInt(pkt.posZ);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(posX);
-		buf.writeInt(posY);
-		buf.writeInt(posZ);
+	public static MessageFuseSetBurn decode(PacketBuffer buf)
+	{
+		int x = buf.readInt();
+		int y = buf.readInt();
+		int z =buf.readInt();
+		return new MessageFuseSetBurn(x,y,z);
 	}
 
-	@Override
-	public IMessage onMessage(MessageFuseSetBurn message, MessageContext ctx) {
-		try {
-			((TileEntityFuse) ExBombsMinecraftHelper.getWorld().getTileEntity(new BlockPos(message.posX, message.posY, message.posZ))).isBurning = true;
-		} catch (Exception exception) {
-			exception.printStackTrace();
+	public static class Handler
+	{
+		public static void handle(final MessageFuseSetBurn pkt, Supplier<NetworkEvent.Context> ctx)
+		{
+			try {
+				((TileEntityFuse) ExBombsMinecraftHelper.getWorld().getTileEntity(new BlockPos(pkt.posX, pkt.posY, pkt.posZ))).isBurning = true;
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
 		}
-		return null;
 	}
 }

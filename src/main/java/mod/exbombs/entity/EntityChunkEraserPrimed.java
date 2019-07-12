@@ -1,6 +1,5 @@
 package mod.exbombs.entity;
 
-import io.netty.buffer.ByteBuf;
 import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
 import mod.exbombs.block.BlockCore;
 import mod.exbombs.item.ItemCore;
@@ -9,12 +8,14 @@ import mod.exbombs.util.UtilExproder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -25,15 +26,15 @@ public class EntityChunkEraserPrimed extends Entity implements IEntityAdditional
 	private double yOffset;
 
 	public EntityChunkEraserPrimed(World worldIn) {
-		super(worldIn);
+		super(EntityCore.Inst().CHUNKERASER, worldIn);
 		this.fuse = 0;
 		this.preventEntitySpawning = true;
 		setSize(0.98F, 0.98F);
 		this.yOffset = (this.height / 2.0F);
 	}
 
-	public EntityChunkEraserPrimed(World worldIn, BlockPos pos, EnumEraseType type) {
-		this(worldIn);
+	public EntityChunkEraserPrimed(IWorld worldIn, BlockPos pos, EnumEraseType type) {
+		this(worldIn.getWorld());
 		eraseType = type;
 
 		setPosition(pos.getX(), pos.getY(), pos.getZ());
@@ -47,11 +48,6 @@ public class EntityChunkEraserPrimed extends Entity implements IEntityAdditional
 		this.prevPosZ = pos.getZ();
 	}
 
-	@Override
-	public void entityInit(){
-
-	}
-
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
 		if (this.world.isRemote) {
@@ -59,16 +55,16 @@ public class EntityChunkEraserPrimed extends Entity implements IEntityAdditional
 		}
 		ItemStack stack = player.getHeldItem(hand);
 		if ((stack != null) && (stack.getItem() == ItemCore.item_defuser) && (hand == EnumHand.MAIN_HAND)) {
-			if (!player.capabilities.isCreativeMode){
+			if (!player.isCreative()){
 				ItemDefuser.defuserUse(stack, player);
 			}
-			this.isDead = true;
+			remove();
 			switch(eraseType){
 			case ERASEALL:
-				this.dropItem(new ItemStack(BlockCore.block_chunkeraser).getItem(), 1);
+				this.entityDropItem(new ItemStack(BlockCore.block_chunkeraser).getItem(), 1);
 				break;
 			case ERASEUNMATCH:
-				this.dropItem(new ItemStack(BlockCore.block_muchblockeraser).getItem(), 1);
+				this.entityDropItem(new ItemStack(BlockCore.block_muchblockeraser).getItem(), 1);
 				break;
 			}
 			return true;
@@ -83,11 +79,11 @@ public class EntityChunkEraserPrimed extends Entity implements IEntityAdditional
 
     @Override
 	public boolean canBeCollidedWith() {
-		return !this.isDead;
+		return !this.removed;
 	}
 
     @Override
-	public void onUpdate() {
+	public void tick() {
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
@@ -103,38 +99,38 @@ public class EntityChunkEraserPrimed extends Entity implements IEntityAdditional
 		}
 		if (this.fuse-- <= 0) {
 			if (!this.world.isRemote) {
-				setDead();
+				remove();
 				explode();
 			} else {
-				setDead();
+				remove();
 			}
 		} else {
-			this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+			this.world.spawnParticle(Particles.SMOKE, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 		}
     }
 
 	@Override
-	public void writeSpawnData(ByteBuf buffer) {
+	public void writeSpawnData(PacketBuffer buffer) {
 		buffer.writeInt(this.fuse);
 		buffer.writeInt(this.eraseType.getIndex());
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf additionalData) {
+	public void readSpawnData(PacketBuffer additionalData) {
 		this.fuse = additionalData.readInt();
 		this.eraseType = EnumEraseType.getType(additionalData.readInt());
 	}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound tagCompund) {
-		this.fuse = tagCompund.getInteger("Fuse");
-		this.eraseType = EnumEraseType.getType(tagCompund.getInteger("Type"));
+	protected void readAdditional(NBTTagCompound tagCompund) {
+		this.fuse = tagCompund.getInt("Fuse");
+		this.eraseType = EnumEraseType.getType(tagCompund.getInt("Type"));
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound tagCompound) {
-		tagCompound.setInteger("Fuse", (byte) this.fuse);
-		tagCompound.setInteger("Type", eraseType.getIndex());
+	protected void writeAdditional(NBTTagCompound tagCompound) {
+		tagCompound.setInt("Fuse", (byte) this.fuse);
+		tagCompound.setInt("Type", eraseType.getIndex());
 	}
 
 	@Override
@@ -152,8 +148,26 @@ public class EntityChunkEraserPrimed extends Entity implements IEntityAdditional
 		UtilExproder.createEraserExplosion(this.world, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, eraseType);
 	}
 
-	public EnumEraseType getType(){
+	public EnumEraseType getEraseType(){
 		return eraseType;
+	}
+
+	@Override
+	public NBTTagCompound serializeNBT() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	protected void registerData() {
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 
 }

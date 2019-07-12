@@ -30,7 +30,7 @@ public class BlockRadarData extends WorldSavedData {
 		{
 			this.init = true;
 		}
-		if(world.getWorldTime() % UPDATETIME == 0l){
+		if(world.getDayTime() % UPDATETIME == 0l){
 			this.upDate = true;
 		}
 		if(this.upDate)
@@ -54,25 +54,25 @@ public class BlockRadarData extends WorldSavedData {
 		return targetBlock.getBlock().getRegistryName().toString();
 	}
 
-	public int getTargetMeta(){
-		return targetBlock.getBlock().getMetaFromState(targetBlock);
+	public int getTargetStateId(){
+		return Block.getStateId(targetBlock);
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
+	public void read(NBTTagCompound nbt) {
 		String name = nbt.getString("Name");
-		int meta = nbt.getInteger("Meta");
+		int meta = nbt.getInt("Meta");
 		if (!name.isEmpty()){
-			targetBlock = Block.getBlockFromName(name).getStateFromMeta(meta);
+			targetBlock = Block.getStateById(meta);
 		}
-		sizeIndex = nbt.getInteger("size");
+		sizeIndex = nbt.getInt("size");
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public NBTTagCompound write(NBTTagCompound nbt) {
 		nbt.setString("Name", targetBlock.getBlock().getRegistryName().toString());
-		nbt.setInteger("Meta", targetBlock.getBlock().getMetaFromState(targetBlock));
-		nbt.setInteger("size", sizeIndex);
+		nbt.setInt("Meta", Block.getStateId(targetBlock));
+		nbt.setInt("size", sizeIndex);
 		return nbt;
 	}
 

@@ -1,15 +1,11 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.gui;
 
-import java.io.IOException;
-
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityMissile;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
-import mod.exbombs.network.MessageMissileLaunchClient;
+import mod.exbombs.network.MessageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -20,8 +16,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class GuiMissile extends GuiScreen {
-	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/gui/missileGUI.png");
-	private Minecraft mc;
+	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/gui/missilegui.png");
 	private World world;
 	private int imgWidth;
 	private int imgHeight;
@@ -31,43 +26,75 @@ public class GuiMissile extends GuiScreen {
 	private GuiTextField textZ;
 	public EntityMissile missile;
 
-	public GuiMissile(World worldObj, Minecraft minecraft, EntityMissile missile) {
-		this.mc = minecraft;
+	public GuiMissile(World worldObj,EntityMissile missile) {
 		this.world = worldObj;
 		this.missile = missile;
 	}
 
+	@Override
 	public void initGui() {
 		this.imgWidth = 205;
 		this.imgHeight = 176;
 		this.imgLeft = ((this.width - this.imgWidth) / 2);
 		this.imgTop = ((this.height - this.imgHeight) / 2);
 
-		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, this.width / 2 - 75, this.imgTop + 110, 150, 20, "Launch"));
+		GuiButton b1 = new GuiButton(0, this.width / 2 - 75, this.imgTop + 110, 150, 20, "Launch"){
+			public void onClick(double mousex, double mousey){
+				if ((textX.getText().isEmpty()) || (textZ.getText().isEmpty())) {
+					return;
+				}
+				try {
+					if (missile.flying) {
+						return;
+					}
+					int x = Integer.parseInt(textX.getText());
+					int z = Integer.parseInt(textZ.getText());
+
+					double XCoord = x - missile.posX;
+					double YCoord = z - missile.posZ;
+					if ((Math.abs(XCoord) > 500.0D) || (Math.abs(YCoord) > 500.0D)) {
+						ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Missile Target out of range!"),false);
+					} else {
+						ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Missile launching!"),false);
+						MessageHandler.SendMessage_MissileLaunchClient(missile.getEntityId(), x, z);
+					}
+				} catch (Exception exception) {
+					if ((exception instanceof NumberFormatException)) {
+						ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Illegal input!"),false);
+					}
+				} finally {
+					Minecraft.getInstance().displayGuiScreen(null);
+					Minecraft.getInstance().mouseHelper.grabMouse();
+				}
+			}
+		};
+
+		this.buttons.clear();
+		this.buttons.add(b1);
 
 		this.textX = new GuiTextField(1,this.fontRenderer, this.width / 2 + 5, this.imgTop + 50, 60, 14);
 		this.textX.setMaxStringLength(8);
 		this.textZ = new GuiTextField(2,this.fontRenderer, this.width / 2 + 5, this.imgTop + 75, 60, 14);
 		this.textZ.setMaxStringLength(8);
-
-		Keyboard.enableRepeatEvents(true);
+		this.children.add(b1);
+		this.mc.keyboardListener.enableRepeatEvents(true);
 	}
 
-	public void drawScreen(int i, int j, float f) {
+	@Override
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(tex);
+		Minecraft.getInstance().getTextureManager().bindTexture(tex);
 		drawTexturedModalRect(this.imgLeft, this.imgTop, 0, 0, this.imgWidth, this.imgHeight);
 
-		this.textX.drawTextBox();
-		this.textZ.drawTextBox();
+		this.textX.drawTextField(mouseX,mouseY,partialTicks);
+		this.textZ.drawTextField(mouseX,mouseY,partialTicks);
 		this.fontRenderer.drawString("X Coordinate:", this.width / 2 - 70, this.imgTop + 53, 4210752);
 		this.fontRenderer.drawString("Z Coordinate:", this.width / 2 - 70, this.imgTop + 78, 4210752);
-		for (int index = 0; index < this.buttonList.size(); index++) {
-			GuiButton guibutton = (GuiButton) this.buttonList.get(index);
-			guibutton.drawButton(this.mc, i, j, f);
+		for (int index = 0; index < this.buttons.size(); index++) {
+			GuiButton guibutton = (GuiButton) this.buttons.get(index);
+			guibutton.render(mouseX, mouseY, partialTicks);// .drawButton(this.mc, i, j, f);
 		}
 		drawCenteredStringWithoutShadow(this.fontRenderer, "Missile:", this.width / 2, this.imgTop + 15, 4210752);
 	}
@@ -76,70 +103,86 @@ public class GuiMissile extends GuiScreen {
 		fontrenderer.drawString(s, i - fontrenderer.getStringWidth(s) / 2, j, k);
 	}
 
-	public void actionPerformed(GuiButton guibutton) {
-		if (guibutton.id == 0) {
-			if ((this.textX.getText().isEmpty()) || (this.textZ.getText().isEmpty())) {
-				return;
-			}
-			try {
-				if (this.missile.flying) {
-					return;
-				}
-				int x = Integer.parseInt(this.textX.getText());
-				int z = Integer.parseInt(this.textZ.getText());
+//	public void actionPerformed(GuiButton guibutton) {
+//		if (guibutton.id == 0) {
+//			if ((this.textX.getText().isEmpty()) || (this.textZ.getText().isEmpty())) {
+//				return;
+//			}
+//			try {
+//				if (this.missile.flying) {
+//					return;
+//				}
+//				int x = Integer.parseInt(this.textX.getText());
+//				int z = Integer.parseInt(this.textZ.getText());
+//
+//				double XCoord = x - this.missile.posX;
+//				double YCoord = z - this.missile.posZ;
+//				if ((Math.abs(XCoord) > 500.0D) || (Math.abs(YCoord) > 500.0D)) {
+//					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Missile Target out of range!"),false);
+//				} else {
+//					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Missile launching!"),false);
+//					Mod_ExBombs.INSTANCE.sendToServer(new MessageMissileLaunchClient(this.missile.getEntityId(), x, z));
+//				}
+//			} catch (Exception exception) {
+//				if ((exception instanceof NumberFormatException)) {
+//					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Illegal input!"),false);
+//				}
+//			} finally {
+//				Minecraft.displayGuiScreen(null);
+//				Minecraft.setIngameFocus();
+//			}
+//		}
+//	}
 
-				double XCoord = x - this.missile.posX;
-				double YCoord = z - this.missile.posZ;
-				if ((Math.abs(XCoord) > 500.0D) || (Math.abs(YCoord) > 500.0D)) {
-					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Missile Target out of range!"),false);
-				} else {
-					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Missile launching!"),false);
-					Mod_ExBombs.INSTANCE.sendToServer(new MessageMissileLaunchClient(this.missile.getEntityId(), x, z));
-				}
-			} catch (Exception exception) {
-				if ((exception instanceof NumberFormatException)) {
-					ExBombsMinecraftHelper.getPlayer().sendStatusMessage(new TextComponentString("Illegal input!"),false);
-				}
-			} finally {
-				this.mc.displayGuiScreen(null);
-				this.mc.setIngameFocus();
-			}
-		}
-	}
-
-	protected void mouseClicked(int i, int j, int k) {
-		try {
-			super.mouseClicked(i, j, k);
-		} catch (IOException e) {
-
-		}
+	@Override
+	public boolean mouseClicked(double i, double j, int k) {
+		super.mouseClicked(i, j, k);
 		this.textX.mouseClicked(i, j, k);
 		this.textZ.mouseClicked(i, j, k);
+		return false;
 	}
 
-	protected void keyTyped(char c, int i) {
-		if (i == 1) {
-			this.mc.displayGuiScreen(null);
-			this.mc.setIngameFocus();
+//	@Override
+//	 public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+//		if (p_keyPressed_1_ == 256) {
+//			Minecraft.getInstance().displayGuiScreen(null);
+//			Minecraft.getInstance().mouseHelper.grabMouse();;
+//		}
+////		if (this.textX.isFocused()) {
+////			this.charTyped(p_keyPressed_1_, p_keyPressed_2_,p_keyPressed_3_);
+////		}
+////		if (this.textZ.isFocused()) {
+////			this.textZ.keyPressed(p_keyPressed_1_, p_keyPressed_2_,p_keyPressed_3_);
+////		}
+//		return true;
+//	}
+
+	@Override
+	public boolean charTyped(char c, int key){
+		if (key == 1) {
+			Minecraft.getInstance().displayGuiScreen(null);
+			Minecraft.getInstance().mouseHelper.grabMouse();;
 		}
 		if (this.textX.isFocused()) {
-			this.textX.textboxKeyTyped(c, i);
+			return this.textX.charTyped(c,key);
 		}
 		if (this.textZ.isFocused()) {
-			this.textZ.textboxKeyTyped(c, i);
+			return this.textZ.charTyped(c,key);
 		}
+		return true;
 	}
 
-	public void updateScreen() {
+	@Override
+	public void tick() {
 		if (this.textX.isFocused()) {
-			this.textX.updateCursorCounter();
+			this.textX.tick();
 		}
 		if (this.textZ.isFocused()) {
-			this.textZ.updateCursorCounter();
+			this.textZ.tick();
 		}
 	}
 
 	public void onGuiClosed() {
-		Keyboard.enableRepeatEvents(false);
+		this.mc.keyboardListener.enableRepeatEvents(false);
 	}
 }

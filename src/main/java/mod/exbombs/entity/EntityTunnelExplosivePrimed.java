@@ -1,7 +1,6 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.entity;
 
-import io.netty.buffer.ByteBuf;
 import mod.exbombs.block.BlockCore;
 import mod.exbombs.item.ItemCore;
 import mod.exbombs.item.ItemDefuser;
@@ -10,6 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -20,7 +21,7 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 	public float yOffset;
 
 	public EntityTunnelExplosivePrimed(World world) {
-		super(world);
+		super(EntityCore.Inst().TUNNELBOMB, world);
 		this.fuse = 0;
 		this.preventEntitySpawning = true;
 		setSize(0.98F, 0.98F);
@@ -36,10 +37,10 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 		this.prevPosZ = motionZ;
 	}
 
-	public EntityTunnelExplosivePrimed(World world, double motionX, double motionY, double motionZ, int meta) {
+	public EntityTunnelExplosivePrimed(World world, double motionX, double motionY, double motionZ, EnumFacing meta) {
 		this(world, motionX, motionY, motionZ);
 		setPosition(motionX, motionY, motionZ);
-		this.metaData = meta;
+		this.metaData = meta.getIndex();
 	}
 
 	protected void entityInit() {
@@ -52,11 +53,11 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 		}
 		ItemStack stack = player.getHeldItem(hand);
 		if ((stack != null)  && (EnumHand.MAIN_HAND == hand) && (stack.getItem() == ItemCore.item_defuser)) {
-			if(!player.capabilities.isCreativeMode){
+			if(!player.isCreative()){
 				ItemDefuser.defuserUse(stack, player);
 			}
-			this.isDead = true;
-			this.dropItem(new ItemStack(BlockCore.block_tunnel).getItem(), 1);
+			this.removed = true;
+			this.entityDropItem(new ItemStack(BlockCore.block_tunnel).getItem(), 1);
 		}
 		return super.processInitialInteract(player,hand);
 	}
@@ -68,45 +69,45 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 
     @Override
 	public boolean canBeCollidedWith() {
-		return !this.isDead;
+		return this.isAlive();
 	}
 
 	@Override
-	public void onUpdate() {
+	public void tick() {
 		if (this.fuse-- <= 0) {
 			if (!this.world.isRemote) {
-				setDead();
+				remove();
 				explode();
 			} else {
-				setDead();
+				remove();
 			}
 		}
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf buffer) {
+	public void writeSpawnData(PacketBuffer buffer) {
 		buffer.writeByte(this.fuse);
 		buffer.writeByte(this.metaData);
 		buffer.writeDouble(this.posY);
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf additionalData) {
+	public void readSpawnData(PacketBuffer additionalData) {
 		this.fuse = additionalData.readByte();
 		this.metaData = additionalData.readByte();
 		this.posY = additionalData.readDouble();
 	}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound tagCompund) {
-		this.fuse = tagCompund.getInteger("Fuse");
-		this.metaData = tagCompund.getInteger("MetaData");
+	protected void readAdditional(NBTTagCompound tagCompund) {
+		this.fuse = tagCompund.getInt("Fuse");
+		this.metaData = tagCompund.getInt("MetaData");
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound tagCompound) {
-		tagCompound.setInteger("Fuse", (byte) this.fuse);
-		tagCompound.setInteger("MetaData", (byte) this.metaData);
+	protected void writeAdditional(NBTTagCompound tagCompound) {
+		tagCompound.setInt("Fuse", (byte) this.fuse);
+		tagCompound.setInt("MetaData", (byte) this.metaData);
 	}
 
 	@Override
@@ -120,8 +121,26 @@ public class EntityTunnelExplosivePrimed extends Entity implements IEntityAdditi
 	}
 
 	private void explode() {
-		int meta = (metaData & 0x0E) >> 1;
-		UtilExproder.createTunnelExplosion(this.world, null, this.posX, this.posY, this.posZ, meta);
+		//int meta = (metaData & 0x0E) >> 1;
+		UtilExproder.createTunnelExplosion(this.world, null, this.posX, this.posY, this.posZ, metaData);
+	}
+
+	@Override
+	public NBTTagCompound serializeNBT() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	protected void registerData() {
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 
 

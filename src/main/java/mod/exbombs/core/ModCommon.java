@@ -27,7 +27,7 @@ public class ModCommon {
 
 	// コンフィグ カテゴリー general
 	public static final String MOD_CONFIG_CAT_GENELAL = "general";
-	public static final String MOD_CHANEL ="Mod_Channel_ExBombs";
+	public static final String MOD_CHANEL ="mod_channel_exbombs";
 	public static final String MOD_EVENTCHANEL ="Mod_EventChannel_ExBombs";
 
 	public static final int MOD_GUI_ID_MISSILE = 10;

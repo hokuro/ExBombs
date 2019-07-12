@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
     "textures": {
-        "layer0": "exbombs:items/itemPaintBomb"
+        "layer0": "exbombs:items/itempaintbomb"
     }
 }

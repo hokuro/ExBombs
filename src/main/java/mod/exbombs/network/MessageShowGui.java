@@ -1,14 +1,12 @@
 package mod.exbombs.network;
 
-import io.netty.buffer.ByteBuf;
-import mod.exbombs.core.Mod_ExBombs;
-import mod.exbombs.helper.ExBombsGuiHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class MessageShowGui implements IMessageHandler<MessageShowGui, IMessage>, IMessage {
+import mod.exbombs.helper.ExBombsGuiHelper;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+public class MessageShowGui {
 
 	private int id;
 	private Object[] parameter;
@@ -22,42 +20,10 @@ public class MessageShowGui implements IMessageHandler<MessageShowGui, IMessage>
 		this.parameter = param;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		this.id = buf.readInt();
-		int plength = buf.readInt();
-		parameter = new Object[plength];
-		for ( int i = 0; i < plength; i++){
-			int type = buf.readInt();
-			switch(type){
-			case 0:
-				parameter[i] = new Boolean(buf.readBoolean());
-				break;
-			case 1:
-				parameter[i] = new Integer(buf.readInt());
-				break;
-			case 2:
-				parameter[i] = new Long(buf.readLong());
-				break;
-			case 3:
-				parameter[i] = new Float(buf.readFloat());
-				break;
-			case 4:
-				parameter[i] = new Double(buf.readDouble());
-				break;
-			case 5:
-				int strlen = buf.readInt();
-				byte[] str = new byte[strlen];
-				buf.readBytes(str);
-				parameter[i] = new String(str);
-				break;
-			}
-		}
-	}
-
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(id);
+	public static void encode(MessageShowGui pkt, PacketBuffer buf)
+	{
+		buf.writeInt(pkt.id);
+		Object[] parameter = pkt.parameter;
 		buf.writeInt(parameter.length);
 		for (int i = 0; i < parameter.length; i++){
 			if (parameter[i] instanceof Boolean){
@@ -84,18 +50,54 @@ public class MessageShowGui implements IMessageHandler<MessageShowGui, IMessage>
 		}
 	}
 
-	@Override
-	public IMessage onMessage(MessageShowGui message, MessageContext ctx) {
-	     //クライアントへ送った際に、EntityPlayerインスタンスはこのように取れる。
-        //EntityPlayer player = SamplePacketMod.proxy.getEntityPlayerInstance();
-        //サーバーへ送った際に、EntityPlayerインスタンス（EntityPlayerMPインスタンス）はこのように取れる。
-        //EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
-        //Do something.
-		try {
-			new ExBombsGuiHelper().displayGuiByID((EntityPlayer) Mod_ExBombs.proxy.getEntityPlayerInstance(), message.id, message.parameter);
-		} catch (Exception exception) {
-			exception.printStackTrace();
+	public static MessageShowGui decode(PacketBuffer buf)
+	{
+		int id = buf.readInt();
+		int plength = buf.readInt();
+		Object[] ptm = new Object[plength];
+		for ( int i = 0; i < plength; i++){
+			int type = buf.readInt();
+			switch(type){
+			case 0:
+				ptm[i] = new Boolean(buf.readBoolean());
+				break;
+			case 1:
+				ptm[i] = new Integer(buf.readInt());
+				break;
+			case 2:
+				ptm[i] = new Long(buf.readLong());
+				break;
+			case 3:
+				ptm[i] = new Float(buf.readFloat());
+				break;
+			case 4:
+				ptm[i] = new Double(buf.readDouble());
+				break;
+			case 5:
+				int strlen = buf.readInt();
+				byte[] str = new byte[strlen];
+				buf.readBytes(str);
+				ptm[i] = new String(str);
+				break;
+			}
 		}
-		return null;
+		return new MessageShowGui(id, ptm);
+	}
+
+	public static class Handler
+	{
+		public static void handle(final MessageShowGui pkt, Supplier<NetworkEvent.Context> ctx)
+		{
+		     //クライアントへ送った際に、EntityPlayerインスタンスはこのように取れる。
+	        //EntityPlayer player = SamplePacketMod.proxy.getEntityPlayerInstance();
+	        //サーバーへ送った際に、EntityPlayerインスタンス（EntityPlayerMPインスタンス）はこのように取れる。
+	        //EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
+	        //Do something.
+			try {
+				new ExBombsGuiHelper().displayGuiByID(ctx.get().getSender(), pkt.id, pkt.parameter);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
+		}
 	}
 }

@@ -4,10 +4,9 @@ import java.util.Iterator;
 import java.util.Random;
 
 import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
-import mod.exbombs.config.ConfigValue;
+import mod.exbombs.config.MyConfig;
 import mod.exbombs.entity.EntityBomb;
 import mod.exbombs.entity.EntityPaintBomb;
-import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -26,7 +25,7 @@ public class UtilExproder {
 		EntityThrowable bomb = null;
 		switch(type){
 		case BOMB:
-			bomb = new EntityBomb(world,player);
+			bomb = new EntityBomb(world,player,EnumBombType.BOMB);
 			break;
 		case WARTER:
 			bomb = new EntityBomb(world,player,type);
@@ -40,8 +39,7 @@ public class UtilExproder {
 		case PAINT:
 			ItemStack heldItem = player.getHeldItemOffhand();
 			if (!heldItem.isEmpty() && Block.getBlockFromItem(heldItem.getItem()) != Blocks.AIR){
-				IBlockState block =  heldItem.getItem().getHasSubtypes()? Block.getBlockFromItem(heldItem.getItem()).getStateFromMeta(heldItem.getItemDamage()):
-	    			Block.getBlockFromItem(heldItem.getItem()).getDefaultState();
+				IBlockState block = Block.getBlockFromItem(heldItem.getItem()).getDefaultState();
 				bomb = new EntityPaintBomb(world,player,block);
 			}
 			break;
@@ -49,7 +47,7 @@ public class UtilExproder {
 			bomb = new EntityBomb(world,player,type);
 			break;
 		default:
-			bomb = new EntityBomb(world,player);
+			bomb = new EntityBomb(world,player,EnumBombType.BOMB);
 			break;
 		}
 		return bomb;
@@ -62,7 +60,7 @@ public class UtilExproder {
 		MoreExplosivesBetterExplosion explosion =
 				new MoreExplosivesBetterExplosion(worldObj, entity, x, y, z, size, type, enableDrops);
 		explosion.isFlaming = isFlaming;
-		explosion.CanDestroyBlock = type==EnumBombType.PRIME?true:ConfigValue.General.bomb_destroy_block;
+		explosion.CanDestroyBlock = type==EnumBombType.PRIME?true:MyConfig.GENERAL.bomb_destroy_block.get();
 		explosion.doExplosionA();
 		explosion.doExplosionB(true);
 		sendClientFXPacket(worldObj, x, y, z, size, explosion);

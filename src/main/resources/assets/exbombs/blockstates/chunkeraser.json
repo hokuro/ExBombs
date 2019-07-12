@@ -1,6 +1,5 @@
 {
     "variants": {
-        "explode=false":{ "model":"exbombs:chunkeraser" },
-        "explode=true":{ "model":"exbombs:chunkeraser" }
+        "":{ "model":"exbombs:block/chunkeraser" }
     }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "bomb",
+  "pattern": [
+    "III",
+    "ITI",
+    "III"
+  ],
+  "key": {
+    "I": {
+          "item": "minecraft:snowball"
+    },
+    "T": {
+          "item": "minecraft:snow_block"
+    }
+  },
+  "result": {
+    "item": "exbombs:frozenbomb",
+    "count": 6
+  }
+}

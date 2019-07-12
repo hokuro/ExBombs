@@ -7,10 +7,10 @@ import net.minecraft.item.ItemStack;
 
 public class ItemDefuser extends Item {
 	public ItemDefuser() {
-		super();
-		setMaxStackSize(1);
-		setMaxDamage(255);
-		setCreativeTab(Mod_ExBombs.tabExBombs);
+		super(new Item.Properties()
+				.maxStackSize(1)
+				.defaultMaxDamage(255)
+				.group(Mod_ExBombs.tabExBombs));
 	}
 
 

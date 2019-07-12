@@ -1,7 +1,7 @@
 package mod.exbombs.entity;
 
-import mod.exbombs.config.ConfigValue;
-import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
+import mod.exbombs.config.MyConfig;
+import mod.exbombs.util.EnumBombType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,13 +13,13 @@ public class EntityPaintBomb extends EntityBomb {
 	private IBlockState block;
 
 	public EntityPaintBomb(World world) {
-		super(world);
-		this.bombType = EnumBombType.PAINT;
+		super(EntityCore.Inst().PAINTBOMB,world,EnumBombType.PAINT);
 	}
 
 	public EntityPaintBomb(World world, EntityLivingBase entityliving, IBlockState changeBlock) {
-		super(world, entityliving);
+		super(EntityCore.Inst().PAINTBOMB, entityliving,world);
 		this.block = changeBlock;
+		this.bombType = EnumBombType.PAINT;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class EntityPaintBomb extends EntityBomb {
 
 		IBlockState retBlock = block;
 
-		if (!this.world.isRemote && !ConfigValue.General.cheat_paint
+		if (!this.world.isRemote && !MyConfig.GENERAL.cheat_paint.get()
 			&& ((this.thrower instanceof EntityPlayer) && !((EntityPlayer)thrower).isCreative())){
 			this.thrower.getHeldItem(EnumHand.OFF_HAND).shrink(1);
 			if (this.thrower.getHeldItem(EnumHand.OFF_HAND).isEmpty()){

@@ -28,9 +28,9 @@ public class EntityExBombsSmokeFX extends ParticleSmokeLarge {
 		this.particleRed = (this.particleBlue = this.particleGreen = all);
 	}
 
-	public void setLife(int life) {
-		this.particleMaxAge = life;
-	}
+//	public void setLife(int life) {
+//		this.particleMaxAge = life;
+//	}
 
 	public void setLight(int light) {
 		this.light = light;

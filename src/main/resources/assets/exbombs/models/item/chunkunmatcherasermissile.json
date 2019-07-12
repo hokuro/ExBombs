@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
     "textures": {
-        "layer0": "exbombs:items/itemMCEMissile"
+        "layer0": "exbombs:items/itemmcemissile"
     }
 }

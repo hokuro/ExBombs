@@ -23,9 +23,9 @@ public class RenderNuclearExplosivePrimed extends Render {
 	}
 
 	public void renderNucExpPrimed(EntityNuclearExplosivePrimed entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
+        GlStateManager.translatef((float)x, (float)y + 0.5F, (float)z);
 
         if ((float)entity.getFuse() - partialTicks + 1.0F < 10.0F)
         {
@@ -34,15 +34,15 @@ public class RenderNuclearExplosivePrimed extends Render {
             f = f * f;
             f = f * f;
             float f1 = 1.0F + f * 0.3F;
-            GlStateManager.scale(f1, f1, f1);
+            GlStateManager.scalef(f1, f1, f1);
         }
 
         float f2 = (1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
         this.bindEntityTexture(entity);
-        GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(-0.5F, -0.5F, 0.5F);
+        GlStateManager.rotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
         blockrendererdispatcher.renderBlockBrightness(BlockCore.block_nuclear.getDefaultState(), entity.getBrightness());
-        GlStateManager.translate(0.0F, 0.0F, 1.0F);
+        GlStateManager.translatef(0.0F, 0.0F, 1.0F);
 
         if (this.renderOutlines)
         {
@@ -58,13 +58,13 @@ public class RenderNuclearExplosivePrimed extends Render {
             GlStateManager.disableLighting();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.DST_ALPHA);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, f2);
-            GlStateManager.doPolygonOffset(-3.0F, -3.0F);
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, f2);
+            GlStateManager.polygonOffset(-3.0F, -3.0F);
             GlStateManager.enablePolygonOffset();
             blockrendererdispatcher.renderBlockBrightness(BlockCore.block_nuclear.getDefaultState(), 1.0F);
-            GlStateManager.doPolygonOffset(0.0F, 0.0F);
+            GlStateManager.polygonOffset(0.0F, 0.0F);
             GlStateManager.disablePolygonOffset();
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.disableBlend();
             GlStateManager.enableLighting();
             GlStateManager.enableTexture2D();

@@ -1,20 +1,19 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.entity;
 
-import io.netty.buffer.ByteBuf;
 import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
 import mod.exbombs.gui.GuiMissile;
 import mod.exbombs.helper.ExBombsGuiHelper;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.item.ItemCore;
 import mod.exbombs.item.ItemDefuser;
-import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
+import mod.exbombs.util.EnumBombType;
 import mod.exbombs.util.UtilExproder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -29,7 +28,7 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 	private ParticleHelper helper;
 
 	public EntityMissile(World world) {
-		super(world);
+		super(EntityCore.Inst().MISSILE, world);
 		setSize(1.0F, 3.5F);
 		this.setRenderDistanceWeight(50.0D);
 		this.ignoreFrustumCheck = true;
@@ -45,15 +44,15 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 	}
 
 	@Override
-	public void onUpdate() {
-		super.onUpdate();
+	public void tick() {
+		super.tick();
 		if (!this.flying) {
 			return;
 		}
 		if (!this.world.isRemote) {
 			for (int motionX = -5; motionX < 5; motionX++) {
 				for (int motionZ = -5; motionZ < 5; motionZ++) {
-					this.world.getChunkProvider().getLoadedChunk(this.chunkCoordX + motionX, this.chunkCoordZ + motionZ);
+					//this.world.getChunkProvider().getLoadedChunk(this.chunkCoordX + motionX, this.chunkCoordZ + motionZ);
 				}
 			}
 			if ((this.prevRotationPitch == 0.0F) && (this.prevRotationYaw == 0.0F)) {
@@ -63,9 +62,9 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 			}
 			Vec3d vec3d = new Vec3d(this.posX, this.posY+1, this.posZ);
 			Vec3d vec3d1 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-			RayTraceResult  movingobjectposition = this.world.rayTraceBlocks(vec3d, vec3d1, false, true, false);
+			RayTraceResult  movingobjectposition = this.world.rayTraceBlocks(vec3d, vec3d1);
 			if (movingobjectposition != null) {
-				setDead();
+				remove();
 				if (this.missileType == 0) {
 					UtilExproder.createExplesion(this.world, null, this.posX, this.posY, this.posZ, 10.0F, false, false, EnumBombType.PRIME);
 				} else if (this.missileType == 1) {
@@ -111,27 +110,28 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 		// メインハンドに何も持っておらず、オフハンドにDefuserを装備している場合信管を外す
 		if (((stack != null) && (stack.getItem() == ItemCore.item_defuser)) ||
 			((stack == null) &&(offHand != null && offHand.getItem() == ItemCore.item_defuser))) {
-			if ((!this.world.isRemote) && (!this.isDead)) {
-				if (!player.capabilities.isCreativeMode) {
+			if ((!this.world.isRemote) && (!this.removed)) {
+				if (!player.isCreative()) {
 					ItemDefuser.defuserUse(stack, player);
 				}
-				this.setDead();
+				this.remove();
 				if (this.missileType == 0) {
-					this.dropItem(ItemCore.item_TntMissile, 1);
+					this.entityDropItem(ItemCore.item_TntMissile, 1);
 				}
 				if (this.missileType == 1) {
-					this.dropItem(ItemCore.item_NCMissile, 1);
+					this.entityDropItem(ItemCore.item_NCMissile, 1);
 				}
 				if (this.missileType == 2) {
-					this.dropItem(ItemCore.item_CEMissile, 1);
+					this.entityDropItem(ItemCore.item_CEMissile, 1);
 				}
 				if (this.missileType == 3) {
-					this.dropItem(ItemCore.item_MCEMissile, 1);
+					this.entityDropItem(ItemCore.item_MCEMissile, 1);
 				}
 				return true;
 			}
 		} else if (this.world.isRemote) {
-			new ExBombsGuiHelper().displayGui(player, new GuiMissile(this.world, Minecraft.getMinecraft(), this));
+			new ExBombsGuiHelper().displayGui(player, new GuiMissile(this.world, this));
+			//new ExBombsGuiHelper().displayGuiByID((EntityPlayer) Mod_ExBombs.proxy.getEntityPlayerInstance(), ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(0)});
 			return true;
 		}
 		return super.processInitialInteract(player, hand);
@@ -144,34 +144,30 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 
 	@Override
 	public boolean canBeCollidedWith() {
-		return !this.isDead;
+		return !this.removed;
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf buffer) {
+	public void writeSpawnData(PacketBuffer buffer) {
 		buffer.writeInt(this.missileType);
 		buffer.writeBoolean(this.flying);
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf additionalData) {
+	public void readSpawnData(PacketBuffer additionalData) {
 		this.missileType = additionalData.readInt();
 		this.flying = additionalData.readBoolean();
 	}
 
 	@Override
-	protected void entityInit() {
-	}
-
-	@Override
-	protected void readEntityFromNBT(NBTTagCompound tagCompund) {
-		this.missileType = tagCompund.getInteger("missileType");
+	protected void readAdditional(NBTTagCompound tagCompund) {
+		this.missileType = tagCompund.getInt("missileType");
 		this.flying = tagCompund.getBoolean("flying");
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound tagCompound) {
-		tagCompound.setInteger("missileType", this.missileType);
+	protected void writeAdditional(NBTTagCompound tagCompound) {
+		tagCompound.setInt("missileType", this.missileType);
 		tagCompound.setBoolean("flying", this.flying);
 	}
 
@@ -198,11 +194,30 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D,
 						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D,
 						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D);
-				fx.setLife(120);
+				fx.setMaxAge(120);
 				fx.interpPosY=8.0D;
 				fx.setAll((float) (Math.random() * 0.30000001192092896D));
 				ExBombsMinecraftHelper.addEffect(fx);
 			}
 		}
+	}
+
+	@Override
+	public NBTTagCompound serializeNBT() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
+	@Override
+	protected void registerData() {
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 }

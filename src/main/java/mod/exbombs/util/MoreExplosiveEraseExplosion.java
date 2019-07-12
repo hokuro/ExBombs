@@ -3,9 +3,9 @@ package mod.exbombs.util;
 import java.util.List;
 import java.util.Random;
 
-import mod.exbombs.config.BlockAndMetadata;
-import mod.exbombs.config.ConfigValue;
+import mod.exbombs.config.MyConfig;
 import mod.exbombs.sounds.ModSoundManager;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -33,7 +33,7 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 		matching = match;
 	}
 
-	public boolean isMatch(IBlockState state, List<BlockAndMetadata> match){
+	public boolean isMatch(IBlockState state, List<Block> match){
 		if ((state != null) &&
 				(state.getBlock() != Blocks.BEDROCK) &&
 				(state.getMaterial() != Material.AIR)){
@@ -59,9 +59,9 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 
 		int x_start;
 		int z_start;
-		List<BlockAndMetadata> match = ConfigValue.General.getUnEraseBlock();
-		if (ConfigValue.General.erase_method == 0){
-			Chunk ck = world.getChunkFromBlockCoords(new BlockPos(xPos,yPos,zPos));
+		List<Block> match = MyConfig.GENERAL.getUnEraseBlock();
+		if (MyConfig.GENERAL.erase_method.get() == 0){
+			Chunk ck = world.getChunk(new BlockPos(xPos,yPos,zPos));//world.getChunkFromBlockCoords(new BlockPos(xPos,yPos,zPos));
 			x_start = ck.x* 16;
 			z_start = ck.z * 16;
 		}else{
@@ -72,11 +72,11 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 			for ( int z = 0; z < 16; z++){
 				for ( int y = 1; y < 255; y++){
 					if (matching &&
-							ConfigValue.General.getUnEraseBlock() != null &&
+							MyConfig.GENERAL.getUnEraseBlock() != null &&
 							isMatch(world.getBlockState(new BlockPos(x_start+x,y,z_start+z)), match)){
 						continue;
 					}
-					world.setBlockToAir(new BlockPos(x_start+x,y,z_start+z));
+					world.setBlockState(new BlockPos(x_start+x,y,z_start+z),Blocks.AIR.getDefaultState());
 				}
 			}
 		}

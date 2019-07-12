@@ -7,8 +7,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import mod.exbombs.core.Mod_ExBombs;
-import mod.exbombs.network.MessageBlockRadarUpdate;
+import mod.exbombs.network.MessageHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -16,18 +15,17 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;;
 
 public class GuiBlockRadar extends GuiScreen {
-	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/gui/radarGUI.png");
-	private static final ResourceLocation texOver = new ResourceLocation("exbombs:textures/gui/radarOverGUI.png");
+	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/gui/radargui.png");
+	private static final ResourceLocation texOver = new ResourceLocation("exbombs:textures/gui/radarovergui.png");
 	private static final int[] RADAR_SIZE = new int[]{16,32,64,128,256};
 
-	private Minecraft mc;
+//	private Minecraft mc;
 	private int imgWidth;
 	private int imgHeight;
 	private int imgLeft;
@@ -40,34 +38,75 @@ public class GuiBlockRadar extends GuiScreen {
 	private ItemStack drawIcon;
 	private int index = 0;
 
-	public GuiBlockRadar(Minecraft minecraft, String string, int meta, int size) {
-		this.mc = minecraft;
+	public GuiBlockRadar(int blockId, int size){
 		this.renderTicks = 0;
 		this.alphaTicks = 0;
 		this.renderAlpha = 1.0F;
 
-		targetBlock = Block.getBlockFromName(string).getStateFromMeta(meta);
+		targetBlock = Block.getStateById(blockId);
 		index = size;
-		drawIcon = new ItemStack(targetBlock.getBlock(),1,targetBlock.getBlock().getMetaFromState(targetBlock));
+		drawIcon = new ItemStack(targetBlock.getBlock(),1);
 		blockPos = new ArrayList<BlockPos>();
 	}
 
+	public GuiBlockRadar(Minecraft minecraft, String string, int meta, int size, int blockId) {
+//		this.mc = minecraft;
+		this.renderTicks = 0;
+		this.alphaTicks = 0;
+		this.renderAlpha = 1.0F;
+
+		targetBlock = Block.getStateById(blockId);//  Block.getBlockFromName(string).getStateFromMeta(meta);
+		index = size;
+		drawIcon = new ItemStack(targetBlock.getBlock(),1); // new ItemStack(targetBlock.getBlock(),1,targetBlock.getBlock().getMetaFromState(targetBlock));
+		blockPos = new ArrayList<BlockPos>();
+	}
+
+	@Override
 	public void initGui() {
 		this.imgWidth = 205;
 		this.imgHeight = 200;
 		this.imgLeft = ((this.width - this.imgWidth) / 2);
 		this.imgTop = ((this.height - this.imgHeight) / 2);
 
-		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(101, this.width / 2 - 125, this.imgTop + 175, 20, 20, "△"));
-		this.buttonList.add(new GuiButton(102, this.width / 2 - 125, this.imgTop + 195, 20, 20, "▽"));
-		this.buttonList.add(new GuiButton(103, this.width / 2 + 75, this.imgTop + 195, 40, 20, "Search"));
+		this.buttons.clear();
+		GuiButton b1 = new GuiButton(101, this.width / 2 - 125, this.imgTop + 175, 20, 20, "△"){
+			@Override
+			public void onClick(double mouseX, double mouseY){
+				++index;
+				if (index >= RADAR_SIZE.length){
+					index = 0;
+				}
+			}
+		};
+		GuiButton b2 = new GuiButton(102, this.width / 2 - 125, this.imgTop + 195, 20, 20, "▽"){
+			@Override
+			public void onClick(double mouseX, double mouseY){
+				--index;
+				if (index < 0){
+					index = RADAR_SIZE.length-1;
+				}
+			}
+		};
+		GuiButton b3 = new GuiButton(103, this.width / 2 + 75, this.imgTop + 195, 40, 20, "Search"){
+			@Override
+			public void onClick(double mouseX, double mouseY){
+				searchBlock();
+			}
+		};
+
+		this.buttons.add(b1);
+		this.buttons.add(b2);
+		this.buttons.add(b3);
+		this.children.add(b3);
+		this.children.add(b1);
+		this.children.add(b2);
 
 		iconx = this.width / 2 + 90;
 		icony = this.imgTop + 175;
 	}
 
-	public void drawScreen(int i, int j, float f) {
+	@Override
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		try{
 			drawDefaultBackground();
 		}catch(Exception ex){
@@ -76,7 +115,7 @@ public class GuiBlockRadar extends GuiScreen {
 
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(tex);
+		this.mc.getTextureManager().bindTexture(tex);
 		drawTexturedModalRect(this.imgLeft, this.imgTop, 0, 0, this.imgWidth, this.imgHeight);
 		GL11.glPopMatrix();
 
@@ -85,7 +124,7 @@ public class GuiBlockRadar extends GuiScreen {
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-		this.mc.renderEngine.bindTexture(tex);
+		this.mc.getTextureManager().bindTexture(tex);
 		GL11.glTranslatef(this.imgLeft + 100, this.imgTop + 100, 0.0F);
 		GL11.glRotatef(360 - this.renderTicks * 3 % 360, 0.0F, 0.0F, 1.0F);
 		drawTexturedModalRect(0, 0, 0, 214, 120, 42);
@@ -94,21 +133,21 @@ public class GuiBlockRadar extends GuiScreen {
 
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(texOver);
+		this.mc.getTextureManager().bindTexture(texOver);
 		drawTexturedModalRect(this.imgLeft - 28, this.imgTop - 37, 0, 0, 256, 256);
 		GL11.glPopMatrix();
 
-		for (int index = 0; index < this.buttonList.size(); index++) {
-			GuiButton guibutton = (GuiButton) this.buttonList.get(index);
-			guibutton.drawButton(this.mc, i, j, f);
+		for (int index = 0; index < this.buttons.size(); index++) {
+			GuiButton guibutton = (GuiButton) this.buttons.get(index);
+			guibutton.render(mouseX, mouseY, partialTicks);
 		}
 
 		FontRenderer font = this.fontRenderer;
 		font.drawString(new Integer(RADAR_SIZE[index]).toString() + " × " + new Integer(RADAR_SIZE[index]).toString(), this.width / 2 - 103, this.imgTop + 205, 0xFFFFFF);
 
 
-		drawCenteredStringWithoutShadow(font, "Block Radar:" +
-		drawIcon.getTooltip(Minecraft.getMinecraft().player, ITooltipFlag.TooltipFlags.NORMAL).get(0),
+		drawCenteredStringWithoutShadow(font, "Block Radar:",
+		//drawIcon.getTooltip(Minecraft.getInstance().player, ITooltipFlag.TooltipFlags.NORMAL).get(0),
 		this.width / 2, this.imgTop - 12, 4210752);
 
 		GL11.glPushMatrix();
@@ -137,7 +176,7 @@ public class GuiBlockRadar extends GuiScreen {
 				}else{
 					GL11.glColor4f(1.0F, 0.54902F, 0.0F, renderAlpha);
 				}
-				this.mc.renderEngine.bindTexture(tex);
+				this.mc.getTextureManager().bindTexture(tex);
 				GL11.glTranslatef(this.imgLeft + 100, this.imgTop + 100, 0.0F);
 				GL11.glRotatef(-((int) this.mc.player.rotationYaw % 360), 0.0F, 0.0F, 1.0F);
 				drawTexturedModalRect(-2 - x, -2 - z, 252, 252, 4, 4);
@@ -147,25 +186,25 @@ public class GuiBlockRadar extends GuiScreen {
 		}
 	}
 
-	public void actionPerformed(GuiButton guibutton) {
-		switch(guibutton.id){
-		case 101:
-			++index;
-			if (index >= RADAR_SIZE.length){
-				index = 0;
-			}
-			break;
-		case 102:
-			--index;
-			if (index < 0){
-				index = RADAR_SIZE.length-1;
-			}
-			break;
-		case 103:
-			searchBlock();
-			break;
-		}
-	}
+//	public void actionPerformed(GuiButton guibutton) {
+//		switch(guibutton.id){
+//		case 101:
+//			++index;
+//			if (index >= RADAR_SIZE.length){
+//				index = 0;
+//			}
+//			break;
+//		case 102:
+//			--index;
+//			if (index < 0){
+//				index = RADAR_SIZE.length-1;
+//			}
+//			break;
+//		case 103:
+//			searchBlock();
+//			break;
+//		}
+//	}
 
 	private void searchBlock(){
 		blockPos.clear();
@@ -184,7 +223,7 @@ public class GuiBlockRadar extends GuiScreen {
 				// 足元方向を探索
 				for (int y = py; y > 0; y--){
 					BlockPos pos = new BlockPos(x,y,z);
-					if (mc.getMinecraft().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
+					if (Minecraft.getInstance().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
 						blockPos.add(pos);
 						yflag = true;
 						break;
@@ -194,7 +233,7 @@ public class GuiBlockRadar extends GuiScreen {
 				// 頭上方向を探索
 				for (int y = py; y < 255 && yflag; y++){
 					BlockPos pos = new BlockPos(x,y,z);
-					if (mc.getMinecraft().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
+					if (Minecraft.getInstance().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
 						blockPos.add(pos);
 						yflag = true;
 						break;
@@ -209,7 +248,7 @@ public class GuiBlockRadar extends GuiScreen {
 				// 足元方向を探索
 				for (int y = py; y > 0; y--){
 					BlockPos pos = new BlockPos(x,y,z);
-					if (mc.getMinecraft().world.getBlockState(new BlockPos(x,y,z))== targetBlock){
+					if (Minecraft.getInstance().world.getBlockState(new BlockPos(x,y,z))== targetBlock){
 						blockPos.add(pos);
 						yflag = true;
 						break;
@@ -219,7 +258,7 @@ public class GuiBlockRadar extends GuiScreen {
 				// 頭上方向を探索
 				for (int y = py; y < 255 && yflag; y++){
 					BlockPos pos = new BlockPos(x,y,z);
-					if (mc.getMinecraft().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
+					if (Minecraft.getInstance().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
 						blockPos.add(pos);
 						yflag = true;
 						break;
@@ -237,7 +276,7 @@ public class GuiBlockRadar extends GuiScreen {
 				// 足元方向を探索
 				for (int y = py; y > 0; y--){
 					BlockPos pos = new BlockPos(x,y,z);
-					if (mc.getMinecraft().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
+					if (Minecraft.getInstance().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
 						blockPos.add(pos);
 						yflag = true;
 						break;
@@ -247,7 +286,7 @@ public class GuiBlockRadar extends GuiScreen {
 				// 頭上方向を探索
 				for (int y = py; y < 255 && yflag; y++){
 					BlockPos pos = new BlockPos(x,y,z);
-					if (mc.getMinecraft().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
+					if (Minecraft.getInstance().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
 						blockPos.add(pos);
 						yflag = true;
 						break;
@@ -262,7 +301,7 @@ public class GuiBlockRadar extends GuiScreen {
 				// 足元方向を探索
 				for (int y = py; y > 0; y--){
 					BlockPos pos = new BlockPos(x,y,z);
-					if (mc.getMinecraft().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
+					if (Minecraft.getInstance().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
 						blockPos.add(pos);
 						yflag = true;
 						break;
@@ -272,7 +311,7 @@ public class GuiBlockRadar extends GuiScreen {
 				// 頭上方向を探索
 				for (int y = py; y < 255 && yflag; y++){
 					BlockPos pos = new BlockPos(x,y,z);
-					if (mc.getMinecraft().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
+					if (Minecraft.getInstance().world.getBlockState(new BlockPos(x,y,z)) == targetBlock){
 						blockPos.add(pos);
 						yflag = true;
 						break;
@@ -303,7 +342,8 @@ public class GuiBlockRadar extends GuiScreen {
     public void onGuiClosed()
     {
 		// サイズをサーバーに送る
-		Mod_ExBombs.INSTANCE.sendToServer(new MessageBlockRadarUpdate(index));
+		MessageHandler.SendMessage_BlockRadarUpdate(index);
+		//Mod_ExBombs.INSTANCE.sendToServer(new MessageBlockRadarUpdate(index));
     }
 
 	public boolean doesGuiPauseGame() {
@@ -312,12 +352,12 @@ public class GuiBlockRadar extends GuiScreen {
 
     private void drawItemStack2(ItemStack stack, int x, int y, String altText)
     {
-        GlStateManager.translate(0.0F, 0.0F, 32.0F);
+        GlStateManager.translatef(0.0F, 0.0F, 32.0F);
         float zLevel = 200.0F;
-        RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
+        ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
         itemRender.zLevel = 200.0F;
         net.minecraft.client.gui.FontRenderer font = stack.getItem().getFontRenderer(stack);
-        if (font == null) font = Minecraft.getMinecraft().fontRenderer;
+        if (font == null) font = Minecraft.getInstance().fontRenderer;
         itemRender.renderItemAndEffectIntoGUI(stack, x, y);
         itemRender.renderItemOverlayIntoGUI(font, stack, x, y , altText);
         zLevel = 0.0F;

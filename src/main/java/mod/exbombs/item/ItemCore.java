@@ -3,15 +3,11 @@ package mod.exbombs.item;
 import java.util.HashMap;
 import java.util.Map;
 
-import mod.exbombs.core.ModCommon;
 import mod.exbombs.core.Mod_ExBombs;
-import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import mod.exbombs.util.EnumBombType;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.event.RegistryEvent;
 
 public class ItemCore {
 	public static final String NAME_ITEMOIL = "oil";
@@ -57,107 +53,65 @@ public class ItemCore {
 	};
 
 	// 素材
-	public static Item item_Oil;
-	public static Item item_Plastic;
-	public static Item item_HeavyMatter;
-	public static Item item_Uranium;
-	public static Item item_RocketFuel;
+	public static Item item_Oil;// = new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMOIL);
+	public static Item item_Plastic;// = new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_PLASTIC);
+	public static Item item_HeavyMatter;// = new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_HEAVYMATTER);;
+	public static Item item_Uranium;// = new ItemUranium().setRegistryName(NAME_ITEMURANIUM);
+	public static Item item_RocketFuel;// = new ItemRocketFuel().setRegistryName(NAME_ITEMROCKETFUEL);
 
 	// 手榴弾
-	public static Item item_Bomb;
-	public static Item item_WaterBomb;
-	public static Item item_paintBomb;
-	public static Item item_frozenBomb;
-	public static Item item_icicleBomb;
-	public static Item item_MC;
-	public static Item item_lavaBomb;
+	public static Item item_Bomb;// = new ItemBomb(EnumBombType.BOMB).setRegistryName(NAME_ITEMBOMB);
+	public static Item item_WaterBomb;// = new ItemBomb(EnumBombType.WARTER, Items.BUCKET).setRegistryName(NAME_ITEMWATERBOMB);
+	public static Item item_paintBomb;// = new ItemBomb(EnumBombType.PAINT).setRegistryName(NAME_ITEMPAINTBOMB);
+	public static Item item_frozenBomb;// = new ItemBomb(EnumBombType.FROZEN).setRegistryName(NAME_ITEMFROZENBOMB);
+	public static Item item_icicleBomb;// = new ItemBomb(EnumBombType.ICICLE).setRegistryName(NAME_ITEMICICLEBOMB);
+	public static Item item_MC;// = new ItemMolotovCoctail().setRegistryName(NAME_ITEMMC);
+	public static Item item_lavaBomb;// = new ItemBomb(EnumBombType.LAVA,null).setRegistryName(NAME_ITEMLAVABOMB);
 
 	// ミサイル
-	public static Item item_TntMissile;
-	public static Item item_NCMissile;
-	public static Item item_CEMissile;
-	public static Item item_MCEMissile;
+	public static Item item_TntMissile;// = new ItemMissile().setMissileType(0).setRegistryName(NAME_ITEMTNTMISSILE);
+	public static Item item_NCMissile;// = new ItemMissile().setMissileType(1).setRegistryName(NAME_ITEMNCMISSILE);
+	public static Item item_CEMissile;// = new ItemMissile().setMissileType(2).setRegistryName(NAME_ITEMCEMISSILE);
+	public static Item item_MCEMissile;// = new ItemMissile().setMissileType(3).setRegistryName(NAME_ITEMMCEMISSILE);
 
 	// ツール
-	public static Item item_Radar;
-	public static Item item_defuser;
-	public static Item item_blockRadar;
+	public static Item item_Radar;// = new  ItemSpawnerRadar().setRegistryName(NAME_ITEMRADAR);
+	public static Item item_defuser;// = new ItemDefuser().setRegistryName(NAME_ITEMDEFUSER);
+	public static Item item_blockRadar;// = new ItemBlockRadar().setRegistryName(NAME_ITEMBLOCKRADAR);
 
 
 	private static Map<String,Item> itemMap;
-	private static Map<String,ModelResourceLocation[]> resourceMap;
 
 	private static void init(){
-		// 素材
-		item_Oil = new Item()
-				.setRegistryName(NAME_ITEMOIL)
-				.setUnlocalizedName(NAME_ITEMOIL).setCreativeTab(Mod_ExBombs.tabExBombs);
-		item_Plastic = new Item()
-				.setRegistryName(NAME_PLASTIC)
-				.setUnlocalizedName(NAME_PLASTIC).setCreativeTab(Mod_ExBombs.tabExBombs);
-		item_HeavyMatter = new Item()
-				.setRegistryName(NAME_HEAVYMATTER)
-				.setUnlocalizedName(NAME_HEAVYMATTER).setCreativeTab(Mod_ExBombs.tabExBombs);
-		item_Uranium = new ItemUranium()
-				.setRegistryName(NAME_ITEMURANIUM)
-				.setUnlocalizedName(NAME_ITEMURANIUM);
-		item_RocketFuel = new ItemRocketFuel()
-				.setRegistryName(NAME_ITEMROCKETFUEL)
-				.setUnlocalizedName(NAME_ITEMROCKETFUEL);
+
+		if (itemMap!= null){return;}
+
+
+		item_Oil = new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMOIL);
+		item_Plastic= new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_PLASTIC);
+		item_HeavyMatter = new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_HEAVYMATTER);;
+		item_Uranium = new ItemUranium().setRegistryName(NAME_ITEMURANIUM);
+		item_RocketFuel = new ItemRocketFuel().setRegistryName(NAME_ITEMROCKETFUEL);
 
 		// 手榴弾
-		item_Bomb = new ItemBomb(EnumBombType.BOMB)
-				.setRegistryName(NAME_ITEMBOMB)
-				.setUnlocalizedName(NAME_ITEMBOMB);
-		item_WaterBomb = new ItemBomb(EnumBombType.WARTER)
-				.setRegistryName(NAME_ITEMWATERBOMB)
-				.setContainerItem(Items.BUCKET)
-				.setUnlocalizedName(NAME_ITEMWATERBOMB);
-		item_paintBomb = new ItemBomb(EnumBombType.PAINT)
-				.setRegistryName(NAME_ITEMPAINTBOMB)
-				.setUnlocalizedName(NAME_ITEMPAINTBOMB);
-		item_frozenBomb = new ItemBomb(EnumBombType.FROZEN)
-				.setRegistryName(NAME_ITEMFROZENBOMB)
-				.setUnlocalizedName(NAME_ITEMFROZENBOMB);
-		item_icicleBomb = new ItemBomb(EnumBombType.ICICLE)
-				.setRegistryName(NAME_ITEMICICLEBOMB)
-				.setUnlocalizedName(NAME_ITEMICICLEBOMB);
-		item_MC = new ItemMolotovCoctail()
-				.setRegistryName(NAME_ITEMMC)
-				.setUnlocalizedName(NAME_ITEMMC);
-		item_lavaBomb = new ItemBomb(EnumBombType.LAVA)
-				.setRegistryName(NAME_ITEMLAVABOMB)
-				.setUnlocalizedName(NAME_ITEMLAVABOMB);
+		item_Bomb = new ItemBomb(EnumBombType.BOMB).setRegistryName(NAME_ITEMBOMB);
+		item_WaterBomb = new ItemBomb(EnumBombType.WARTER, Items.BUCKET).setRegistryName(NAME_ITEMWATERBOMB);
+		item_paintBomb = new ItemBomb(EnumBombType.PAINT).setRegistryName(NAME_ITEMPAINTBOMB);
+		item_frozenBomb = new ItemBomb(EnumBombType.FROZEN).setRegistryName(NAME_ITEMFROZENBOMB);
+		item_icicleBomb = new ItemBomb(EnumBombType.ICICLE).setRegistryName(NAME_ITEMICICLEBOMB);
+		item_MC = new ItemMolotovCoctail().setRegistryName(NAME_ITEMMC);
+		item_lavaBomb = new ItemBomb(EnumBombType.LAVA,null).setRegistryName(NAME_ITEMLAVABOMB);
 
 		// ミサイル
-		item_TntMissile = new ItemMissile()
-				.setMissileType(0)
-				.setRegistryName(NAME_ITEMTNTMISSILE)
-				.setUnlocalizedName(NAME_ITEMTNTMISSILE);
-		item_NCMissile = new ItemMissile()
-				.setMissileType(1)
-				.setRegistryName(NAME_ITEMNCMISSILE)
-				.setUnlocalizedName(NAME_ITEMNCMISSILE);
-		item_CEMissile = new ItemMissile()
-				.setMissileType(2)
-				.setRegistryName(NAME_ITEMCEMISSILE)
-				.setUnlocalizedName(NAME_ITEMCEMISSILE);
-		item_MCEMissile = new ItemMissile()
-				.setMissileType(3)
-				.setRegistryName(NAME_ITEMMCEMISSILE)
-				.setUnlocalizedName(NAME_ITEMMCEMISSILE);
+		item_TntMissile = new ItemMissile().setMissileType(0).setRegistryName(NAME_ITEMTNTMISSILE);
+		item_NCMissile = new ItemMissile().setMissileType(1).setRegistryName(NAME_ITEMNCMISSILE);
+		item_CEMissile = new ItemMissile().setMissileType(2).setRegistryName(NAME_ITEMCEMISSILE);
+		item_MCEMissile = new ItemMissile().setMissileType(3).setRegistryName(NAME_ITEMMCEMISSILE);
 
 		// ツール
-		item_Radar = new  ItemSpawnerRadar()
-				.setRegistryName(NAME_ITEMRADAR)
-				.setUnlocalizedName(NAME_ITEMRADAR);
-		item_defuser = new ItemDefuser()
-				.setRegistryName(NAME_ITEMDEFUSER)
-				.setUnlocalizedName(NAME_ITEMDEFUSER);
-		item_blockRadar = new ItemBlockRadar()
-				.setRegistryName(NAME_ITEMBLOCKRADAR)
-				.setUnlocalizedName(NAME_ITEMBLOCKRADAR);
-
+		item_Radar = new  ItemSpawnerRadar().setRegistryName(NAME_ITEMRADAR);
+		item_defuser = new ItemDefuser().setRegistryName(NAME_ITEMDEFUSER);
+		item_blockRadar = new ItemBlockRadar().setRegistryName(NAME_ITEMBLOCKRADAR);
 		itemMap = new HashMap<String,Item>(){
 			{put(NAME_ITEMOIL,item_Oil);}
 			{put(NAME_PLASTIC,item_Plastic);}
@@ -179,47 +133,13 @@ public class ItemCore {
 			{put(NAME_ITEMLAVABOMB,item_lavaBomb);}
 			{put(NAME_ITEMBLOCKRADAR,item_blockRadar);}
 		};
-
-		resourceMap = new HashMap<String,ModelResourceLocation[]>(){
-			{put(NAME_ITEMOIL,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMOIL, "inventory")});}
-			{put(NAME_PLASTIC,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_PLASTIC, "inventory")});}
-			{put(NAME_HEAVYMATTER,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_HEAVYMATTER, "inventory")});}
-			{put(NAME_ITEMURANIUM,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMURANIUM, "inventory")});}
-			{put(NAME_ITEMROCKETFUEL,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMROCKETFUEL, "inventory")});}
-			{put(NAME_ITEMBOMB,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMBOMB, "inventory")});}
-			{put(NAME_ITEMWATERBOMB,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMWATERBOMB, "inventory")});}
-			{put(NAME_ITEMTNTMISSILE,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMTNTMISSILE, "inventory")});}
-			{put(NAME_ITEMNCMISSILE,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMNCMISSILE, "inventory")});}
-			{put(NAME_ITEMRADAR,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMRADAR, "inventory")});}
-			{put(NAME_ITEMMC,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMMC, "inventory")});}
-			{put(NAME_ITEMDEFUSER,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMDEFUSER, "inventory")});}
-			{put(NAME_ITEMCEMISSILE,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMCEMISSILE, "inventory")});}
-			{put(NAME_ITEMMCEMISSILE,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMMCEMISSILE, "inventory")});}
-			{put(NAME_ITEMPAINTBOMB,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMPAINTBOMB, "inventory")});}
-			{put(NAME_ITEMFROZENBOMB,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMFROZENBOMB, "inventory")});}
-			{put(NAME_ITEMICICLEBOMB,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMICICLEBOMB, "inventory")});}
-			{put(NAME_ITEMLAVABOMB,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMLAVABOMB, "inventory")});}
-			{put(NAME_ITEMBLOCKRADAR,new ModelResourceLocation[]{new ModelResourceLocation(ModCommon.MOD_ID+":"+NAME_ITEMRADAR, "inventory")});}
-		};
 	}
 
-	public static void register(FMLPreInitializationEvent event) {
+	public static void register(final RegistryEvent.Register<Item> event) {
 		init();
 		for (String key : NAME_LIST){
-			ForgeRegistries.ITEMS.register(itemMap.get(key));
+			event.getRegistry().register(itemMap.get(key));
 		}
-
-        //テクスチャ・モデル指定JSONファイル名の登録。
-        if (event.getSide().isClient()) {
-        	for (String key : NAME_LIST){
-        		//1IDで複数モデルを登録するなら、上のメソッドで登録した登録名を指定する。
-        		int cnt = 0;
-        		for (ModelResourceLocation rc : resourceMap.get(key)){
-        			ModelLoader.setCustomModelResourceLocation(itemMap.get(key), cnt, rc);
-        			cnt++;
-        		}
-        	}
-        }
 	}
 
 

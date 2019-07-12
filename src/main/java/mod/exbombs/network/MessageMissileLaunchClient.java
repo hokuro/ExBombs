@@ -1,19 +1,17 @@
 package mod.exbombs.network;
 
 import java.util.List;
+import java.util.function.Supplier;
 
-import io.netty.buffer.ByteBuf;
-import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityMissile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageMissileLaunchClient implements IMessageHandler<MessageMissileLaunchClient, IMessage>, IMessage {
+public class MessageMissileLaunchClient {
 
 	private int entityID;
 	private int posX;
@@ -29,56 +27,60 @@ public class MessageMissileLaunchClient implements IMessageHandler<MessageMissil
 		posZ = z;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		entityID = buf.readInt();
-		posX = buf.readInt();
-		posZ = buf.readInt();
+	public static void encode(MessageMissileLaunchClient pkt, PacketBuffer buf)
+	{
+		buf.writeInt(pkt.entityID);
+		buf.writeInt(pkt.posX);
+		buf.writeInt(pkt.posZ);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(entityID);
-		buf.writeInt(posX);
-		buf.writeInt(posZ);
+	public static MessageMissileLaunchClient decode(PacketBuffer buf)
+	{
+		int id = buf.readInt();
+		int x = buf.readInt();
+		int z =buf.readInt();
+		return new MessageMissileLaunchClient(id,x,z);
 	}
 
-	@Override
-	public IMessage onMessage(MessageMissileLaunchClient message, MessageContext ctx) {
-	     //クライアントへ送った際に、EntityPlayerインスタンスはこのように取れる。
-        //EntityPlayer player = SamplePacketMod.proxy.getEntityPlayerInstance();
-        //サーバーへ送った際に、EntityPlayerインスタンス（EntityPlayerMPインスタンス）はこのように取れる。
-        //EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
-        //Do something.
-		try {
-			int entityID = message.entityID;
-			int x = message.posX;
-			int z = message.posZ;
-			Entity entity = getEntityByID(entityID, ctx.getServerHandler().player.world);
-			if ((entity == null) || (!(entity instanceof EntityMissile))){
-				return null;
-			}
-			EntityMissile missile = (EntityMissile)entity;
-			if (missile.flying){
-				return null;
-			}
-			missile.launch(x, z);
-			for (EntityPlayer aplayer : ctx.getServerHandler().player.world.playerEntities){
-				Mod_ExBombs.INSTANCE.sendTo(new MessageMissileLaunchServer(entityID), (EntityPlayerMP)aplayer);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return null;
-	}
-
-	public Entity getEntityByID(int ID, World world) {
-		List<Entity> entities = world.loadedEntityList;
-		for (Entity entity : entities) {
-			if (entity.getEntityId() == ID) {
-				return entity;
+	public static class Handler
+	{
+		public static void handle(final MessageMissileLaunchClient pkt, Supplier<NetworkEvent.Context> ctx)
+		{
+		     //クライアントへ送った際に、EntityPlayerインスタンスはこのように取れる。
+	        //EntityPlayer player = SamplePacketMod.proxy.getEntityPlayerInstance();
+	        //サーバーへ送った際に、EntityPlayerインスタンス（EntityPlayerMPインスタンス）はこのように取れる。
+	        //EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
+	        //Do something.
+			try {
+				int entityID = pkt.entityID;
+				int x = pkt.posX;
+				int z = pkt.posZ;
+				Entity entity = getEntityByID(entityID, ctx.get().getSender().world);
+				if ((entity == null) || (!(entity instanceof EntityMissile))){
+					return;
+				}
+				EntityMissile missile = (EntityMissile)entity;
+				if (missile.flying){
+					return;
+				}
+				missile.launch(x, z);
+				for (EntityPlayer aplayer : ctx.get().getSender().world.playerEntities){
+					MessageHandler.SendMessage_MissileLaunchServer(entityID,(EntityPlayerMP)aplayer);
+					//Mod_ExBombs.INSTANCE.sendTo(new MessageMissileLaunchServer(entityID), (EntityPlayerMP)aplayer);
+				}
+			} catch (Exception exception) {
+				exception.printStackTrace();
 			}
 		}
-		return null;
+
+		public static Entity getEntityByID(int ID, World world) {
+			List<Entity> entities = world.loadedEntityList;
+			for (Entity entity : entities) {
+				if (entity.getEntityId() == ID) {
+					return entity;
+				}
+			}
+			return null;
+		}
 	}
 }

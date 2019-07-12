@@ -1,12 +1,13 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.entity;
 
-import io.netty.buffer.ByteBuf;
-import mod.exbombs.util.MoreExplosivesBetterExplosion.EnumBombType;
+import mod.exbombs.util.EnumBombType;
 import mod.exbombs.util.UtilExproder;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -17,33 +18,39 @@ public class EntityBomb extends EntityThrowable implements IEntityAdditionalSpaw
 	protected EnumBombType bombType = EnumBombType.BOMB;
 
 	public EntityBomb(World world) {
-		super(world);
+		super(EntityCore.Inst().BOMB, world);
 		this.coctail = false;
 	}
+
 
 	public EntityBomb(World world, EnumBombType type){
 		this(world);
 		bombType = type;
 	}
 
-	public EntityBomb(World world, EntityLivingBase entityliving) {
-		super(world, entityliving);
+	public EntityBomb(EntityType<?> etype, World world, EnumBombType type){
+		super(etype, world);
+		bombType = type;
 	}
 
-	public EntityBomb(World world, double d, double d1, double d2) {
-		super(world, d, d1, d2);
+	protected EntityBomb(EntityType<?> type, double d1, double d2, double d3, World world) {
+		super(type,d1,d2,d3,world);
+	}
+
+	protected EntityBomb(EntityType<?> type, EntityLivingBase entity, World world) {
+		super(type,entity,world);
 	}
 
 	public EntityBomb(World world, EntityLivingBase entityliving, EnumBombType type) {
-		super(world, entityliving);
+		super(EntityCore.Inst().BOMB, entityliving, world);
 		bombType = type;
 	}
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-        if (result.entityHit != null)
+        if (result.entity != null)
         {
-            result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.5F);
+            result.entity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.5F);
         }
 
 		if (!this.world.isRemote){
@@ -55,22 +62,22 @@ public class EntityBomb extends EntityThrowable implements IEntityAdditionalSpaw
 		}
 
 		if (!this.world.isRemote){
-			this.setDead();
+			this.remove();
 		}
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound compound)
+	public void writeAdditional(NBTTagCompound compound)
     {
-        super.writeEntityToNBT(compound);
-        compound.setInteger("bombType", bombType.getIndex());
+        super.writeAdditional(compound);
+        compound.setInt("bombType", bombType.getIndex());
     }
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound compound)
+	public void readAdditional(NBTTagCompound compound)
     {
-        super.readEntityFromNBT(compound);
-        bombType = EnumBombType.intToBombType(compound.getInteger("bombType"));
+        super.readAdditional(compound);
+        bombType = EnumBombType.intToBombType(compound.getInt("bombType"));
     }
 
 	public EnumBombType getBombType(){
@@ -78,13 +85,25 @@ public class EntityBomb extends EntityThrowable implements IEntityAdditionalSpaw
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf buffer) {
+	public void writeSpawnData(PacketBuffer buffer) {
 		buffer.writeInt(this.bombType.getIndex());
 
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf additionalData) {
+	public void readSpawnData(PacketBuffer additionalData) {
 		this.bombType = EnumBombType.intToBombType(additionalData.readInt());
+	}
+
+	@Override
+	public NBTTagCompound serializeNBT() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 }

@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "exbombs:items/itemBomb"
+        "layer0": "exbombs:items/itembomb"
     }
 }

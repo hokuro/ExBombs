@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import mod.exbombs.config.ConfigValue;
+import mod.exbombs.config.MyConfig;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -43,9 +43,9 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 		int explosionX2 = MathHelper.floor(this.explosionX);
 		int explosionY2 = MathHelper.floor(this.explosionY);
 		int explosionZ2 = MathHelper.floor(this.explosionZ);
-		int width = ConfigValue.General.tunnel_width;
-		int height = ConfigValue.General.tunnel_width;;
-		int depth = ConfigValue.General.tunnel_depth;
+		int width = MyConfig.GENERAL.tunnel_width.get();
+		int height = MyConfig.GENERAL.tunnel_width.get();
+		int depth = MyConfig.GENERAL.tunnel_depth.get();
 
 		if (this.direction == 0) {
 
@@ -110,7 +110,7 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 		float f1 = 20.0F;
 		IBlockState state = this.worldObj.getBlockState(new BlockPos(i,j,k));
 		if (state != null){
-			f1 -= (state.getBlock().getExplosionResistance(this.exploder) + 0.3F) * 0.3F;
+			f1 -= (state.getExplosionResistance(worldObj,new BlockPos(i,j,k),this.exploder,this) + 0.3F) * 0.3F;
 		}
 		if (f1 > 0.0F) {
 			this.destroyedBlockPositions.add(new BlockPos(i, j, k));
@@ -119,7 +119,7 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 
 	public void doExplosionB(boolean flag) {
 		this.worldObj.playSound((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
-		this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
+		this.worldObj.spawnParticle(Particles.EXPLOSION, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D);
 		ArrayList arraylist = new ArrayList();
 		arraylist.addAll(this.destroyedBlockPositions);
 		for (int i = arraylist.size() - 1; i >= 0; i--) {
@@ -141,16 +141,16 @@ public class MoreExplosivesTunnelExplosion extends Explosion {
 				d3 *= d7;
 				d4 *= d7;
 				d5 *= d7;
-				this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + this.explosionX) / 2.0D, (d1 + this.explosionY) / 2.0D, (d2 + this.explosionZ) / 2.0D, d3, d4, d5, new int[0]);
-                this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
+				this.worldObj.spawnParticle(Particles.EXPLOSION, (d0 + this.explosionX) / 2.0D, (d1 + this.explosionY) / 2.0D, (d2 + this.explosionZ) / 2.0D, d3, d4, d5);
+                this.worldObj.spawnParticle(Particles.SMOKE, d0, d1, d2, d3, d4, d5);
 			}
             if (state.getMaterial() != Material.AIR)
             {
                 if (state.getBlock().canDropFromExplosion(this))
                 {
-                    state.getBlock().dropBlockAsItem(this.worldObj, pos, state, 0);
+                    state.dropBlockAsItem(this.worldObj, pos, 0);
                 }
-                state.getBlock().onBlockExploded(this.worldObj, pos, this);
+                state.onBlockExploded(this.worldObj, pos, this);
             }
 		}
 	}

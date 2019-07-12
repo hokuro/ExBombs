@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 
 public class ItemRocketFuel extends Item {
 	public ItemRocketFuel() {
-		super();
-		this.setCreativeTab(Mod_ExBombs.tabExBombs);
+		super(new Item.Properties()
+				.group(Mod_ExBombs.tabExBombs));
 	}
 
 	public int getColorFromDamage(int par1, int par2) {

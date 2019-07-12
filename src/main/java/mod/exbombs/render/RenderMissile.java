@@ -11,10 +11,10 @@ import net.minecraft.util.ResourceLocation;
 
 
 public class RenderMissile extends Render {
-	private static final ResourceLocation tex3 = new ResourceLocation("exbombs:textures/entity/unmatcheraserSTSMissile.png");
-	private static final ResourceLocation tex2 = new ResourceLocation("exbombs:textures/entity/eraserSTSMissile.png");
-	private static final ResourceLocation tex1 = new ResourceLocation("exbombs:textures/entity/nuclearSTSMissile.png");
-	private static final ResourceLocation tex0 = new ResourceLocation("exbombs:textures/entity/tntSTSMissile.png");
+	private  static final ResourceLocation tex3 = new ResourceLocation("exbombs","textures/entity/unmatcheraserstsmissile.png");
+	private  static final ResourceLocation tex2 = new ResourceLocation("exbombs","textures/entity/eraserstsmissile.png");
+	private  static final ResourceLocation tex1 = new ResourceLocation("exbombs","textures/entity/nuclearstsmissile.png");
+	private  static final ResourceLocation tex0 = new ResourceLocation("exbombs","textures/entity/tntstsmissile.png");;
 
 	ModelMissile modelmissile;
 
@@ -30,7 +30,7 @@ public class RenderMissile extends Render {
 		GL11.glRotatef(missile.prevRotationYaw + (missile.rotationYaw - missile.prevRotationYaw) * par9 - 90.0F, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(missile.prevRotationPitch + (missile.rotationPitch - missile.prevRotationPitch) * par9 + 90.0F, 0.0F, 0.0F, 1.0F);
 
-		this.renderManager.renderEngine.bindTexture(getEntityTexture(missile));
+		this.renderManager.textureManager.bindTexture(getEntityTexture(missile));
 		this.modelmissile.render(missile, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
 
 		GL11.glPopMatrix();

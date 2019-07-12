@@ -1,8 +1,8 @@
 {
     "parent": "block/cube_bottom_top",
     "textures": {
-        "bottom": "exbombs:blocks/chunkEraserBottom",
-        "top": "exbombs:blocks/chunkEraserTop",
-        "side": "exbombs:blocks/chunkUnmatchEraserSide"
+        "bottom": "exbombs:blocks/chunkeraserbottom",
+        "top": "exbombs:blocks/chunkerasertop",
+        "side": "exbombs:blocks/chunkunmatcheraserside"
     }
 }

@@ -2,21 +2,17 @@ package mod.exbombs.item;
 
 import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.entity.EntityMissile;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class ItemMissile extends Item {
 	private int type;
 
 	public ItemMissile() {
-		super();
-		this.maxStackSize = 1;
-		this.setCreativeTab(Mod_ExBombs.tabExBombs);
+		super(new Item.Properties()
+				.maxStackSize(1)
+				.group(Mod_ExBombs.tabExBombs));
 	}
 
 	public Item setMissileType(int type) {
@@ -28,16 +24,16 @@ public class ItemMissile extends Item {
      * Called when a Block is right-clicked with this Item
      */
 	@Override
-    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemUseContext context)
     {
-    	if (!worldIn.isRemote){
-    		EntityMissile missile = new EntityMissile(worldIn, pos);
+    	if (!context.getWorld().isRemote){
+    		EntityMissile missile = new EntityMissile(context.getWorld(), context.getPos());
     		missile.missileType = this.type;
     		missile.rotationPitch += 90F;
-    		worldIn.spawnEntity(missile);
+    		context.getWorld().spawnEntity(missile);
     	}
-    	if (!playerIn.capabilities.isCreativeMode){
-    		playerIn.getHeldItem(hand).shrink(1);
+    	if (!context.getPlayer().isCreative()){
+    		context.getItem().shrink(1);
     	}
         return EnumActionResult.SUCCESS;
     }

@@ -5,10 +5,10 @@ import mod.exbombs.block.BlockFuse;
 import mod.exbombs.model.ModelCube;
 import mod.exbombs.tileentity.TileEntityFuse;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFuse> {
+public class TileEntityFuseRender extends TileEntityRenderer<TileEntityFuse> {
 	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/entity/fuse.png");
 	private ModelCube mainmodel = new ModelCube();
 	private ModelCube submodel1 = new ModelCube();
@@ -24,8 +24,8 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFu
 		tx = ty = tz = 0.5D;
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float) posX + 0.5F , (float) posY + 0.5F, (float) posZ + 0.5F);
-		GlStateManager.scale(0.03125D, 0.03125D, 0.03125D);
+		GlStateManager.translatef((float) posX + 0.5F , (float) posY + 0.5F, (float) posZ + 0.5F);
+		GlStateManager.scaled(0.03125D, 0.03125D, 0.03125D);
 		GlStateManager.enableCull();
 		GlStateManager.enableRescaleNormal();
 		this.bindTexture(tex);
@@ -35,8 +35,8 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFu
 
 		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(1,0,0)))){
 			GlStateManager.pushMatrix();
-			GlStateManager.translate((float) posX + 0.875D , (float) posY + 0.5, (float) posZ + 0.5);
-			GlStateManager.scale(0.015625D, 0.03125D, 0.03125D);
+			GlStateManager.translatef((float) posX + 0.875F , (float) posY + 0.5F, (float) posZ + 0.5F);
+			GlStateManager.scaled(0.015625D, 0.03125D, 0.03125D);
 			GlStateManager.enableCull();
 			GlStateManager.enableRescaleNormal();
 			this.bindTexture(tex);
@@ -45,8 +45,8 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFu
 		}
 		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(-1,0,0)))){
 			GlStateManager.pushMatrix();
-			GlStateManager.translate((float) posX + 0.125D , (float) posY + 0.5, (float) posZ + 0.5);
-			GlStateManager.scale(0.015625D, 0.03125D, 0.03125D);
+			GlStateManager.translatef((float) posX + 0.125F , (float) posY + 0.5F, (float) posZ + 0.5F);
+			GlStateManager.scaled(0.015625D, 0.03125D, 0.03125D);
 			GlStateManager.enableCull();
 			GlStateManager.enableRescaleNormal();
 			this.bindTexture(tex);
@@ -56,8 +56,8 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFu
 
 		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,1,0)))){
 			GlStateManager.pushMatrix();
-			GlStateManager.translate((float) posX + 0.5D , (float) posY + 0.875D, (float) posZ + 0.5);
-			GlStateManager.scale(0.03125D, 0.015625D, 0.03125D);
+			GlStateManager.translatef((float) posX + 0.5F , (float) posY + 0.875F, (float) posZ + 0.5F);
+			GlStateManager.scaled(0.03125D, 0.015625D, 0.03125D);
 			GlStateManager.enableCull();
 			GlStateManager.enableRescaleNormal();
 			this.bindTexture(tex);
@@ -66,8 +66,8 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFu
 		}
 		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,-1,0)))){
 			GlStateManager.pushMatrix();
-			GlStateManager.translate((float) posX + 0.5D , (float) posY + 0.125D, (float) posZ + 0.5);
-			GlStateManager.scale(0.03125D, 0.015625D, 0.03125D);
+			GlStateManager.translatef((float) posX + 0.5F , (float) posY + 0.125F, (float) posZ + 0.5F);
+			GlStateManager.scaled(0.03125D, 0.015625D, 0.03125D);
 			GlStateManager.enableCull();
 			GlStateManager.enableRescaleNormal();
 			this.bindTexture(tex);
@@ -77,8 +77,8 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFu
 
 		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,0,1)))){
 			GlStateManager.pushMatrix();
-			GlStateManager.translate((float) posX + 0.5D , (float) posY + 0.5D, (float) posZ + 0.875D);
-			GlStateManager.scale(0.03125D, 0.03125D, 0.015625D);
+			GlStateManager.translatef((float) posX + 0.5F , (float) posY + 0.5F, (float) posZ + 0.875F);
+			GlStateManager.scaled(0.03125D, 0.03125D, 0.015625D);
 			GlStateManager.enableCull();
 			GlStateManager.enableRescaleNormal();
 			this.bindTexture(tex);
@@ -87,8 +87,8 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFu
 		}
 		if (((BlockFuse)BlockCore.block_fuse).shouldConnectTo(te.getWorld().getBlockState(te.getPos().add(0,0,-1)))){
 			GlStateManager.pushMatrix();
-			GlStateManager.translate((float) posX + 0.5D , (float) posY + 0.5D, (float) posZ + 0.125D);
-			GlStateManager.scale(0.03125D, 0.03125D, 0.015625D);
+			GlStateManager.translatef((float) posX + 0.5F , (float) posY + 0.5F, (float) posZ + 0.125F);
+			GlStateManager.scaled(0.03125D, 0.03125D, 0.015625D);
 			GlStateManager.enableCull();
 			GlStateManager.enableRescaleNormal();
 			this.bindTexture(tex);
@@ -98,7 +98,7 @@ public class TileEntityFuseRender extends TileEntitySpecialRenderer<TileEntityFu
 	}
 
 	@Override
-	public void render(TileEntityFuse te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+	public void render(TileEntityFuse te, double x, double y, double z, float partialTicks, int destroyStage) {
 		renderFuse((TileEntityFuse)te, x, y, z, partialTicks, destroyStage);
 	}
 }

@@ -17,10 +17,9 @@ public class ItemUranium extends Item {
 	protected static boolean effect = true;
 
 	public ItemUranium() {
-		super();
-		this.random = new Random();
-		this.setCreativeTab(Mod_ExBombs.tabExBombs);
-	}
+		super(new Item.Properties()
+				.group(Mod_ExBombs.tabExBombs));
+		this.random = new Random();	}
 
 	public static void setEffect(boolean hasEffect) {
 		effect = hasEffect;
@@ -32,7 +31,7 @@ public class ItemUranium extends Item {
 	}
 
 	@Override
-	public void onUpdate(ItemStack itemstack, World world, Entity entity, int ix, boolean flag) {
+	public void inventoryTick(ItemStack itemstack, World world, Entity entity, int ix, boolean flag) {
 		if (world.isRemote) {
 			return;
 		}
@@ -40,8 +39,8 @@ public class ItemUranium extends Item {
 			return;
 		}
 		EntityLivingBase living = (EntityLivingBase)entity;
-		living.addPotionEffect(new PotionEffect(Potion.REGISTRY.getObjectById(9), 100, 1));
-		living.addPotionEffect(new PotionEffect(Potion.REGISTRY.getObjectById(4), 100, 3));
-		living.addPotionEffect(new PotionEffect(Potion.REGISTRY.getObjectById(18), 100, 3));
+		living.addPotionEffect(new PotionEffect(Potion.getPotionById(9), 100, 1));
+		living.addPotionEffect(new PotionEffect(Potion.getPotionById(4), 100, 3));
+		living.addPotionEffect(new PotionEffect(Potion.getPotionById(18), 100, 3));
 	}
 }

@@ -25,7 +25,7 @@ public class SpawnerRadarData extends WorldSavedData {
 		{
 			this.init = true;
 		}
-		if(world.getWorldTime() % UPDATETIME == 0l){
+		if(world.getDayTime() % UPDATETIME == 0l){
 			this.upDate = true;
 		}
 		if(this.upDate)
@@ -41,13 +41,13 @@ public class SpawnerRadarData extends WorldSavedData {
 	public int index() {return entityIndex;}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		entityIndex = nbt.getInteger("INDEX");
+	public void read(NBTTagCompound nbt) {
+		entityIndex = nbt.getInt("INDEX");
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		nbt.setInteger("INDEX", entityIndex);
+	public NBTTagCompound write(NBTTagCompound nbt) {
+		nbt.setInt("INDEX", entityIndex);
 		return nbt;
 	}
 }

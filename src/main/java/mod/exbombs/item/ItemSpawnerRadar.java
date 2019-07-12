@@ -4,7 +4,7 @@ package mod.exbombs.item;
 import mod.exbombs.core.ModCommon;
 import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
-import mod.exbombs.network.MessageShowGui;
+import mod.exbombs.network.MessageHandler;
 import mod.exbombs.util.SpawnerRadarData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,20 +20,20 @@ public class ItemSpawnerRadar extends Item {
 	public SpawnerRadarData data;
 
 	public ItemSpawnerRadar() {
-		super();
-		this.maxStackSize = 1;
-		this.setCreativeTab(Mod_ExBombs.tabExBombs);
+		super(new Item.Properties()
+				.maxStackSize(1)
+				.group(Mod_ExBombs.tabExBombs));
 	}
 
 	@Override
-	public void onUpdate(ItemStack item, World world, Entity entity, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack item, World world, Entity entity, int itemSlot, boolean isSelected) {
 		if(entity instanceof EntityPlayer && isSelected){
 			EntityPlayer player = (EntityPlayer) entity;
 			if(!world.isRemote)
 			{
 				this.data = getData(item,world);
 				this.data.onUpdate(world, player);
-				this.data.markDirty();
+				//this.data.markDirty();
 			}
 		}
 	}
@@ -41,11 +41,26 @@ public class ItemSpawnerRadar extends Item {
 	@Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand){
     	if (!worldIn.isRemote) {
-    		Mod_ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(data.index())}));
+//    		NetworkHooks.openGui((EntityPlayerMP)playerIn,
+//    				new InteractionObjectSpawnRadar(),
+//    				(buf)->{
+//    					buf.writeInt(data.index());
+//    				}
+//    				);
+
+
+    		//new ExBombsGuiHelper().disp\layGui(playerIn, new GuiIngameMenu());
+
+    		//new ExBombsGuiHelper().displayGui(playerIn, new GuiSpawnRadar(data.index()));
+    		MessageHandler.SendMessageShowGui(ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(data.index())});
+    		//new ExBombsGuiHelper().displayGuiByID((EntityPlayer) Mod_ExBombs.proxy.getEntityPlayerInstance(), ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(data.index())});
+    		//Mod_ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(data.index())}));
 		}
     	ItemStack itemStackIn = playerIn.getHeldItem(hand);
-		return  new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+		return  new ActionResult(EnumActionResult.PASS, itemStackIn);
 	}
+
+
 
 	public static SpawnerRadarData getRadarData(ItemStack item, World world)
 	{
@@ -70,13 +85,15 @@ public class ItemSpawnerRadar extends Item {
 	public SpawnerRadarData getData(ItemStack item, World world)
 	{
 		String itemName = this.getRegistryName().toString();
-		SpawnerRadarData data = (SpawnerRadarData)world.loadData(SpawnerRadarData.class, itemName);
+		//SpawnerRadarData data = null;//(SpawnerRadarData)world.loadData(SpawnerRadarData.class, itemName);
+		SpawnerRadarData data =  world.func_212411_a(world.dimension.getType(), SpawnerRadarData::new, itemName);
 
 		if (data == null)
 		{
 			data = new SpawnerRadarData(itemName);
 			data.markDirty();
-			world.setData(itemName, data);
+			world.func_212409_a(world.dimension.getType(), data.getName(), data);
+			//world.setData(itemName, data);
 		}
 
 		return data;

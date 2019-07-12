@@ -1,7 +1,5 @@
 package mod.exbombs.helper;
 
-import org.lwjgl.input.Keyboard;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,18 +10,18 @@ public class ExBombsMinecraftHelper {
 	}
 
 	public static World getWorld() {
-		return Minecraft.getMinecraft().world;
+		return Minecraft.getInstance().world;
 	}
 
 	public static EntityPlayer getPlayer() {
-		return Minecraft.getMinecraft().player;
+		return Minecraft.getInstance().player;
 	}
 
 	public static void addEffect(Particle fx) {
-		Minecraft.getMinecraft().effectRenderer.addEffect(fx);
+		Minecraft.getInstance().particles.addEffect(fx);
 	}
 
-	public static boolean isKeyDown(int key) {
-		return Keyboard.isKeyDown(key);
-	}
+//	public static boolean isKeyDown(int key) {
+//		return Keyboard.isKeyDown(key);
+//	}
 }

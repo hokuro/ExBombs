@@ -1,6 +1,5 @@
 {
     "variants": {
-        "explode=false":{ "model":"exbombs:nuclearexplosive" },
-        "explode=true":{ "model":"exbombs:nuclearexplosive" }
+        "":{ "model":"exbombs:block/nuclearexplosive" }
     }
 }
