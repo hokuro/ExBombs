@@ -3,22 +3,20 @@ package mod.exbombs.item;
 
 import java.util.Random;
 
-import mod.exbombs.core.Mod_ExBombs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.world.World;
 
 public class ItemUranium extends Item {
 	protected Random random;
 	protected static boolean effect = true;
 
-	public ItemUranium() {
-		super(new Item.Properties()
-				.group(Mod_ExBombs.tabExBombs));
+	public ItemUranium(Item.Properties property) {
+		super(property);
 		this.random = new Random();	}
 
 	public static void setEffect(boolean hasEffect) {
@@ -35,12 +33,12 @@ public class ItemUranium extends Item {
 		if (world.isRemote) {
 			return;
 		}
-		if (!(entity instanceof EntityLivingBase)) {
+		if (!(entity instanceof LivingEntity)) {
 			return;
 		}
-		EntityLivingBase living = (EntityLivingBase)entity;
-		living.addPotionEffect(new PotionEffect(Potion.getPotionById(9), 100, 1));
-		living.addPotionEffect(new PotionEffect(Potion.getPotionById(4), 100, 3));
-		living.addPotionEffect(new PotionEffect(Potion.getPotionById(18), 100, 3));
+		LivingEntity living = (LivingEntity)entity;
+		living.addPotionEffect(new EffectInstance(Effects.NAUSEA, 100, 1));
+		living.addPotionEffect(new EffectInstance(Effects.MINING_FATIGUE, 100, 3));
+		living.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 100, 3));
 	}
 }

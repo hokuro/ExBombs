@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
@@ -70,70 +70,15 @@ public class MyConfig {
 				}
 				Block b = Blocks.AIR;
 				str = str.trim();
-				b = IRegistry.field_212618_g.func_212608_b(new ResourceLocation(str));
+				b = Registry.BLOCK.getOrDefault(new ResourceLocation(str));
 				if(null != b)
 				{
 					if (Blocks.AIR != b){
 						list.add(b);
 					}
-//					if(Blocks.AIR != b){
-//						Block block = (Block)b;
-//						BlockAndMetadata bam = new BlockAndMetadata(block, convertMetaString(block,metastr));
-//						list.add(b);
-//					}
 				}
 			}
 			return list;
 		}
-
-//
-//		private static final Pattern ptnNum = Pattern.compile("^[0-9]+$");
-//		private static int convertMetaString(Block b, String s) {
-//			if ((null == b) || (null == s)) {
-//				return 0;
-//			}
-//			s = s.trim();
-//			if (ptnNum.matcher(s).matches()) {
-//				try {
-//					return Integer.parseInt(s, 10);
-//				} catch (Exception localException1) {
-//				}
-//			}
-//			Class<?> enumCls = null;
-//			for (Field f : b.getClass().getDeclaredFields()) {
-//				if ((0 != (f.getModifiers() & 0x1)) && (0 != (f.getModifiers() & 0x8))) {
-//					if (PropertyEnum.class == f.getType()) {
-//						try {
-//							enumCls = ((PropertyEnum) f.get(null)).getValueClass();
-//						} catch (Exception e) {
-//							e.printStackTrace();
-//						}
-//					}
-//				}
-//			}
-//			if (null == enumCls) {
-//				return 0;
-//			}
-//			for (Object o : enumCls.getEnumConstants()) {
-//				if ((o instanceof IStringSerializable)) {
-//					String name = ((IStringSerializable) o).getName();
-//					if (s.equalsIgnoreCase(name)) {
-//						Class<?> c = o.getClass();
-//						for (Method m : c.getDeclaredMethods()) {
-//							if (m.getReturnType() == Integer.TYPE) {
-//								if (0 == m.getParameterTypes().length) {
-//									try {
-//										return ((Integer) m.invoke(o, new Object[0])).intValue();
-//									} catch (Exception e) {
-//										FMLLog.warning(e.toString(), new Object[0]);
-//									}
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//			return 0;
-//		}
 	}
 }

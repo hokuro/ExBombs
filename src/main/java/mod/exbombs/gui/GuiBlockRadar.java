@@ -7,20 +7,27 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
+import mod.exbombs.inventory.ContainerBlockRadar;
 import mod.exbombs.network.MessageHandler;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;;
 
-public class GuiBlockRadar extends GuiScreen {
+public class GuiBlockRadar extends ContainerScreen<ContainerBlockRadar> {
 	private static final ResourceLocation tex = new ResourceLocation("exbombs:textures/gui/radargui.png");
 	private static final ResourceLocation texOver = new ResourceLocation("exbombs:textures/gui/radarovergui.png");
 	private static final int[] RADAR_SIZE = new int[]{16,32,64,128,256};
@@ -34,89 +41,78 @@ public class GuiBlockRadar extends GuiScreen {
 	private int alphaTicks;
 	private float renderAlpha;
 	private List<BlockPos> blockPos;
-	private IBlockState targetBlock;
+	private BlockState targetBlock;
 	private ItemStack drawIcon;
 	private int index = 0;
 
-	public GuiBlockRadar(int blockId, int size){
+	private World world;
+	private PlayerEntity player;
+
+	public GuiBlockRadar(ContainerBlockRadar container, PlayerInventory inv, ITextComponent titleIn) {
+		super(container, inv, titleIn);
+
 		this.renderTicks = 0;
 		this.alphaTicks = 0;
 		this.renderAlpha = 1.0F;
 
-		targetBlock = Block.getStateById(blockId);
-		index = size;
+		targetBlock = Registry.BLOCK.getOrDefault(container.getBlockID()).getDefaultState();
+		index = container.getSize();
 		drawIcon = new ItemStack(targetBlock.getBlock(),1);
 		blockPos = new ArrayList<BlockPos>();
-	}
 
-	public GuiBlockRadar(Minecraft minecraft, String string, int meta, int size, int blockId) {
-//		this.mc = minecraft;
-		this.renderTicks = 0;
-		this.alphaTicks = 0;
-		this.renderAlpha = 1.0F;
-
-		targetBlock = Block.getStateById(blockId);//  Block.getBlockFromName(string).getStateFromMeta(meta);
-		index = size;
-		drawIcon = new ItemStack(targetBlock.getBlock(),1); // new ItemStack(targetBlock.getBlock(),1,targetBlock.getBlock().getMetaFromState(targetBlock));
-		blockPos = new ArrayList<BlockPos>();
+		world = Minecraft.getInstance().world;
+		player = Minecraft.getInstance().player;
 	}
 
 	@Override
-	public void initGui() {
+	public void init() {
 		this.imgWidth = 205;
 		this.imgHeight = 200;
 		this.imgLeft = ((this.width - this.imgWidth) / 2);
 		this.imgTop = ((this.height - this.imgHeight) / 2);
 
 		this.buttons.clear();
-		GuiButton b1 = new GuiButton(101, this.width / 2 - 125, this.imgTop + 175, 20, 20, "△"){
-			@Override
-			public void onClick(double mouseX, double mouseY){
-				++index;
+		this.addButton(new Button(this.width / 2 - 125, this.imgTop + 175, 20, 20, "△", (bt)-> {
+			++index;
 				if (index >= RADAR_SIZE.length){
 					index = 0;
 				}
 			}
-		};
-		GuiButton b2 = new GuiButton(102, this.width / 2 - 125, this.imgTop + 195, 20, 20, "▽"){
-			@Override
-			public void onClick(double mouseX, double mouseY){
+		));
+
+		this.addButton(new Button(this.width / 2 - 125, this.imgTop + 195, 20, 20, "▽", (bt)-> {
 				--index;
 				if (index < 0){
 					index = RADAR_SIZE.length-1;
 				}
 			}
-		};
-		GuiButton b3 = new GuiButton(103, this.width / 2 + 75, this.imgTop + 195, 40, 20, "Search"){
-			@Override
-			public void onClick(double mouseX, double mouseY){
+		));
+
+		this.addButton(new Button(this.width / 2 + 75, this.imgTop + 195, 40, 20, "Search", (bt)-> {
 				searchBlock();
 			}
-		};
-
-		this.buttons.add(b1);
-		this.buttons.add(b2);
-		this.buttons.add(b3);
-		this.children.add(b3);
-		this.children.add(b1);
-		this.children.add(b2);
-
+		));
 		iconx = this.width / 2 + 90;
 		icony = this.imgTop + 175;
+	}
+
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		try{
-			drawDefaultBackground();
+			super.renderBackground();
 		}catch(Exception ex){
 
 		}
 
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.getTextureManager().bindTexture(tex);
-		drawTexturedModalRect(this.imgLeft, this.imgTop, 0, 0, this.imgWidth, this.imgHeight);
+		Minecraft.getInstance().getTextureManager().bindTexture(tex);
+		blit(this.imgLeft, this.imgTop, 0, 0, this.imgWidth, this.imgHeight);
 		GL11.glPopMatrix();
 
 		renderSearch();
@@ -124,25 +120,25 @@ public class GuiBlockRadar extends GuiScreen {
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-		this.mc.getTextureManager().bindTexture(tex);
+		Minecraft.getInstance().getTextureManager().bindTexture(tex);
 		GL11.glTranslatef(this.imgLeft + 100, this.imgTop + 100, 0.0F);
 		GL11.glRotatef(360 - this.renderTicks * 3 % 360, 0.0F, 0.0F, 1.0F);
-		drawTexturedModalRect(0, 0, 0, 214, 120, 42);
+		blit(0, 0, 0, 214, 120, 42);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.getTextureManager().bindTexture(texOver);
-		drawTexturedModalRect(this.imgLeft - 28, this.imgTop - 37, 0, 0, 256, 256);
+		Minecraft.getInstance().getTextureManager().bindTexture(texOver);
+		blit(this.imgLeft - 28, this.imgTop - 37, 0, 0, 256, 256);
 		GL11.glPopMatrix();
 
 		for (int index = 0; index < this.buttons.size(); index++) {
-			GuiButton guibutton = (GuiButton) this.buttons.get(index);
+			Widget guibutton = this.buttons.get(index);
 			guibutton.render(mouseX, mouseY, partialTicks);
 		}
 
-		FontRenderer font = this.fontRenderer;
+		FontRenderer font = this.font;
 		font.drawString(new Integer(RADAR_SIZE[index]).toString() + " × " + new Integer(RADAR_SIZE[index]).toString(), this.width / 2 - 103, this.imgTop + 205, 0xFFFFFF);
 
 
@@ -162,13 +158,13 @@ public class GuiBlockRadar extends GuiScreen {
 		int size = RADAR_SIZE[index];
 		while(posList.hasNext()){
 			BlockPos pos = posList.next();
-			if ((Math.abs(pos.getX() - this.mc.player.posX) <= size) && (Math.abs(pos.getZ() - this.mc.player.posZ) <= size)) {
-				int x = (int) (pos.getX() - this.mc.player.posX) / 2;
-				int z = (int) (pos.getZ() - this.mc.player.posZ) / 2;
+			if ((Math.abs(pos.getX() -  Minecraft.getInstance().player.posX) <= size) && (Math.abs(pos.getZ() - player.posZ) <= size)) {
+				int x = (int) (pos.getX() - player.posX) / 2;
+				int z = (int) (pos.getZ() - player.posZ) / 2;
 
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_BLEND);
-				int y = (int) this.mc.player.posY - pos.getY();
+				int y = (int) player.posY - pos.getY();
 				if (Math.abs(y) <= 10){
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, renderAlpha);
 				}else if (y < 0){
@@ -176,41 +172,21 @@ public class GuiBlockRadar extends GuiScreen {
 				}else{
 					GL11.glColor4f(1.0F, 0.54902F, 0.0F, renderAlpha);
 				}
-				this.mc.getTextureManager().bindTexture(tex);
+				Minecraft.getInstance().getTextureManager().bindTexture(tex);
 				GL11.glTranslatef(this.imgLeft + 100, this.imgTop + 100, 0.0F);
-				GL11.glRotatef(-((int) this.mc.player.rotationYaw % 360), 0.0F, 0.0F, 1.0F);
-				drawTexturedModalRect(-2 - x, -2 - z, 252, 252, 4, 4);
+				GL11.glRotatef(-((int) player.rotationYaw % 360), 0.0F, 0.0F, 1.0F);
+				blit(-2 - x, -2 - z, 252, 252, 4, 4);
 				GL11.glDisable(GL11.GL_BLEND);
 				GL11.glPopMatrix();
 			}
 		}
 	}
 
-//	public void actionPerformed(GuiButton guibutton) {
-//		switch(guibutton.id){
-//		case 101:
-//			++index;
-//			if (index >= RADAR_SIZE.length){
-//				index = 0;
-//			}
-//			break;
-//		case 102:
-//			--index;
-//			if (index < 0){
-//				index = RADAR_SIZE.length-1;
-//			}
-//			break;
-//		case 103:
-//			searchBlock();
-//			break;
-//		}
-//	}
-
 	private void searchBlock(){
 		blockPos.clear();
-		int px = mc.player.getPosition().getX();
-		int py = mc.player.getPosition().getY();
-		int pz = mc.player.getPosition().getZ();
+		int px = player.getPosition().getX();
+		int py = player.getPosition().getY();
+		int pz = player.getPosition().getZ();
 		long t1 = System.currentTimeMillis();
 		long t2;
 		int size = RADAR_SIZE[index];
@@ -339,11 +315,10 @@ public class GuiBlockRadar extends GuiScreen {
 	}
 
 	@Override
-    public void onGuiClosed()
+    public void onClose()
     {
 		// サイズをサーバーに送る
 		MessageHandler.SendMessage_BlockRadarUpdate(index);
-		//Mod_ExBombs.INSTANCE.sendToServer(new MessageBlockRadarUpdate(index));
     }
 
 	public boolean doesGuiPauseGame() {
@@ -363,4 +338,5 @@ public class GuiBlockRadar extends GuiScreen {
         zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
     }
+
 }

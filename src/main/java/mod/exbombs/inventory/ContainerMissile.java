@@ -1,21 +1,19 @@
 package mod.exbombs.inventory;
 
+import mod.exbombs.entity.missile.EntityMissile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 
-public class ContainerSpawnRadar extends Container{
-
-	private int index;
-
-	public ContainerSpawnRadar(ContainerType<?> type, int id) {
+public class ContainerMissile extends Container{
+	private EntityMissile missile;
+	public ContainerMissile(ContainerType<?> type, int id) {
 		super(type, id);
-		// TODO 自動生成されたコンストラクター・スタブ
 	}
 
-	public ContainerSpawnRadar(ContainerType<?> type, int id, int idx) {
+	public ContainerMissile(ContainerType<ContainerMissile> type, int id, EntityMissile ent) {
 		this(type, id);
-		index = idx;
+		missile = ent;
 	}
 
 	@Override
@@ -24,11 +22,8 @@ public class ContainerSpawnRadar extends Container{
 		return true;
 	}
 
-	public void setIndex(int idx) {
-		index = idx;
+	public EntityMissile getMissile() {
+		return missile;
 	}
 
-	public int getIndex() {
-		return index;
-	}
 }

@@ -1,7 +1,8 @@
 package mod.exbombs.util;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import mod.exbombs.item.ItemSpawnerRadar;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 
@@ -12,6 +13,10 @@ public class SpawnerRadarData extends WorldSavedData {
 	public boolean upDate;
 	private static final int UPDATETIME = 1000;
 
+	public SpawnerRadarData() {
+		this(ItemSpawnerRadar.DATANAME);
+	}
+
 	// コンストラクタ
 	public SpawnerRadarData(String name)
 	{
@@ -19,7 +24,7 @@ public class SpawnerRadarData extends WorldSavedData {
 		entityIndex = 0;
 	}
 
-	public void onUpdate(World world, EntityPlayer player)
+	public void onUpdate(World world, PlayerEntity player)
 	{
 		if(!this.init)
 		{
@@ -41,13 +46,13 @@ public class SpawnerRadarData extends WorldSavedData {
 	public int index() {return entityIndex;}
 
 	@Override
-	public void read(NBTTagCompound nbt) {
+	public void read(CompoundNBT nbt) {
 		entityIndex = nbt.getInt("INDEX");
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt) {
-		nbt.setInt("INDEX", entityIndex);
+	public CompoundNBT write(CompoundNBT nbt) {
+		nbt.putInt("INDEX", entityIndex);
 		return nbt;
 	}
 }

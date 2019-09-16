@@ -1,24 +1,22 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package mod.exbombs.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import mod.exbombs.block.BlockCore;
-import mod.exbombs.entity.EntityNuclearExplosivePrimed;
+import mod.exbombs.entity.prime.EntityNuclearExplosivePrimed;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class RenderNuclearExplosivePrimed extends Render {
-	//private RenderBlocks blockRenderer = new RenderBlocks();
+public class RenderNuclearExplosivePrimed extends EntityRenderer<EntityNuclearExplosivePrimed> {
 
-	public RenderNuclearExplosivePrimed(RenderManager renderManager) {
+	public RenderNuclearExplosivePrimed(EntityRendererManager renderManager) {
 		super(renderManager);
-		//this.blockRenderer = new RenderBlocks();
 		this.shadowSize = 0.5F;
 	}
 
@@ -47,14 +45,14 @@ public class RenderNuclearExplosivePrimed extends Render {
         if (this.renderOutlines)
         {
             GlStateManager.enableColorMaterial();
-            GlStateManager.enableOutlineMode(this.getTeamColor(entity));
+            GlStateManager.setupSolidRenderingTextureCombine(this.getTeamColor(entity));
             blockrendererdispatcher.renderBlockBrightness(BlockCore.block_nuclear.getDefaultState(), 1.0F);
-            GlStateManager.disableOutlineMode();
+            GlStateManager.tearDownSolidRenderingTextureCombine();
             GlStateManager.disableColorMaterial();
         }
         else if (entity.getFuse() / 5 % 2 == 0)
         {
-            GlStateManager.disableTexture2D();
+            GlStateManager.disableTexture();
             GlStateManager.disableLighting();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.DST_ALPHA);
@@ -67,7 +65,7 @@ public class RenderNuclearExplosivePrimed extends Render {
             GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.disableBlend();
             GlStateManager.enableLighting();
-            GlStateManager.enableTexture2D();
+            GlStateManager.enableTexture();
         }
 
         GlStateManager.popMatrix();
@@ -76,16 +74,12 @@ public class RenderNuclearExplosivePrimed extends Render {
 
 
 	@Override
-	public void doRender(Entity entity, double d, double d1, double d2, float f, float f1) {
+	public void doRender(EntityNuclearExplosivePrimed entity, double d, double d1, double d2, float f, float f1) {
 		renderNucExpPrimed((EntityNuclearExplosivePrimed) entity, d, d1, d2, f, f1);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity par1Entity) {
-		return func_110808_a(par1Entity);
-	}
-
-	protected ResourceLocation func_110808_a(Entity entity) {
-		return TextureMap.LOCATION_BLOCKS_TEXTURE;
+	protected ResourceLocation getEntityTexture(EntityNuclearExplosivePrimed entity) {
+		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
 	}
 }

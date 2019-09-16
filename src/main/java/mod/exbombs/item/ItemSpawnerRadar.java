@@ -2,33 +2,31 @@
 package mod.exbombs.item;
 
 import mod.exbombs.core.ModCommon;
-import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.network.MessageHandler;
 import mod.exbombs.util.SpawnerRadarData;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class ItemSpawnerRadar extends Item {
 
 	public SpawnerRadarData data;
 
-	public ItemSpawnerRadar() {
-		super(new Item.Properties()
-				.maxStackSize(1)
-				.group(Mod_ExBombs.tabExBombs));
+	public ItemSpawnerRadar(Item.Properties property) {
+		super(property);
 	}
 
 	@Override
 	public void inventoryTick(ItemStack item, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if(entity instanceof EntityPlayer && isSelected){
-			EntityPlayer player = (EntityPlayer) entity;
+		if(entity instanceof PlayerEntity && isSelected){
+			PlayerEntity player = (PlayerEntity) entity;
 			if(!world.isRemote)
 			{
 				this.data = getData(item,world);
@@ -39,9 +37,9 @@ public class ItemSpawnerRadar extends Item {
 	}
 
 	@Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand){
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand){
     	if (!worldIn.isRemote) {
-//    		NetworkHooks.openGui((EntityPlayerMP)playerIn,
+//    		NetworkHooks.openGui((ServerPlayerEntity)playerIn,
 //    				new InteractionObjectSpawnRadar(),
 //    				(buf)->{
 //    					buf.writeInt(data.index());
@@ -53,11 +51,11 @@ public class ItemSpawnerRadar extends Item {
 
     		//new ExBombsGuiHelper().displayGui(playerIn, new GuiSpawnRadar(data.index()));
     		MessageHandler.SendMessageShowGui(ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(data.index())});
-    		//new ExBombsGuiHelper().displayGuiByID((EntityPlayer) Mod_ExBombs.proxy.getEntityPlayerInstance(), ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(data.index())});
+    		//new ExBombsGuiHelper().displayGuiByID((PlayerEntity) Mod_ExBombs.proxy.getPlayerEntityInstance(), ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(data.index())});
     		//Mod_ExBombs.INSTANCE.sendToServer(new MessageShowGui(ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(data.index())}));
 		}
     	ItemStack itemStackIn = playerIn.getHeldItem(hand);
-		return  new ActionResult(EnumActionResult.PASS, itemStackIn);
+		return  new ActionResult(ActionResultType.PASS, itemStackIn);
 	}
 
 
@@ -82,20 +80,21 @@ public class ItemSpawnerRadar extends Item {
 		}
 	}
 
+	public static final String DATANAME = ModCommon.MOD_ID + ":" + ItemCore.NAME_ITEMRADAR;
 	public SpawnerRadarData getData(ItemStack item, World world)
 	{
-		String itemName = this.getRegistryName().toString();
+		ServerWorld sWorld = (ServerWorld)world;
 		//SpawnerRadarData data = null;//(SpawnerRadarData)world.loadData(SpawnerRadarData.class, itemName);
-		SpawnerRadarData data =  world.func_212411_a(world.dimension.getType(), SpawnerRadarData::new, itemName);
+		SpawnerRadarData data = sWorld.getSavedData().getOrCreate(SpawnerRadarData::new, DATANAME);
 
 		if (data == null)
 		{
-			data = new SpawnerRadarData(itemName);
+			data = new SpawnerRadarData(DATANAME);
 			data.markDirty();
-			world.func_212409_a(world.dimension.getType(), data.getName(), data);
+			sWorld.getSavedData().set(data);
+			//world.func_212409_a(world.dimension.getType(), data.getName(), data);
 			//world.setData(itemName, data);
 		}
-
 		return data;
 	}
 }

@@ -2,7 +2,7 @@ package mod.exbombs.helper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 public class ExBombsMinecraftHelper {
@@ -13,7 +13,7 @@ public class ExBombsMinecraftHelper {
 		return Minecraft.getInstance().world;
 	}
 
-	public static EntityPlayer getPlayer() {
+	public static PlayerEntity getPlayer() {
 		return Minecraft.getInstance().player;
 	}
 

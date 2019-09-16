@@ -28,9 +28,9 @@ public class ModCommon {
 	// コンフィグ カテゴリー general
 	public static final String MOD_CONFIG_CAT_GENELAL = "general";
 	public static final String MOD_CHANEL ="mod_channel_exbombs";
-	public static final String MOD_EVENTCHANEL ="Mod_EventChannel_ExBombs";
+	public static final String MOD_EVENTCHANEL ="mod_eventchannel_exBombs";
 
-	public static final int MOD_GUI_ID_MISSILE = 10;
-	public static final int MOD_GUI_ID_SPAWNRADAR = 0;
-	public static final int MOD_GUI_ID_BLOCKRADER = 1;
+	public static final String MOD_GUI_ID_MISSILE = "gui_missaile";
+	public static final String MOD_GUI_ID_SPAWNRADAR = "gui_spawnradar";
+	public static final String MOD_GUI_ID_BLOCKRADER = "gui_blockradar";
 }

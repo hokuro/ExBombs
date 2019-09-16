@@ -2,17 +2,17 @@ package mod.exbombs.render;
 
 import org.lwjgl.opengl.GL11;
 
-import mod.exbombs.entity.EntityBomb;
+import mod.exbombs.entity.bomb.EntityBomb;
 import mod.exbombs.model.ModelCube;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderBomb extends Render<EntityBomb> {
+public class RenderBomb extends EntityRenderer<EntityBomb> {
 	private static final ResourceLocation tex = new ResourceLocation("exbombs","textures/entity/bomb.png");
 	ModelCube model;
 
-	public RenderBomb(RenderManager renderManager) {
+	public RenderBomb(EntityRendererManager renderManager) {
 		super(renderManager);
 		this.shadowSize = 0.5F;
 		this.model = new ModelCube();

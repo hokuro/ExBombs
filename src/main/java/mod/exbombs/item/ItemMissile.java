@@ -1,18 +1,15 @@
 package mod.exbombs.item;
 
-import mod.exbombs.core.Mod_ExBombs;
-import mod.exbombs.entity.EntityMissile;
+import mod.exbombs.entity.missile.EntityMissile;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 
 public class ItemMissile extends Item {
 	private int type;
 
-	public ItemMissile() {
-		super(new Item.Properties()
-				.maxStackSize(1)
-				.group(Mod_ExBombs.tabExBombs));
+	public ItemMissile(Item.Properties property) {
+		super(property);
 	}
 
 	public Item setMissileType(int type) {
@@ -24,17 +21,17 @@ public class ItemMissile extends Item {
      * Called when a Block is right-clicked with this Item
      */
 	@Override
-    public EnumActionResult onItemUse(ItemUseContext context)
+    public ActionResultType onItemUse(ItemUseContext context)
     {
     	if (!context.getWorld().isRemote){
     		EntityMissile missile = new EntityMissile(context.getWorld(), context.getPos());
     		missile.missileType = this.type;
     		missile.rotationPitch += 90F;
-    		context.getWorld().spawnEntity(missile);
+    		context.getWorld().addEntity(missile);
     	}
     	if (!context.getPlayer().isCreative()){
     		context.getItem().shrink(1);
     	}
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 }

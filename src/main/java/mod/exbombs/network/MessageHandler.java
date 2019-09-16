@@ -1,7 +1,7 @@
 package mod.exbombs.network;
 
 import mod.exbombs.core.ModCommon;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -42,7 +42,7 @@ public class MessageHandler {
 
 	}
 
-	public static void SendMessageShowGui(int guiid, Object[] objects) {
+	public static void SendMessageShowGui(String guiid, Object[] objects) {
 		HANDLER.sendToServer(new MessageShowGui(guiid, objects));
 
 	}
@@ -51,7 +51,7 @@ public class MessageHandler {
 		HANDLER.sendToServer(new MessageFuseSetBurn(x, y, z));
 	}
 
-	public static void SendMessage_MissileLaunchServer(int entityID, EntityPlayerMP aplayer) {
+	public static void SendMessage_MissileLaunchServer(int entityID, ServerPlayerEntity aplayer) {
 		HANDLER.sendTo(new MessageMissileLaunchServer(entityID), aplayer.connection.netManager,NetworkDirection.PLAY_TO_CLIENT);
 	}
 }

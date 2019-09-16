@@ -4,14 +4,14 @@ package mod.exbombs.util;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -25,7 +25,7 @@ public class MoreExplosivesSuperExplosion extends Explosion {
 	private Random random;
 
 	public MoreExplosivesSuperExplosion() {
-		super(null, null, 0.0D, 0.0D, 0.0D, 0.0F, true,true);
+		super(null, null, 0.0D, 0.0D, 0.0D, 0.0F, true,Explosion.Mode.DESTROY);
 	}
 
 	public void explode(World world, double radiusX, double radiusY, double radiusZ, int xPos, int yPos, int zPos, long randomSeed){
@@ -35,7 +35,7 @@ public class MoreExplosivesSuperExplosion extends Explosion {
 		this.world = world;
 		this.random = new Random(randomSeed);
 
-		this.world.playSound((EntityPlayer)null, this.xPos, this.yPos, this.zPos, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
+		this.world.playSound((PlayerEntity)null, this.xPos, this.yPos, this.zPos, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
 				(1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F);
 
 		radiusX += 0.5D;
@@ -108,7 +108,7 @@ public class MoreExplosivesSuperExplosion extends Explosion {
 	}
 
 	private final void setBlock(double x, double y, double z) {
-		IBlockState state = this.world.getBlockState(new BlockPos((int) x + this.xPos, (int) y + this.yPos, (int) z + this.zPos));
+		BlockState state = this.world.getBlockState(new BlockPos((int) x + this.xPos, (int) y + this.yPos, (int) z + this.zPos));
 		if ((state.getMaterial() != Material.AIR) && (state.getBlock() != Blocks.BEDROCK)) {
 			this.world.setBlockState(new BlockPos((int) x + this.xPos, (int) y + this.yPos, (int) z + this.zPos),Blocks.AIR.getDefaultState());
 		}

@@ -1,35 +1,44 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
-package mod.exbombs.entity;
+package mod.exbombs.entity.missile;
 
 import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
-import mod.exbombs.gui.GuiMissile;
+import mod.exbombs.core.ModCommon;
+import mod.exbombs.core.Mod_ExBombs;
+import mod.exbombs.entity.EntityCore;
 import mod.exbombs.helper.ExBombsGuiHelper;
-import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.item.ItemCore;
 import mod.exbombs.item.ItemDefuser;
 import mod.exbombs.util.EnumBombType;
 import mod.exbombs.util.UtilExproder;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityMissile extends Entity implements IEntityAdditionalSpawnData {
 	public int missileType;
 	public boolean flying;
 	private ParticleHelper helper;
 
-	public EntityMissile(World world) {
+	public EntityMissile(FMLPlayMessages.SpawnEntity packet, World world) {
+		this(EntityCore.Inst().MISSILE, world);
+	}
+
+	public EntityMissile(EntityType<?> etype, World world) {
 		super(EntityCore.Inst().MISSILE, world);
-		setSize(1.0F, 3.5F);
 		this.setRenderDistanceWeight(50.0D);
 		this.ignoreFrustumCheck = true;
 		if (world.isRemote) {
@@ -38,9 +47,9 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 	}
 
 	public EntityMissile(World worldIn, BlockPos pos) {
-		this(worldIn);
+		this(EntityCore.Inst().MISSILE, worldIn);
 		this.setPosition(pos.getX(),pos.getY()+1,pos.getZ());
-		this.motionY = 5.0D;
+		this.setMotion(this.getMotion().getX(), 5.0D, this.getMotion().getZ());
 	}
 
 	@Override
@@ -50,20 +59,19 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 			return;
 		}
 		if (!this.world.isRemote) {
-			for (int motionX = -5; motionX < 5; motionX++) {
-				for (int motionZ = -5; motionZ < 5; motionZ++) {
-					//this.world.getChunkProvider().getLoadedChunk(this.chunkCoordX + motionX, this.chunkCoordZ + motionZ);
-				}
-			}
+			double mx = this.getMotion().getX();
+			double my = this.getMotion().getY();
+			double mz = this.getMotion().getZ();
+
 			if ((this.prevRotationPitch == 0.0F) && (this.prevRotationYaw == 0.0F)) {
-				float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-				this.prevRotationYaw = (this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / 3.141592653589793D));
-				this.prevRotationPitch = (this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / 3.141592653589793D));
+				float f = MathHelper.sqrt(mx * mx + mz * mz);
+				this.prevRotationYaw = (this.rotationYaw = (float) (Math.atan2(mx, mz) * 180.0D / 3.141592653589793D));
+				this.prevRotationPitch = (this.rotationPitch = (float) (Math.atan2(my, f) * 180.0D / 3.141592653589793D));
 			}
 			Vec3d vec3d = new Vec3d(this.posX, this.posY+1, this.posZ);
-			Vec3d vec3d1 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-			RayTraceResult  movingobjectposition = this.world.rayTraceBlocks(vec3d, vec3d1);
-			if (movingobjectposition != null) {
+			Vec3d vec3d1 = new Vec3d(this.posX + mx, this.posY + my, this.posZ + mz);
+			RayTraceResult  movingobjectposition = this.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+			if (movingobjectposition.getType() != RayTraceResult.Type.MISS) {
 				remove();
 				if (this.missileType == 0) {
 					UtilExproder.createExplesion(this.world, null, this.posX, this.posY, this.posZ, 10.0F, false, false, EnumBombType.PRIME);
@@ -75,12 +83,12 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 					UtilExproder.createEraserExplosion(this.world, null, (int) this.posX, (int) this.posY, (int) this.posZ, 0.0F, EnumEraseType.ERASEUNMATCH);
 				}
 			}
-			this.posX += this.motionX;
-			this.posY += this.motionY;
-			this.posZ += this.motionZ;
-			float f3 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-			this.rotationYaw = ((float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / 3.141592653589793D));
-			for (this.rotationPitch = ((float) (Math.atan2(this.motionY, f3) * 180.0D / 3.141592653589793D)); this.rotationPitch
+			this.posX += mx;
+			this.posY += my;
+			this.posZ += mz;
+			float f3 = MathHelper.sqrt(mx *mx + mz * mz);
+			this.rotationYaw = ((float) (Math.atan2(mx, my) * 180.0D / 3.141592653589793D));
+			for (this.rotationPitch = ((float) (Math.atan2(my, f3) * 180.0D / 3.141592653589793D)); this.rotationPitch
 					- this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
 			}
 			this.rotationPitch = (this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F);
@@ -88,10 +96,11 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 			float f4 = 0.99F;
 			float f6 = 0.015F;
 
-			this.motionX *= f4;
-			this.motionY *= f4;
-			this.motionZ *= f4;
-			this.motionY -= f6;
+			mx *= f4;
+			my *= f4;
+			mz *= f4;
+			my -= f6;
+			setMotion(mx,my,mz);
 			setPosition(this.posX, this.posY, this.posZ);
 		} else {
 			this.helper.spawn();
@@ -99,20 +108,24 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 	}
 
 	@Override
-	public boolean processInitialInteract(EntityPlayer player, EnumHand hand){
-		if (hand == EnumHand.OFF_HAND){
+	public boolean processInitialInteract(PlayerEntity player, Hand hand){
+		if (hand == Hand.OFF_HAND){
 			// オフハンドは処理をしない
 			return super.processInitialInteract(player, hand);
 		}
 		ItemStack stack = player.getHeldItem(hand);
-		ItemStack offHand = player.getHeldItem(EnumHand.OFF_HAND);
+		ItemStack offHand = player.getHeldItem(Hand.OFF_HAND);
 		// メインハンドにDefuserをし装備している場合または
 		// メインハンドに何も持っておらず、オフハンドにDefuserを装備している場合信管を外す
-		if (((stack != null) && (stack.getItem() == ItemCore.item_defuser)) ||
-			((stack == null) &&(offHand != null && offHand.getItem() == ItemCore.item_defuser))) {
+		if (((!stack.isEmpty()) && (stack.getItem() == ItemCore.item_defuser)) ||
+			((stack.isEmpty()) &&(!offHand.isEmpty() && offHand.getItem() == ItemCore.item_defuser))) {
 			if ((!this.world.isRemote) && (!this.removed)) {
 				if (!player.isCreative()) {
-					ItemDefuser.defuserUse(stack, player);
+					if (stack.isEmpty()) {
+						ItemDefuser.defuserUse(stack, player,Hand.OFF_HAND);
+					}else {
+						ItemDefuser.defuserUse(stack, player,Hand.MAIN_HAND);
+					}
 				}
 				this.remove();
 				if (this.missileType == 0) {
@@ -129,9 +142,8 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 				}
 				return true;
 			}
-		} else if (this.world.isRemote) {
-			new ExBombsGuiHelper().displayGui(player, new GuiMissile(this.world, this));
-			//new ExBombsGuiHelper().displayGuiByID((EntityPlayer) Mod_ExBombs.proxy.getEntityPlayerInstance(), ModCommon.MOD_GUI_ID_SPAWNRADAR, new Object[]{new Integer(0)});
+		} else if (!this.world.isRemote) {
+			ExBombsGuiHelper.displayGuiByID(player, ModCommon.MOD_GUI_ID_MISSILE, new Object[] {this.getEntityId()});
 			return true;
 		}
 		return super.processInitialInteract(player, hand);
@@ -160,15 +172,15 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 	}
 
 	@Override
-	protected void readAdditional(NBTTagCompound tagCompund) {
+	protected void readAdditional(CompoundNBT tagCompund) {
 		this.missileType = tagCompund.getInt("missileType");
 		this.flying = tagCompund.getBoolean("flying");
 	}
 
 	@Override
-	protected void writeAdditional(NBTTagCompound tagCompound) {
-		tagCompound.setInt("missileType", this.missileType);
-		tagCompound.setBoolean("flying", this.flying);
+	protected void writeAdditional(CompoundNBT tagCompound) {
+		tagCompound.putInt("missileType", this.missileType);
+		tagCompound.putBoolean("flying", this.flying);
 	}
 
 	public void launch(int x, int z) {
@@ -177,8 +189,7 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 		if ((Math.abs(XCoord) > 500.0D) || (Math.abs(YCoord) > 500.0D) || (this.flying)) {
 			return;
 		}
-		this.motionX = (0.0105D * XCoord);
-		this.motionZ = (0.0105D * YCoord);
+		setMotion( (0.0105D * XCoord),this.getMotion().getY(),(0.0105D * YCoord));
 
 		this.flying = true;
 	}
@@ -189,27 +200,23 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 
 		public void spawn() {
 			for (int iterator = 0; iterator < 50; iterator++) {
-				EntityExBombsSmokeFX fx = new EntityExBombsSmokeFX(EntityMissile.this.world,
+				world.addParticle(Mod_ExBombs.RegistryEvents.PARTICLE_LARGESMOKEEX,
 						EntityMissile.this.posX, EntityMissile.this.posY, EntityMissile.this.posZ,
 						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D,
 						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D,
 						(EntityMissile.this.rand.nextInt(200) - 100.0F) / 600.0D);
-				fx.setMaxAge(120);
-				fx.interpPosY=8.0D;
-				fx.setAll((float) (Math.random() * 0.30000001192092896D));
-				ExBombsMinecraftHelper.addEffect(fx);
 			}
 		}
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT() {
+	public CompoundNBT serializeNBT() {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
+	public void deserializeNBT(CompoundNBT nbt) {
 		// TODO 自動生成されたメソッド・スタブ
 
 	}
@@ -219,5 +226,10 @@ public class EntityMissile extends Entity implements IEntityAdditionalSpawnData 
 	protected void registerData() {
 		// TODO 自動生成されたメソッド・スタブ
 
+	}
+
+	@Override
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

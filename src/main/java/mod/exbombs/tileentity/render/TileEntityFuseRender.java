@@ -1,10 +1,11 @@
 package mod.exbombs.tileentity.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import mod.exbombs.block.BlockCore;
 import mod.exbombs.block.BlockFuse;
 import mod.exbombs.model.ModelCube;
 import mod.exbombs.tileentity.TileEntityFuse;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.ResourceLocation;
 

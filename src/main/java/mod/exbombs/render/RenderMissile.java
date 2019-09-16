@@ -2,15 +2,14 @@ package mod.exbombs.render;
 
 import org.lwjgl.opengl.GL11;
 
-import mod.exbombs.entity.EntityMissile;
+import mod.exbombs.entity.missile.EntityMissile;
 import mod.exbombs.model.ModelMissile;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
 
-public class RenderMissile extends Render {
+public class RenderMissile extends EntityRenderer<EntityMissile> {
 	private  static final ResourceLocation tex3 = new ResourceLocation("exbombs","textures/entity/unmatcheraserstsmissile.png");
 	private  static final ResourceLocation tex2 = new ResourceLocation("exbombs","textures/entity/eraserstsmissile.png");
 	private  static final ResourceLocation tex1 = new ResourceLocation("exbombs","textures/entity/nuclearstsmissile.png");
@@ -18,7 +17,7 @@ public class RenderMissile extends Render {
 
 	ModelMissile modelmissile;
 
-	public RenderMissile(RenderManager renderManager) {
+	public RenderMissile(EntityRendererManager renderManager) {
 		super(renderManager);
 		this.modelmissile = new ModelMissile();
 	}
@@ -37,12 +36,12 @@ public class RenderMissile extends Render {
 	}
 
 	@Override
-	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
+	public void doRender(EntityMissile par1Entity, double par2, double par4, double par6, float par8, float par9) {
 		renderArrow((EntityMissile) par1Entity, par2, par4, par6, par8, par9);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
+	protected ResourceLocation getEntityTexture(EntityMissile entity) {
 		EntityMissile missile = (EntityMissile) entity;
 		ResourceLocation tex = null;
 		switch(missile.missileType){

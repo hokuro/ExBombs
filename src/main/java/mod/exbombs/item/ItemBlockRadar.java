@@ -2,38 +2,36 @@
 package mod.exbombs.item;
 
 import mod.exbombs.core.ModCommon;
-import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.helper.ExBombsMinecraftHelper;
 import mod.exbombs.network.MessageHandler;
 import mod.exbombs.util.BlockRadarData;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class ItemBlockRadar extends Item {
 
 	public BlockRadarData data;
 
-	public ItemBlockRadar() {
-		super(new Item.Properties()
-				.group(Mod_ExBombs.tabExBombs)
-				.maxStackSize(1));
+	public ItemBlockRadar(Item.Properties property) {
+		super(property);
 	}
 
 	@Override
 	public void inventoryTick(ItemStack item, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if(entity instanceof EntityPlayer && isSelected){
-			EntityPlayer player = (EntityPlayer) entity;
+		if(entity instanceof PlayerEntity && isSelected){
+			PlayerEntity player = (PlayerEntity) entity;
 			if(!world.isRemote)
 			{
 				this.data = getData(item,world);
@@ -44,15 +42,15 @@ public class ItemBlockRadar extends Item {
 	}
 
 	@Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand){
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand){
     	if (!worldIn.isRemote){
     		if (playerIn.isSneaking()){
-        		ItemStack target = playerIn.getHeldItem(EnumHand.OFF_HAND);
+        		ItemStack target = playerIn.getHeldItem(Hand.OFF_HAND);
     	 		if (!target.isEmpty() &&  Block.getBlockFromItem(target.getItem()) != Blocks.AIR){
     	 			 setRadarTarget(new ItemStack(this),Minecraft.getInstance().world,Block.getBlockFromItem(target.getItem()).getDefaultState());
     	 		}
     		}else{
-        		if (data.getTarget() != Blocks.AIR){
+        		if (data.getTarget() != Blocks.AIR.getDefaultState()){
     			MessageHandler.SendMessageShowGui(ModCommon.MOD_GUI_ID_BLOCKRADER,
     					new Object[]{
     							data.getTargetName(),
@@ -69,7 +67,7 @@ public class ItemBlockRadar extends Item {
 //                				Minecraft.getInstance().objectMouseOver.getBlockPos() != null)
 //                {
 //                    BlockPos blockpos1 = Minecraft.getInstance().objectMouseOver.getBlockPos();
-//                    IBlockState block = Minecraft.getInstance().world.getBlockState(blockpos1);
+//                    BlockState block = Minecraft.getInstance().world.getBlockState(blockpos1);
 //                    setRadarTarget(new ItemStack(this),Minecraft.getInstance().world,block);
 //
 //                }
@@ -85,7 +83,7 @@ public class ItemBlockRadar extends Item {
 //    		}
 //		}
     	ItemStack itemStackIn = playerIn.getHeldItem(hand);
-		return  new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+		return  new ActionResult(ActionResultType.SUCCESS, itemStackIn);
 	}
 
 
@@ -100,7 +98,7 @@ public class ItemBlockRadar extends Item {
 		return data;
 	}
 
-	private void setRadarTarget(ItemStack item, WorldClient world, IBlockState block) {
+	private void setRadarTarget(ItemStack item, ClientWorld world, BlockState block) {
 		ItemBlockRadar radar;
 		if (item != null && item.getItem() instanceof ItemBlockRadar){
 			radar = (ItemBlockRadar)item.getItem();
@@ -121,20 +119,21 @@ public class ItemBlockRadar extends Item {
 	}
 
 
+	public static final String DATANAME = ModCommon.MOD_ID + ":" + ItemCore.NAME_ITEMBLOCKRADAR;
 	public BlockRadarData getData(ItemStack item, World world)
 	{
-		String itemName = this.getRegistryName().toString();
+		ServerWorld sWorld = (ServerWorld)world;
 		//SpawnerRadarData data = null;//(SpawnerRadarData)world.loadData(SpawnerRadarData.class, itemName);
-		BlockRadarData data =  world.func_212411_a(world.dimension.getType(), BlockRadarData::new, itemName);
+		BlockRadarData data = sWorld.getSavedData().getOrCreate(BlockRadarData::new, DATANAME);
 
 		if (data == null)
 		{
-			data = new BlockRadarData(itemName);
+			data = new BlockRadarData(DATANAME);
 			data.markDirty();
-			world.func_212409_a(world.dimension.getType(), data.getName(), data);
+			sWorld.getSavedData().set(data);
+			//world.func_212409_a(world.dimension.getType(), data.getName(), data);
 			//world.setData(itemName, data);
 		}
-
 		return data;
 	}
 }

@@ -1,20 +1,25 @@
 package mod.exbombs.util;
 
+import mod.exbombs.item.ItemBlockRadar;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 
 public class BlockRadarData extends WorldSavedData {
-	private IBlockState targetBlock;
+	private BlockState targetBlock;
 	private int sizeIndex;
 	private boolean init = false;
 	public boolean upDate;
 
 	private static final int UPDATETIME = 1000;
+
+	public BlockRadarData() {
+		this(ItemBlockRadar.DATANAME);
+	}
 
 	// コンストラクタ
 	public BlockRadarData(String name)
@@ -24,7 +29,7 @@ public class BlockRadarData extends WorldSavedData {
 		sizeIndex = 0;
 	}
 
-	public void onUpdate(World world, EntityPlayer player)
+	public void onUpdate(World world, PlayerEntity player)
 	{
 		if(!this.init)
 		{
@@ -40,10 +45,10 @@ public class BlockRadarData extends WorldSavedData {
 		}
 	}
 
-	public void setTarget(IBlockState block){
+	public void setTarget(BlockState block){
 		targetBlock = block;
 	}
-	public IBlockState getTarget() {
+	public BlockState getTarget() {
 		if (targetBlock == null){
 			targetBlock = Blocks.AIR.getDefaultState();
 		}
@@ -59,7 +64,7 @@ public class BlockRadarData extends WorldSavedData {
 	}
 
 	@Override
-	public void read(NBTTagCompound nbt) {
+	public void read(CompoundNBT nbt) {
 		String name = nbt.getString("Name");
 		int meta = nbt.getInt("Meta");
 		if (!name.isEmpty()){
@@ -69,10 +74,10 @@ public class BlockRadarData extends WorldSavedData {
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt) {
-		nbt.setString("Name", targetBlock.getBlock().getRegistryName().toString());
-		nbt.setInt("Meta", Block.getStateId(targetBlock));
-		nbt.setInt("size", sizeIndex);
+	public CompoundNBT write(CompoundNBT nbt) {
+		nbt.putString("Name", targetBlock.getBlock().getRegistryName().toString());
+		nbt.putInt("Meta", Block.getStateId(targetBlock));
+		nbt.putInt("size", sizeIndex);
 		return nbt;
 	}
 

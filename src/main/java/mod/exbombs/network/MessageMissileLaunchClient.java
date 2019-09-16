@@ -1,14 +1,12 @@
 package mod.exbombs.network;
 
-import java.util.List;
 import java.util.function.Supplier;
 
-import mod.exbombs.entity.EntityMissile;
+import mod.exbombs.entity.missile.EntityMissile;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageMissileLaunchClient {
@@ -47,15 +45,15 @@ public class MessageMissileLaunchClient {
 		public static void handle(final MessageMissileLaunchClient pkt, Supplier<NetworkEvent.Context> ctx)
 		{
 		     //クライアントへ送った際に、EntityPlayerインスタンスはこのように取れる。
-	        //EntityPlayer player = SamplePacketMod.proxy.getEntityPlayerInstance();
+	        //PlayerEntity player = SamplePacketMod.proxy.getPlayerEntityInstance();
 	        //サーバーへ送った際に、EntityPlayerインスタンス（EntityPlayerMPインスタンス）はこのように取れる。
-	        //EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
+	        //PlayerEntity entityPlayer = ctx.getServerHandler().playerEntity;
 	        //Do something.
 			try {
 				int entityID = pkt.entityID;
 				int x = pkt.posX;
 				int z = pkt.posZ;
-				Entity entity = getEntityByID(entityID, ctx.get().getSender().world);
+				Entity entity = ctx.get().getSender().world.getEntityByID(entityID);
 				if ((entity == null) || (!(entity instanceof EntityMissile))){
 					return;
 				}
@@ -64,23 +62,13 @@ public class MessageMissileLaunchClient {
 					return;
 				}
 				missile.launch(x, z);
-				for (EntityPlayer aplayer : ctx.get().getSender().world.playerEntities){
-					MessageHandler.SendMessage_MissileLaunchServer(entityID,(EntityPlayerMP)aplayer);
-					//Mod_ExBombs.INSTANCE.sendTo(new MessageMissileLaunchServer(entityID), (EntityPlayerMP)aplayer);
+				for (PlayerEntity aplayer : ctx.get().getSender().world.getPlayers()){
+					MessageHandler.SendMessage_MissileLaunchServer(entityID,(ServerPlayerEntity)aplayer);
+					//Mod_ExBombs.INSTANCE.sendTo(new MessageMissileLaunchServer(entityID), (ServerPlayerEntity)aplayer);
 				}
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			}
-		}
-
-		public static Entity getEntityByID(int ID, World world) {
-			List<Entity> entities = world.loadedEntityList;
-			for (Entity entity : entities) {
-				if (entity.getEntityId() == ID) {
-					return entity;
-				}
-			}
-			return null;
 		}
 	}
 }

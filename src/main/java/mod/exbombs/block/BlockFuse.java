@@ -4,20 +4,21 @@ package mod.exbombs.block;
 import mod.exbombs.core.ICableBlock;
 import mod.exbombs.tileentity.TileEntityFuse;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockFuse extends BlockContainer implements ICableBlock {
+public class BlockFuse extends ContainerBlock implements ICableBlock {
 
 	protected VoxelShape bBox = Block.makeCuboidShape(0.25D,    0.25D, 0.25D,    0.75D,    0.75D, 0.75D);
 	protected static final VoxelShape[] field_185730_f = new VoxelShape[] {
@@ -37,10 +38,7 @@ public class BlockFuse extends BlockContainer implements ICableBlock {
 	}
 
 	@Override
-	public VoxelShape getShape(IBlockState state, IBlockReader worldIn, BlockPos pos)
-	//public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
-	//public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB p_185477_4_, List<AxisAlignedBB> p_185477_5_, @Nullable Entity p_185477_6_,boolean isActualState)
-	{
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		VoxelShape sh1 = field_185730_f[0];
 		VoxelShape sh2 = Block.makeCuboidShape(0, 0, 0, 0, 0, 0);
 	    if (this.shouldConnectTo(worldIn.getBlockState(pos.add(0,1,0)))){
@@ -71,47 +69,16 @@ public class BlockFuse extends BlockContainer implements ICableBlock {
 
 	}
 
-//	@Override
-//	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-//	{
-//		AxisAlignedBB result = new AxisAlignedBB(bBox.minX,bBox.minY,bBox.minZ, bBox.maxX,bBox.maxY,bBox.maxZ);
-//		World worldIn = ExBombsMinecraftHelper.getWorld();
-//	    if (this.shouldConnectTo(worldIn.getBlockState(pos.add(0,1,0)))){
-//	    	// UP
-//	    	result = result.union(new AxisAlignedBB(0.25D, 0.25D ,0.25D, 0.75D, 1.0D, 0.75D));
-//	    }
-//	    if (this.shouldConnectTo(worldIn.getBlockState(pos.add(0,-1,0)))){
-//	    	// DOWN
-//	    	result = result.union(new AxisAlignedBB(0.25D, 0.00D ,0.25D, 0.75D, 0.75D, 0.75D));
-//	    }
-//	    if (this.shouldConnectTo(worldIn.getBlockState(pos.add(0,0,1)))){
-//	    	// NORTH
-//	    	result = result.union(new AxisAlignedBB(0.25D, 0.25D ,0.25D, 0.75D, 0.75D, 1.00D));
-//	    }
-//	    if (this.shouldConnectTo(worldIn.getBlockState(pos.add(0,0,-1)))){
-//	    	// SOUTH
-//	    	result = result.union(new AxisAlignedBB(0.25D, 0.25D ,0.00D, 0.75D, 0.75D, 0.75D));
-//	    }
-//	    if (this.shouldConnectTo(worldIn.getBlockState(pos.add(-1,0,0)))){
-//	    	// WEST
-//	    	result = result.union(new AxisAlignedBB(0.00, 0.25D ,0.25D, 0.75D, 0.75D, 0.75D));
-//	    }
-//	    if (this.shouldConnectTo(worldIn.getBlockState(pos.add(1,0,0)))){
-//	    	// EASHT
-//	    	result = result.union(new AxisAlignedBB(0.25D, 0.25D ,0.25D, 1.00D, 0.75D, 0.75D));
-//	    }
-//	    return result;
-//	}
 
 	@Override
-	public void onBlockAdded(IBlockState state, World world, BlockPos pos, IBlockState oldState) {
-	//public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+	//public void onBlockAdded(World world, BlockPos pos, BlockState state) {
 		int i,j,k;
 		i = pos.getX();
 		j = pos.getY();
 		k = pos.getZ();
 
-		super.onBlockAdded(state,world, pos, oldState );
+		super.onBlockAdded(state,world, pos, oldState, isMoving);
 		if (world.isBlockPowered(pos)) {
 			ignite(world, i, j, k);
 			return;
@@ -144,7 +111,7 @@ public class BlockFuse extends BlockContainer implements ICableBlock {
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos){
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
 		int i,j,k;
 		i = pos.getX();
 		j = pos.getY();
@@ -172,12 +139,12 @@ public class BlockFuse extends BlockContainer implements ICableBlock {
 		}
 	}
 
-    public boolean isOpaqueCube(IBlockState state)
+    public boolean isOpaqueCube(BlockState state)
     {
         return false;
     }
 
-    public boolean isFullCube(IBlockState state)
+    public boolean isFullCube(BlockState state)
     {
         return false;
     }
@@ -188,7 +155,7 @@ public class BlockFuse extends BlockContainer implements ICableBlock {
 	}
 
 	@Override
-	public boolean shouldConnectTo(IBlockState state) {
+	public boolean shouldConnectTo(BlockState state) {
 
 		if (this == state.getBlock()) {
 			return true;

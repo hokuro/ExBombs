@@ -8,21 +8,17 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageShowGui {
 
-	private int id;
+	private String id;
 	private Object[] parameter;
 
-	public MessageShowGui(){
-	}
-
-	public MessageShowGui(int id, Object[] param){
-		this();
+	public MessageShowGui(String id, Object[] param){
 		this.id = id;
 		this.parameter = param;
 	}
 
 	public static void encode(MessageShowGui pkt, PacketBuffer buf)
 	{
-		buf.writeInt(pkt.id);
+		buf.writeString(pkt.id);
 		Object[] parameter = pkt.parameter;
 		buf.writeInt(parameter.length);
 		for (int i = 0; i < parameter.length; i++){
@@ -52,7 +48,7 @@ public class MessageShowGui {
 
 	public static MessageShowGui decode(PacketBuffer buf)
 	{
-		int id = buf.readInt();
+		String id = buf.readString();
 		int plength = buf.readInt();
 		Object[] ptm = new Object[plength];
 		for ( int i = 0; i < plength; i++){
@@ -89,12 +85,12 @@ public class MessageShowGui {
 		public static void handle(final MessageShowGui pkt, Supplier<NetworkEvent.Context> ctx)
 		{
 		     //クライアントへ送った際に、EntityPlayerインスタンスはこのように取れる。
-	        //EntityPlayer player = SamplePacketMod.proxy.getEntityPlayerInstance();
+	        //PlayerEntity player = SamplePacketMod.proxy.getPlayerEntityInstance();
 	        //サーバーへ送った際に、EntityPlayerインスタンス（EntityPlayerMPインスタンス）はこのように取れる。
-	        //EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
+	        //PlayerEntity entityPlayer = ctx.getServerHandler().playerEntity;
 	        //Do something.
 			try {
-				new ExBombsGuiHelper().displayGuiByID(ctx.get().getSender(), pkt.id, pkt.parameter);
+				ExBombsGuiHelper.displayGuiByID(ctx.get().getSender(), pkt.id, pkt.parameter);
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			}

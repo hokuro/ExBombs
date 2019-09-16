@@ -5,8 +5,8 @@ import java.util.Map;
 
 import mod.exbombs.core.Mod_ExBombs;
 import mod.exbombs.util.EnumBombType;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraftforge.event.RegistryEvent;
 
 public class ItemCore {
@@ -77,41 +77,41 @@ public class ItemCore {
 	// ツール
 	public static Item item_Radar;// = new  ItemSpawnerRadar().setRegistryName(NAME_ITEMRADAR);
 	public static Item item_defuser;// = new ItemDefuser().setRegistryName(NAME_ITEMDEFUSER);
-	public static Item item_blockRadar;// = new ItemBlockRadar().setRegistryName(NAME_ITEMBLOCKRADAR);
+	public static Item item_blockRadar;// = new BlockItemRadar().setRegistryName(NAME_ITEMBLOCKRADAR);
 
 
 	private static Map<String,Item> itemMap;
 
-	private static void init(){
+	public static void init(){
 
 		if (itemMap!= null){return;}
 
 
-		item_Oil = new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMOIL);
+		item_Oil = new ItemNewFuel(30000,new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMOIL);
 		item_Plastic= new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_PLASTIC);
 		item_HeavyMatter = new Item(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_HEAVYMATTER);;
-		item_Uranium = new ItemUranium().setRegistryName(NAME_ITEMURANIUM);
-		item_RocketFuel = new ItemRocketFuel().setRegistryName(NAME_ITEMROCKETFUEL);
+		item_Uranium = new ItemUranium(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMURANIUM);
+		item_RocketFuel = new ItemRocketFuel(40000,new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMROCKETFUEL);
 
 		// 手榴弾
-		item_Bomb = new ItemBomb(EnumBombType.BOMB).setRegistryName(NAME_ITEMBOMB);
-		item_WaterBomb = new ItemBomb(EnumBombType.WARTER, Items.BUCKET).setRegistryName(NAME_ITEMWATERBOMB);
-		item_paintBomb = new ItemBomb(EnumBombType.PAINT).setRegistryName(NAME_ITEMPAINTBOMB);
-		item_frozenBomb = new ItemBomb(EnumBombType.FROZEN).setRegistryName(NAME_ITEMFROZENBOMB);
-		item_icicleBomb = new ItemBomb(EnumBombType.ICICLE).setRegistryName(NAME_ITEMICICLEBOMB);
-		item_MC = new ItemMolotovCoctail().setRegistryName(NAME_ITEMMC);
-		item_lavaBomb = new ItemBomb(EnumBombType.LAVA,null).setRegistryName(NAME_ITEMLAVABOMB);
+		item_Bomb = new ItemBomb(EnumBombType.BOMB, new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMBOMB);
+		item_WaterBomb = new ItemBomb(EnumBombType.WARTER, new Item.Properties().group(Mod_ExBombs.tabExBombs).containerItem(Items.BUCKET)).setRegistryName(NAME_ITEMWATERBOMB);
+		item_paintBomb = new ItemBomb(EnumBombType.PAINT, new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMPAINTBOMB);
+		item_frozenBomb = new ItemBomb(EnumBombType.FROZEN, new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMFROZENBOMB);
+		item_icicleBomb = new ItemBomb(EnumBombType.ICICLE, new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMICICLEBOMB);
+		item_MC = new ItemMolotovCoctail(new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMMC);
+		item_lavaBomb = new ItemBomb(EnumBombType.LAVA, new Item.Properties().group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMLAVABOMB);
 
 		// ミサイル
-		item_TntMissile = new ItemMissile().setMissileType(0).setRegistryName(NAME_ITEMTNTMISSILE);
-		item_NCMissile = new ItemMissile().setMissileType(1).setRegistryName(NAME_ITEMNCMISSILE);
-		item_CEMissile = new ItemMissile().setMissileType(2).setRegistryName(NAME_ITEMCEMISSILE);
-		item_MCEMissile = new ItemMissile().setMissileType(3).setRegistryName(NAME_ITEMMCEMISSILE);
+		item_TntMissile = new ItemMissile(new Item.Properties().maxStackSize(1).group(Mod_ExBombs.tabExBombs)).setMissileType(0).setRegistryName(NAME_ITEMTNTMISSILE);
+		item_NCMissile = new ItemMissile(new Item.Properties().maxStackSize(1).group(Mod_ExBombs.tabExBombs)).setMissileType(1).setRegistryName(NAME_ITEMNCMISSILE);
+		item_CEMissile = new ItemMissile(new Item.Properties().maxStackSize(1).group(Mod_ExBombs.tabExBombs)).setMissileType(2).setRegistryName(NAME_ITEMCEMISSILE);
+		item_MCEMissile = new ItemMissile(new Item.Properties().maxStackSize(1).group(Mod_ExBombs.tabExBombs)).setMissileType(3).setRegistryName(NAME_ITEMMCEMISSILE);
 
 		// ツール
-		item_Radar = new  ItemSpawnerRadar().setRegistryName(NAME_ITEMRADAR);
-		item_defuser = new ItemDefuser().setRegistryName(NAME_ITEMDEFUSER);
-		item_blockRadar = new ItemBlockRadar().setRegistryName(NAME_ITEMBLOCKRADAR);
+		item_Radar = new  ItemSpawnerRadar(new Item.Properties().maxStackSize(1).group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMRADAR);
+		item_defuser = new ItemDefuser(new Item.Properties().maxStackSize(1).defaultMaxDamage(255).group(Mod_ExBombs.tabExBombs)).setRegistryName(NAME_ITEMDEFUSER);
+		item_blockRadar = new ItemBlockRadar(new Item.Properties().group(Mod_ExBombs.tabExBombs).maxStackSize(1)).setRegistryName(NAME_ITEMBLOCKRADAR);
 		itemMap = new HashMap<String,Item>(){
 			{put(NAME_ITEMOIL,item_Oil);}
 			{put(NAME_PLASTIC,item_Plastic);}
@@ -136,9 +136,10 @@ public class ItemCore {
 	}
 
 	public static void register(final RegistryEvent.Register<Item> event) {
-		init();
 		for (String key : NAME_LIST){
-			event.getRegistry().register(itemMap.get(key));
+			if (itemMap.containsKey(key)) {
+				event.getRegistry().register(itemMap.get(key));
+			}
 		}
 	}
 

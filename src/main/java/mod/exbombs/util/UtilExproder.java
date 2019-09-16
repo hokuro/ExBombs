@@ -5,49 +5,51 @@ import java.util.Random;
 
 import mod.exbombs.block.BlockChunkEraserExplosive.EnumEraseType;
 import mod.exbombs.config.MyConfig;
-import mod.exbombs.entity.EntityBomb;
-import mod.exbombs.entity.EntityPaintBomb;
+import mod.exbombs.entity.EntityCore;
+import mod.exbombs.entity.bomb.EntityBomb;
+import mod.exbombs.entity.bomb.EntityPaintBomb;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketExplosion;
+import net.minecraft.network.play.server.SExplosionPacket;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 public class UtilExproder {
-	public static EntityThrowable createBombEntity(World world, EntityPlayer player, ItemStack itemStackIn, EnumBombType type){
-		EntityThrowable bomb = null;
+	public static ThrowableEntity createBombEntity(World world, PlayerEntity player, ItemStack itemStackIn, EnumBombType type){
+		ThrowableEntity bomb = null;
 		switch(type){
 		case BOMB:
-			bomb = new EntityBomb(world,player,EnumBombType.BOMB);
+			bomb = new EntityBomb(EntityCore.Inst().BOMB, world,player,EnumBombType.BOMB);
 			break;
 		case WARTER:
-			bomb = new EntityBomb(world,player,type);
+			bomb = new EntityBomb(EntityCore.Inst().BOMB, world,player,type);
 			break;
 		case FROZEN:
-			bomb = new EntityBomb(world,player,type);
+			bomb = new EntityBomb(EntityCore.Inst().BOMB, world,player,type);
 			break;
 		case ICICLE:
-			bomb = new EntityBomb(world,player,type);
+			bomb = new EntityBomb(EntityCore.Inst().BOMB, world,player,type);
 			break;
 		case PAINT:
 			ItemStack heldItem = player.getHeldItemOffhand();
 			if (!heldItem.isEmpty() && Block.getBlockFromItem(heldItem.getItem()) != Blocks.AIR){
-				IBlockState block = Block.getBlockFromItem(heldItem.getItem()).getDefaultState();
+				BlockState block = Block.getBlockFromItem(heldItem.getItem()).getDefaultState();
 				bomb = new EntityPaintBomb(world,player,block);
 			}
 			break;
 		case LAVA:
-			bomb = new EntityBomb(world,player,type);
+			bomb = new EntityBomb(EntityCore.Inst().BOMB, world,player,type);
 			break;
 		default:
-			bomb = new EntityBomb(world,player,EnumBombType.BOMB);
+			bomb = new EntityBomb(EntityCore.Inst().BOMB, world,player,EnumBombType.BOMB);
 			break;
 		}
 		return bomb;
@@ -73,7 +75,7 @@ public class UtilExproder {
 		sendSuperClientFXPacket(worldObj, x, y, z, seed, size,ex);
 	}
 
-	public static void createTunnelExplosion(World worldObj, Entity entity, double x, double y, double z, int direction) {
+	public static void createTunnelExplosion(World worldObj, Entity entity, double x, double y, double z, Direction direction) {
 		MoreExplosivesTunnelExplosion tunnelexplosion = new MoreExplosivesTunnelExplosion(worldObj, entity, x, y, z, direction);
 		tunnelexplosion.doExplosionA();
 		tunnelexplosion.doExplosionB(true);
@@ -81,47 +83,47 @@ public class UtilExproder {
 	}
 
 	public static void createEraserExplosion(World worldObj, Entity entity, int x, int y, int z, float size, EnumEraseType eraseType) {
-		MoreExplosiveEraseExplosion betterexplosion = new MoreExplosiveEraseExplosion(eraseType==EnumEraseType.ERASEUNMATCH);
+		MoreExplosiveEraseExplosion betterexplosion = new MoreExplosiveEraseExplosion(worldObj, entity, eraseType==EnumEraseType.ERASEUNMATCH);
 		betterexplosion.explode(worldObj, x, y, z);
 		sendEraseClientFXPacket(worldObj, x, y, z,eraseType, size, betterexplosion);
 	}
 
 	//通信関係
 	private static void sendClientFXPacket(World world, double x, double y, double z, float size, Explosion ex) {
-		Iterator players = world.playerEntities.iterator();
+		Iterator players = world.getPlayers().iterator();
 		while (players.hasNext()) {
-			EntityPlayer player = (EntityPlayer) players.next();
+			PlayerEntity player = (PlayerEntity) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
-				((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+				((ServerPlayerEntity)player).connection.sendPacket(new SExplosionPacket((double)x, (double)y, (double)z, size,
 						 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
 			}
 		}
 	}
 
 	private static void sendSuperClientFXPacket(World world, double x, double y, double z, long seed, float size, Explosion ex) {
-		Iterator players = world.playerEntities.iterator();
+		Iterator players = world.getPlayers().iterator();
 		while (players.hasNext()) {
-			EntityPlayer player = (EntityPlayer) players.next();
+			PlayerEntity player = (PlayerEntity) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
-				 ((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+				 ((ServerPlayerEntity)player).connection.sendPacket(new SExplosionPacket((double)x, (double)y, (double)z, size,
 						 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
 			}
 		}
 	}
 
 	private static void sendEraseClientFXPacket(World world, double x, double y, double z, EnumEraseType type, float size, Explosion ex) {
-		Iterator players = world.playerEntities.iterator();
+		Iterator players = world.getPlayers().iterator();
 		while (players.hasNext()) {
-			EntityPlayer player = (EntityPlayer) players.next();
+			PlayerEntity player = (PlayerEntity) players.next();
 			if (player.getDistanceSq(x, y, z) < 4096.0D) {
 				if (type == EnumEraseType.ERASEALL){
-					((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+					((ServerPlayerEntity)player).connection.sendPacket(new SExplosionPacket((double)x, (double)y, (double)z, size,
 							 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
-					//INSTANCE.sendTo(new MessageExplosion(EnumExplosionType.ERASE.getType(),(int) x, (int) y, (int) z, 0L, 0F), (EntityPlayerMP)player);
+					//INSTANCE.sendTo(new MessageExplosion(EnumExplosionType.ERASE.getType(),(int) x, (int) y, (int) z, 0L, 0F), (ServerPlayerEntity)player);
 				}else{
-					((EntityPlayerMP)player).connection.sendPacket(new SPacketExplosion((double)x, (double)y, (double)z, size,
+					((ServerPlayerEntity)player).connection.sendPacket(new SExplosionPacket((double)x, (double)y, (double)z, size,
 							 ex.getAffectedBlockPositions(), (Vec3d)ex.getPlayerKnockbackMap().get(player)));
-					//INSTANCE.sendTo(new MessageExplosion(EnumExplosionType.MACHING.getType(),(int) x, (int) y, (int) z, 0L, 0F), (EntityPlayerMP)player);
+					//INSTANCE.sendTo(new MessageExplosion(EnumExplosionType.MACHING.getType(),(int) x, (int) y, (int) z, 0L, 0F), (ServerPlayerEntity)player);
 				}
 			}
 		}
