@@ -8,28 +8,28 @@
   ],
   "key": {
     "A": {
-          "item": "minecraft:rose_red"
+          "item": "minecraft:red_dye"
     },
     "P": {
           "item": "minecraft:paper"
     },
     "B": {
-          "item": "minecraft:lapis_lazuli"
+          "item": "minecraft:blue_dye"
     },
     "W": {
-          "item": "minecraft:bone_meal"
+          "item": "minecraft:white_dye"
     },
     "T": {
           "item": "minecraft:tnt"
     },
     "K": {
-          "item": "minecraft:ink_sac"
+          "item": "minecraft:black_dye"
     },
     "Y": {
-          "item": "minecraft:dandelion_yellow"
+          "item": "minecraft:yellow_dye"
     },
     "G": {
-          "item": "minecraft:cactus_green"
+          "item": "minecraft:green_dye"
     }
   },
   "result": {
