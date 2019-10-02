@@ -37,8 +37,8 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 		if ((state != null) &&
 				(state.getBlock() != Blocks.BEDROCK) &&
 				(state.getMaterial() != Material.AIR)){
-			for (int mcc = 0; mcc < match.size(); mcc++){
-				if (match.get(mcc).toString().equals(state.getBlock().getRegistryName().toString())){
+			for(Block blk : match){
+				if (state.getBlock() == blk) {
 					return true;
 				}
 			}
@@ -70,9 +70,8 @@ public class MoreExplosiveEraseExplosion extends Explosion {
 		for (int x = 0; x < 16; x++){
 			for ( int z = 0; z < 16; z++){
 				for ( int y = 1; y < 255; y++){
-					if (matching &&
-							MyConfig.GENERAL.getUnEraseBlock() != null &&
-							isMatch(world.getBlockState(new BlockPos(x_start+x,y,z_start+z)), match)){
+					// マッチしたブロックは破壊しない
+					if (matching && isMatch(world.getBlockState(new BlockPos(x_start+x,y,z_start+z)), match)){
 						continue;
 					}
 					world.setBlockState(new BlockPos(x_start+x,y,z_start+z),Blocks.AIR.getDefaultState());

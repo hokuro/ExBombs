@@ -25,7 +25,7 @@ public class MyConfig {
 		public final ForgeConfigSpec.ConfigValue<String> erase_match_block;
 		public final ForgeConfigSpec.ConfigValue<Boolean> cheat_paint;
 
-		private static List<Block> erase_match_block_list;
+		private static List<Block> erase_match_block_list = new ArrayList<Block>();
 		public General(Builder builder) {
 			builder.push("General");
 			bomb_destroy_block = builder
@@ -42,43 +42,24 @@ public class MyConfig {
 				.defineInRange("erase_method",0,0,1);
 			erase_match_block = builder
 				.comment("conf.erase_mach_block")
-				.define("erase_match_bloc","dirt,stone,sand,stonesand");
+				.define("erase_match_bloc","minecraft:gold_ore,minecraft:iron_ore,minecraft:coal_ore,minecraft:lapis_ore,minecraft:diamond_ore,minecraft:redstone_ore,minecraft:emerald_ore");
 			cheat_paint = builder
 				.comment("conf.cheat_paint")
 				.define("cheat_paint",false);
 			builder.pop();
 		}
 
-		protected void init(){
-			erase_match_block_list = idStringToArray(erase_match_block.get());
-		}
-
 		public List<Block> getUnEraseBlock(){
-			return erase_match_block_list;
-		}
-
-
-		private static List<Block> idStringToArray(String s){
-			List<Block> list = new ArrayList<Block>();
-			String[] ss = s.split(",");
-			for (String str : ss){
-				String metastr = null;
-				String[] ss2 = str.split(":",2);
-				str = ss2[0];
-				if (ss2.length >= 2){
-					metastr = ss2[1];
-				}
-				Block b = Blocks.AIR;
-				str = str.trim();
-				b = Registry.BLOCK.getOrDefault(new ResourceLocation(str));
-				if(null != b)
-				{
-					if (Blocks.AIR != b){
-						list.add(b);
+			String[] blocks = erase_match_block.get().split(",");
+			if (blocks.length != erase_match_block_list.size()) {
+				for (String blk : blocks) {
+					Block addblock = Registry.BLOCK.getOrDefault(new ResourceLocation(blk));
+					if (addblock != Blocks.AIR) {
+						erase_match_block_list.add(addblock);
 					}
 				}
 			}
-			return list;
+			return erase_match_block_list;
 		}
 	}
 }
